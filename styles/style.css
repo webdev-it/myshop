@@ -87,6 +87,7 @@ main {
   margin-top: 20px;
 }
 
+
 .product {
   background-color: #447437;
   padding: 15px;
@@ -95,7 +96,13 @@ main {
   text-align: center;
   transition: transform 0.2s ease;
   color: rgb(24, 24, 24);
+
+  max-width: 300px; /* ограничиваем ширину */
+  width: 100%;       /* чтобы не вылезала */
+  margin: 0 auto;    /* выравниваем по центру */
+  overflow: hidden;  /* чтобы обрезать всё, что выходит */
 }
+
 
 .product:hover {
   transform: translateY(-3px);
@@ -103,14 +110,11 @@ main {
 
 .product-img {
   width: 100%;
-  height: auto;
-  aspect-ratio: 1 / 1;        /* Квадратное соотношение */
-  object-fit: cover;         /* Вырезает по центру */
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
   border-radius: 6px;
-  margin-bottom: 10px;
-  background-color: #fff;    /* Можно добавить фон на случай, если нет изображения */
+  display: block;
 }
-
 
 .product h2 {
   font-size: 18px;
