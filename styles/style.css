@@ -98,9 +98,10 @@ main {
   transition: transform 0.2s ease;
   color: rgb(24, 24, 24);
 
-  width: 100%;
-  max-width: 200px;  /* Ограничение по ширине */
-  max-height: 200px;
+  width: 230px;
+  height: 230px;
+  max-width: 230px;  /* Ограничение по ширине */
+  max-height: 230px;
   overflow: hidden;
   box-sizing: border-box;
   display: flex;
@@ -110,12 +111,11 @@ main {
 
 .product-img {
   width: 100%;
-  aspect-ratio: 1 / 1;      /* Квадрат */
-  object-fit: cover;        /* Центровка и обрезка */
-  display: block;
+  height: auto;              /* или 100%, если хочешь строго по карточке */
+  max-height: 140px;         /* ограничим высоту картинки */
+  object-fit: cover;         /* картинка заполняет контейнер */
   border-radius: 6px;
-  background-color: #fff;
-  margin-bottom: 10px;
+  display: block;
 }
 
 
