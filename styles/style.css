@@ -89,7 +89,6 @@ main {
 }
 
 .product {
-  position: relative;  
   background-color: #447437;
   padding: 15px;
   border-radius: 8px;
@@ -98,26 +97,22 @@ main {
   transition: transform 0.2s ease;
   color: rgb(24, 24, 24);
 
-  width: 200px;
-  height: 230px;
+  width: 100%;
   max-width: 200px;  /* Ограничение по ширине */
-  max-height: 230px;
+  max-height: 200px;
   overflow: hidden;
   box-sizing: border-box;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
 }
 
 .product-img {
-  width: 170px;
-  height: auto;              /* или 100%, если хочешь строго по карточке */
-  max-height: 140px;         /* ограничим высоту картинки */
-  object-fit: cover;         /* картинка заполняет контейнер */
-  border-radius: 6px;
+  width: 100%;
+  aspect-ratio: 1 / 1;      /* Квадрат */
+  object-fit: cover;        /* Центровка и обрезка */
   display: block;
+  border-radius: 6px;
+  background-color: #fff;
+  margin-bottom: 10px;
 }
-
 
 
 .product h2 {
