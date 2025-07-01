@@ -103,6 +103,7 @@ main {
 
 .product-img {
   width: 100%;
+  height: auto;
   aspect-ratio: 1 / 1;        /* Квадратное соотношение */
   object-fit: cover;         /* Вырезает по центру */
   border-radius: 6px;
