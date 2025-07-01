@@ -98,9 +98,9 @@ main {
   transition: transform 0.2s ease;
   color: rgb(24, 24, 24);
 
-  width: 230px;
+  width: 200px;
   height: 230px;
-  max-width: 230px;  /* Ограничение по ширине */
+  max-width: 200px;  /* Ограничение по ширине */
   max-height: 230px;
   overflow: hidden;
   box-sizing: border-box;
@@ -110,7 +110,7 @@ main {
 }
 
 .product-img {
-  width: 100%;
+  width: 170px;
   height: auto;              /* или 100%, если хочешь строго по карточке */
   max-height: 140px;         /* ограничим высоту картинки */
   object-fit: cover;         /* картинка заполняет контейнер */
