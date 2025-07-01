@@ -82,13 +82,11 @@ main {
 
 .products {
   display: grid;
-  grid-template-columns: repeat(2, 1fr); /* ❗ ДВА СТОЛБЦА */
+  grid-template-columns: repeat(2, 1fr); /* 2 столбца */
   gap: 20px;
   margin-top: 20px;
-  justify-items: center; /* Центрирует карточки в ячейках */
+  justify-items: center; /* Центрируем карточки */
 }
-
-
 
 .product {
   background-color: #447437;
@@ -100,25 +98,22 @@ main {
   color: rgb(24, 24, 24);
 
   width: 100%;
-  max-width: 200px;
+  max-width: 200px;  /* Ограничение по ширине */
   max-height: 200px;
   overflow: hidden;
-  box-sizing: border-box; /* важно */
-}
-
-
-.product:hover {
-  transform: translateY(-3px);
+  box-sizing: border-box;
 }
 
 .product-img {
   width: 100%;
-  aspect-ratio: 1 / 1;      /* квадрат */
-  object-fit: cover;        /* обрезка по центру */
-  border-radius: 6px;
+  aspect-ratio: 1 / 1;      /* Квадрат */
+  object-fit: cover;        /* Центровка и обрезка */
   display: block;
-  background-color: #fff;   /* фон под фото */
+  border-radius: 6px;
+  background-color: #fff;
+  margin-bottom: 10px;
 }
+
 
 .product h2 {
   font-size: 18px;
