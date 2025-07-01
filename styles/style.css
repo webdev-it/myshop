@@ -105,17 +105,23 @@ main {
   box-sizing: border-box;
 }
 
+/*
 .product-img {
   width: 170px;
   height: 170px;
-  aspect-ratio: 1 / 1;      /* Квадрат */
-  object-fit: cover;        /* Центровка и обрезка */
+  aspect-ratio: 1 / 1;      
+  object-fit: cover;        
   display: block;
   border-radius: 6px;
   background-color: #fff;
   margin-bottom: 10px;
 }
+*/
 
+.product-img {
+  width: 170px;
+  height: 170px;
+}
 
 .product h2 {
   font-size: 18px;
