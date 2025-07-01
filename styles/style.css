@@ -100,7 +100,7 @@ main {
   color: rgb(24, 24, 24);
 
   width: 100%;
-  max-width: 280px;
+  max-width: 100px;
   overflow: hidden;
   box-sizing: border-box; /* важно */
 }
