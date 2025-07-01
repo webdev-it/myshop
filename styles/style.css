@@ -102,11 +102,14 @@ main {
 }
 
 .product-img {
-  max-width: 100%;
-  height: 180px;
-  object-fit: contain;
+  width: 100%;
+  aspect-ratio: 1 / 1;        /* Квадратное соотношение */
+  object-fit: cover;         /* Вырезает по центру */
+  border-radius: 6px;
   margin-bottom: 10px;
+  background-color: #fff;    /* Можно добавить фон на случай, если нет изображения */
 }
+
 
 .product h2 {
   font-size: 18px;
