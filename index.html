@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Интернет-магазин</title>
+  <link rel="stylesheet" href="styles/style.css" />
+</head>
+<body>
+  <header>
+    <h1>Мой Интернет-Магазин</h1>
+    <div id="welcome">Здравствуйте, гость!</div>
+    <nav>
+  <ul>
+    <li><a href="1.html">Электроника</a></li>
+    <li><a href="2.html">Одежда</a></li>
+    <li><a href="3.html">Книги</a></li>
+  </ul>
+</nav>
+
+  </header>
+
+  <main>
+    <section class="intro">
+      <h2>Добро пожаловать!</h2>
+      <p>Выберите категорию товаров выше, чтобы начать покупки.</p>
+    </section>
+  </main>
+
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <script>
+    const tg = window.Telegram.WebApp;
+    const user = tg.initDataUnsafe?.user;
+
+    if (user) {
+      document.getElementById("welcome").textContent = `Здравствуйте, ${user.first_name}!`;
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Каталог — Одежда</title>
+  <link rel="stylesheet" href="styles/style.css" />
+</head>
+<body>
+  <header>
+    <a href="index.html" class="back">← Назад</a>
+    <h1>Категория: Одежда</h1>
+  </header>
+
+  <main>
+    <div class="products" id="product-list"></div>
+  </main>
+
+  <script>
+    // 🚨 Указан полный публичный адрес сервера через ngrok
+    const API_URL = 'https://brief-sculpin-willing.ngrok-free.app/products';
+
+    const categoryId = '1'; // Электроника
+
+    async function fetchProducts() {
+      const res = await fetch(API_URL);
+      if (!res.ok) throw new Error('Ошибка при загрузке товаров');
+      return await res.json();
+    }
+
+    function createProductCard(product) {
+      const div = document.createElement('div');
+      div.className = 'product';
+      div.innerHTML = `
+        <img src="${product.image}" alt="${product.name}" />
+        <h2>${product.name}</h2>
+        <p class="price">${product.price.toLocaleString()} ₽</p>
+        <button class="buy-btn">Купить</button>
+      `;
+
+      div.querySelector('.buy-btn').addEventListener('click', () => {
+        alert(`Вы выбрали товар: ${product.name} за ${product.price} ₽`);
+      });
+
+      return div;
+    }
+
+    async function renderProducts() {
+      try {
+        const products = await fetchProducts();
+        const filtered = products.filter(p => p.category === categoryId);
+
+        const container = document.getElementById('product-list');
+        container.innerHTML = '';
+
+        if (filtered.length === 0) {
+          container.textContent = 'Товары не найдены.';
+          return;
+        }
+
+        filtered.forEach(product => {
+          const card = createProductCard(product);
+          container.appendChild(card);
+        });
+      } catch (err) {
+        alert(err.message);
+      }
+    }
+
+    renderProducts();
+  </script>
+</body>
+</html>
