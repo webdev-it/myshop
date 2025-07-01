@@ -10,7 +10,7 @@ body {
 /* Шапка сайта */
 header {
   background-color: #3b6c39;
-  background-image: url('/images/8kisland.jpg');
+  background-image: url('../images/8kisland.jpg');
   background-size: cover;
   background-position: center;
   background-attachment: fixed;
