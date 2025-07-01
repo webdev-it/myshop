@@ -10,7 +10,7 @@ body {
 /* Шапка сайта */
 header {
   background-color: #3b6c39;
-  background-image: url('images/8kisland.jpg');
+  background-image: url('/images/8kisland.jpg');
   background-size: cover;
   background-position: center;
   background-attachment: fixed;
@@ -82,10 +82,9 @@ main {
 
 .products {
   display: grid;
-  grid-template-columns: repeat(2, 1fr); /* 2 столбца */
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
   gap: 20px;
   margin-top: 20px;
-  justify-items: center; /* Центрируем карточки */
 }
 
 .product {
@@ -96,31 +95,17 @@ main {
   text-align: center;
   transition: transform 0.2s ease;
   color: rgb(24, 24, 24);
-
-  width: 100%;
-  height: 200px;
-  max-width: 200px;  /* Ограничение по ширине */
-  max-height: 200px;
-  overflow: hidden;
-  box-sizing: border-box;
 }
 
-/*
+.product:hover {
+  transform: translateY(-3px);
+}
+
 .product-img {
-  width: 170px;
-  height: 170px;
-  aspect-ratio: 1 / 1;      
-  object-fit: cover;        
-  display: block;
-  border-radius: 6px;
-  background-color: #fff;
+  max-width: 100%;
+  height: 180px;
+  object-fit: contain;
   margin-bottom: 10px;
-}
-*/
-
-.product-img {
-  width: 170px;
-  height: 170px;
 }
 
 .product h2 {
