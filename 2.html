@@ -32,7 +32,7 @@
       const div = document.createElement('div');
       div.className = 'product';
       div.innerHTML = `
-        <img src="${product.image}" alt="${product.name}" />
+        <img src="${product.image}" alt="${product.name}" class="product-img"/>
         <h2>${product.name}</h2>
         <p class="price">${product.price.toLocaleString()} ₽</p>
         <button class="buy-btn">Купить</button>
