@@ -84,7 +84,8 @@
 <body>
 
   <h1>Админ-панель — Управление товарами</h1>
-
+  <a href="index.html" class="back">← На главную</a><br>
+  <h2>Добавление нового товара:</h2>
   <form id="add-product-form">
     <label for="name">Название товара</label>
     <input type="text" id="name" required />
@@ -101,53 +102,112 @@
     <label for="category">Категория</label>
     <select id="category" required>
       <option value="">-- Выберите категорию --</option>
-      <option value="1">Электроника</option>
-      <option value="2">Одежда</option>
-      <option value="3">Книги</option>
     </select>
 
     <button type="submit">Добавить товар</button>
   </form>
+  <hr>
+<h2>Управление категориями</h2>
+
+<form id="add-category-form">
+  <label for="category-name">Новая категория</label>
+  <input type="text" id="category-name" required placeholder="например, Аксессуары" />
+  <button type="submit">Добавить категорию</button>
+</form>
+
+<ul id="category-list"></ul>
 
   <section class="product-list" id="product-list">
     <h2>Список товаров</h2>
     <!-- Здесь будут отображаться товары -->
   </section>
 
-  
   <script>
-    const form = document.getElementById('add-product-form');
-const productList = document.getElementById('product-list');
-
 const API_URL = 'https://store-backend-zpkh.onrender.com/products';
+const CATEGORY_API = 'https://store-backend-zpkh.onrender.com/categories';
 
+const form = document.getElementById('add-product-form');
+const productList = document.getElementById('product-list');
+const categorySelect = document.getElementById('category');
+const categoryForm = document.getElementById('add-category-form');
+const categoryNameInput = document.getElementById('category-name');
+const categoryList = document.getElementById('category-list');
 
-// Функция для получения списка товаров с сервера
+let categories = [];
+
+// Получить категории с сервера
+async function fetchCategories() {
+  const res = await fetch(CATEGORY_API);
+  if (!res.ok) throw new Error('Ошибка при загрузке категорий');
+  categories = await res.json();
+  return categories;
+}
+
+// Обновить выпадающий список и список категорий
+async function renderCategories() {
+  await fetchCategories();
+  // Обновляем выпадающий список
+  categorySelect.innerHTML = `<option value="">-- Выберите категорию --</option>`;
+  categories.forEach(cat => {
+    const option = document.createElement('option');
+    option.value = cat.id;
+    option.textContent = cat.name;
+    categorySelect.appendChild(option);
+  });
+  // Обновляем список категорий
+  categoryList.innerHTML = '';
+  categories.forEach(cat => {
+    const li = document.createElement('li');
+    li.textContent = `${cat.name} (id: ${cat.id})`;
+    const btn = document.createElement('button');
+    btn.textContent = 'Удалить';
+    btn.style.marginLeft = '10px';
+    btn.style.backgroundColor = '#dc3545';
+    btn.style.color = 'white';
+    btn.onclick = async () => {
+      if (confirm(`Удалить категорию "${cat.name}"?\n\nВНИМАНИЕ: Все товары с этой категорией тоже будут удалены!`)) {
+        const res = await fetch(`${CATEGORY_API}/${cat.id}`, { method: 'DELETE' });
+        if (res.ok) {
+          renderCategories();
+          renderProducts();
+        } else {
+          alert('Ошибка при удалении категории');
+        }
+      }
+    };
+    li.appendChild(btn);
+    categoryList.appendChild(li);
+  });
+}
+
+// Получить список товаров с сервера
 async function fetchProducts() {
   const res = await fetch(API_URL);
   if (!res.ok) throw new Error('Ошибка при загрузке товаров');
   return await res.json();
 }
 
-// Функция для удаления товара по id
+// Удалить товар
 async function deleteProduct(id) {
   const res = await fetch(`${API_URL}/${id}`, { method: 'DELETE' });
   if (!res.ok) throw new Error('Ошибка при удалении товара');
   return await res.json();
 }
 
-// Функция для отрисовки товаров
+// Получить имя категории по id
+function getCategoryName(catId) {
+  const cat = categories.find(c => c.id === catId);
+  return cat ? cat.name : 'Неизвестно';
+}
+
+// Отрисовать товары
 async function renderProducts() {
   try {
     const products = await fetchProducts();
-
-    // Очистить старые товары (кроме заголовка)
     productList.querySelectorAll('.product-item').forEach(el => el.remove());
-
     products.forEach(product => {
       const item = document.createElement('div');
       item.className = 'product-item';
-
       item.innerHTML = `
         <div class="product-info">
           <strong>${product.name}</strong> — ${product.description || '-'}<br>
@@ -157,9 +217,7 @@ async function renderProducts() {
           <button data-id="${product.id}">Удалить</button>
         </div>
       `;
-
       productList.appendChild(item);
-
       item.querySelector('button').addEventListener('click', async () => {
         if (confirm(`Удалить товар "${product.name}"?`)) {
           try {
@@ -177,30 +235,18 @@ async function renderProducts() {
   }
 }
 
-function getCategoryName(catId) {
-  switch(catId) {
-    case "1": return "Электроника";
-    case "2": return "Одежда";
-    case "3": return "Книги";
-    default: return "Неизвестно";
-  }
-}
-
 // Обработка формы добавления товара
 form.addEventListener('submit', async (e) => {
   e.preventDefault();
-
   const name = form.name.value.trim();
   const price = parseFloat(form.price.value);
   const description = form.description.value.trim();
   const image = form.image.value.trim() || 'images/placeholder.png';
   const category = form.category.value;
-
   if (!name || !price || !category) {
     alert('Пожалуйста, заполните обязательные поля.');
     return;
   }
-
   const newProduct = {
     name,
     price,
@@ -208,7 +254,6 @@ form.addEventListener('submit', async (e) => {
     image,
     category
   };
-
   try {
     const res = await fetch(API_URL, {
       method: 'POST',
@@ -216,7 +261,6 @@ form.addEventListener('submit', async (e) => {
       body: JSON.stringify(newProduct)
     });
     if (!res.ok) throw new Error('Ошибка при добавлении товара');
-
     form.reset();
     alert('Товар добавлен');
     renderProducts();
@@ -225,10 +269,37 @@ form.addEventListener('submit', async (e) => {
   }
 });
 
-// Загрузка товаров при старте
-renderProducts();
+// Обработка формы добавления категории
+categoryForm.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const name = categoryNameInput.value.trim();
+  if (!name) return alert('Введите название категории!');
+  if (categories.some(cat => cat.name.toLowerCase() === name.toLowerCase())) {
+    alert('Такая категория уже есть!');
+    return;
+  }
+  const res = await fetch(CATEGORY_API, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ name })
+  });
+  if (res.ok) {
+    categoryNameInput.value = '';
+    renderCategories();
+    alert('Категория добавлена');
+  } else {
+    const err = await res.json();
+    alert('Ошибка: ' + (err.error || 'при добавлении категории'));
+  }
+});
 
+// Инициализация
+renderCategories();
+renderProducts();
   </script>
+
+
+
 
 </body>
 </html>
