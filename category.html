@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Категория</title>
+  <link rel="stylesheet" href="styles/style.css" />
+</head>
+<body>
+  <header>
+    <h1 id="category-title">Категория</h1>
+    <a href="index.html" class="back">← На главную</a>
+  </header>
+  <main>
+    <div class="filters" style="margin-bottom:18px;display:flex;flex-wrap:wrap;gap:10px;justify-content:center;align-items:center;">
+      <input type="text" id="search-input" placeholder="Поиск по названию..." style="padding:8px 12px;border-radius:8px;border:1px solid #ccc;font-size:15px;min-width:160px;">
+      <input type="number" id="min-price" placeholder="Мин. цена" style="padding:8px 8px;border-radius:8px;border:1px solid #ccc;width:90px;">
+      <input type="number" id="max-price" placeholder="Макс. цена" style="padding:8px 8px;border-radius:8px;border:1px solid #ccc;width:90px;">
+      <select id="sort-select" style="padding:8px 8px;border-radius:8px;border:1px solid #ccc;">
+        <option value="">Сортировка</option>
+        <option value="price-asc">Цена ↑</option>
+        <option value="price-desc">Цена ↓</option>
+        <option value="name-asc">Название A-Я</option>
+        <option value="name-desc">Название Я-А</option>
+      </select>
+    </div>
+    <div class="products" id="product-list"></div>
+  </main>
+  <script>
+    const API_URL = 'https://store-backend-zpkh.onrender.com/products';
+    const CATEGORY_API = 'https://store-backend-zpkh.onrender.com/categories';
+
+    // Получаем id категории из URL
+    const params = new URLSearchParams(window.location.search);
+    const categoryId = params.get('id');
+
+    let allProducts = [];
+
+    // Получаем название категории
+    async function fetchCategoryName() {
+      const res = await fetch(CATEGORY_API);
+      const cats = await res.json();
+      const cat = cats.find(c => c.id === categoryId);
+      document.getElementById('category-title').textContent = cat ? cat.name : 'Категория';
+    }
+
+    // Получаем товары
+    async function fetchProducts() {
+      const res = await fetch(API_URL);
+      allProducts = await res.json();
+    }
+
+    // Фильтруем и отображаем товары
+    function filterAndRender() {
+      const search = document.getElementById('search-input').value.trim().toLowerCase();
+      const minPrice = parseFloat(document.getElementById('min-price').value);
+      const maxPrice = parseFloat(document.getElementById('max-price').value);
+      const sort = document.getElementById('sort-select').value;
+      let filtered = allProducts.filter(p => p.category === categoryId);
+      if (search) filtered = filtered.filter(p => p.name.toLowerCase().includes(search));
+      if (!isNaN(minPrice)) filtered = filtered.filter(p => p.price >= minPrice);
+      if (!isNaN(maxPrice)) filtered = filtered.filter(p => p.price <= maxPrice);
+      if (sort === 'price-asc') filtered.sort((a,b)=>a.price-b.price);
+      if (sort === 'price-desc') filtered.sort((a,b)=>b.price-a.price);
+      if (sort === 'name-asc') filtered.sort((a,b)=>a.name.localeCompare(b.name,'ru'));
+      if (sort === 'name-desc') filtered.sort((a,b)=>b.name.localeCompare(a.name,'ru'));
+      renderProducts(filtered);
+    }
+
+    // Отображаем товары
+    function renderProducts(products) {
+      const list = document.getElementById('product-list');
+      list.innerHTML = '';
+      if (!products || products.length === 0) {
+        list.innerHTML = '<div style="color:#888;padding:30px 0;">В этой категории пока нет товаров.</div>';
+        return;
+      }
+      products.forEach(product => {
+        const div = document.createElement('div');
+        div.className = 'product';
+        div.innerHTML = `
+          <img src="${product.image}" alt="${product.name}" class="product-img" />
+          <h2>${product.name}</h2>
+          <p class="description">${product.description || ''}</p>
+          <p class="price">${product.price.toLocaleString()} ₽</p>
+          <button class="buy-btn">Купить</button>
+        `;
+        list.appendChild(div);
+      });
+    }
+
+    // Инициализация
+    async function init() {
+      await fetchCategoryName();
+      await fetchProducts();
+      filterAndRender();
+      document.getElementById('search-input').addEventListener('input', filterAndRender);
+      document.getElementById('min-price').addEventListener('input', filterAndRender);
+      document.getElementById('max-price').addEventListener('input', filterAndRender);
+      document.getElementById('sort-select').addEventListener('change', filterAndRender);
+    }
+    init();
+  </script>
+</body>
+</html>
