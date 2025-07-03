@@ -17,20 +17,27 @@
       <h2>Добро пожаловать!</h2>
       <p>Выберите категорию товаров выше, чтобы начать покупки.</p>
     </section>
-    <div class="filters" style="margin:18px 0 18px 0;display:flex;flex-wrap:wrap;gap:10px;justify-content:center;align-items:center;">
-      <input type="text" id="search-input" placeholder="Поиск по названию..." style="padding:8px 12px;border-radius:8px;border:1px solid #ccc;font-size:15px;min-width:160px;">
-      <select id="category-filter" style="padding:8px 8px;border-radius:8px;border:1px solid #ccc;">
-        <option value="">Все категории</option>
-      </select>
-      <input type="number" id="min-price" placeholder="Мин. цена" style="padding:8px 8px;border-radius:8px;border:1px solid #ccc;width:90px;">
-      <input type="number" id="max-price" placeholder="Макс. цена" style="padding:8px 8px;border-radius:8px;border:1px solid #ccc;width:90px;">
-      <select id="sort-select" style="padding:8px 8px;border-radius:8px;border:1px solid #ccc;">
-        <option value="">Сортировка</option>
-        <option value="price-asc">Цена ↑</option>
-        <option value="price-desc">Цена ↓</option>
-        <option value="name-asc">Название A-Я</option>
-        <option value="name-desc">Название Я-А</option>
-      </select>
+    <div class="filters" style="margin:18px 0 10px 0;display:flex;flex-direction:column;gap:8px;align-items:center;max-width:440px;width:100%;margin-left:auto;margin-right:auto;">
+      <div style="width:100%;display:flex;justify-content:center;align-items:center;">
+        <input type="text" id="search-input" placeholder="Поиск по названию..." style="padding:10px 16px;border-radius:10px;border:1.5px solid #e0f7fa;font-size:15px;min-width:160px;width:100%;max-width:440px;box-sizing:border-box;background:#f8fdfd;outline:none;height:48px;">
+      </div>
+      <div style="display:flex;gap:12px;justify-content:center;align-items:center;width:100%;max-width:440px;flex-wrap:wrap;">
+        <span style="font-size:13px;color:#00916e;font-weight:600;">Категория</span>
+        <select id="category-filter" style="padding:9px 14px;border-radius:9px;border:1.5px solid #e0f7fa;min-width:110px;font-size:14px;background:#f8fdfd;outline:none;height:48px;">
+          <option value="">Все категории</option>
+        </select>
+        <span style="font-size:13px;color:#00916e;font-weight:600;">Сортировка</span>
+        <select id="sort-select" style="padding:9px 14px;border-radius:9px;border:1.5px solid #e0f7fa;min-width:110px;font-size:14px;background:#f8fdfd;outline:none;height:48px;">
+          <option value="">Сортировка</option>
+          <option value="price-asc">Цена ↑</option>
+          <option value="price-desc">Цена ↓</option>
+          <option value="name-asc">Название A-Я</option>
+          <option value="name-desc">Название Я-А</option>
+        </select>
+        <label style="display:flex;align-items:center;gap:4px;font-size:13px;color:#00916e;font-weight:600;cursor:pointer;user-select:none;">
+          <input type="checkbox" id="free-filter" style="accent-color:#43e97b;width:18px;height:18px;" /> Бесплатные
+        </label>
+      </div>
     </div>
     <div class="products" id="product-list"></div>
     <nav>
@@ -48,8 +55,8 @@
     }
   </script>
   <script>
-  const API_CATEGORIES = "https://store-backend-zpkh.onrender.com/categories";
-  const API_PRODUCTS = "https://store-backend-zpkh.onrender.com/products";
+  const API_CATEGORIES = "http://localhost:3000/categories";
+  const API_PRODUCTS = "http://localhost:3000/products";
 
   let allCategories = [];
   let allProducts = [];
@@ -89,21 +96,17 @@
   function filterAndRender() {
     const search = document.getElementById('search-input').value.trim().toLowerCase();
     const catId = document.getElementById('category-filter').value;
-    const minPrice = parseFloat(document.getElementById('min-price').value);
-    const maxPrice = parseFloat(document.getElementById('max-price').value);
     const sort = document.getElementById('sort-select').value;
-    // Если не выбран фильтр категории и не введён поисковый запрос — не показываем товары
-    if (!catId && !search) {
-      renderProducts([]);
-      const list = document.getElementById('product-list');
-      list.innerHTML = '<div style="color:#888;padding:30px 0;">Выберите категорию или введите запрос для поиска товаров.</div>';
+    const freeOnly = document.getElementById('free-filter').checked;
+    // Если не выбран фильтр категории, не введён поисковый запрос и не включён чекбокс бесплатных — не показываем товары
+    if (!catId && !search && !freeOnly) {
+      renderProducts([], true);
       return;
     }
     let filtered = allProducts.slice();
     if (catId) filtered = filtered.filter(p => p.category === catId);
     if (search) filtered = filtered.filter(p => p.name.toLowerCase().includes(search));
-    if (!isNaN(minPrice)) filtered = filtered.filter(p => p.price >= minPrice);
-    if (!isNaN(maxPrice)) filtered = filtered.filter(p => p.price <= maxPrice);
+    if (freeOnly) filtered = filtered.filter(p => p.price === 0);
     if (sort === 'price-asc') filtered.sort((a,b)=>a.price-b.price);
     if (sort === 'price-desc') filtered.sort((a,b)=>b.price-a.price);
     if (sort === 'name-asc') filtered.sort((a,b)=>a.name.localeCompare(b.name,'ru'));
@@ -129,7 +132,7 @@
         <img src="${product.image}" alt="${product.name}" class="product-img" />
         <h2>${product.name}</h2>
         <p class="description">${product.description || ''}</p>
-        <p class="price">${product.price.toLocaleString()} ₽</p>
+        <p class="price">${product.price === 0 ? 'Бесплатно' : product.price.toLocaleString() + ' ₽'}</p>
         <button class="buy-btn">Купить</button>
       `;
       list.appendChild(div);
@@ -140,11 +143,11 @@
     await loadCategories();
     await loadProducts();
     filterAndRender();
+    // Удаляем обработчики событий для min/max price
     document.getElementById('search-input').addEventListener('input', filterAndRender);
     document.getElementById('category-filter').addEventListener('change', filterAndRender);
-    document.getElementById('min-price').addEventListener('input', filterAndRender);
-    document.getElementById('max-price').addEventListener('input', filterAndRender);
     document.getElementById('sort-select').addEventListener('change', filterAndRender);
+    document.getElementById('free-filter').addEventListener('change', filterAndRender);
   }
   init();
 </script>
