@@ -17,7 +17,12 @@
     <input type="text" id="name" required />
 
     <label for="price">Цена (в рублях)</label>
-    <input type="number" id="price" min="0" required />
+    <div style="display:flex;align-items:center;gap:12px;">
+      <input type="number" id="price" min="0" required style="flex:1;" />
+      <label style="display:flex;align-items:center;gap:4px;font-size:1em;">
+        <input type="checkbox" id="is-free" style="accent-color:#43e97b;" /> Бесплатно
+      </label>
+    </div>
 
     <label for="description">Описание</label>
     <textarea id="description"></textarea>
@@ -49,8 +54,8 @@
   </section>
 
   <script>
-const API_URL = 'https://store-backend-zpkh.onrender.com/products';
-const CATEGORY_API = 'https://store-backend-zpkh.onrender.com/categories';
+const API_URL = 'http://localhost:3000/products';
+const CATEGORY_API = 'http://localhost:3000/categories';
 
 const form = document.getElementById('add-product-form');
 const productList = document.getElementById('product-list');
@@ -160,7 +165,7 @@ async function renderProducts() {
       item.innerHTML = `
         <div class="product-info">
           <strong>${product.name}</strong> — ${product.description || '-'}<br>
-          Цена: ${product.price.toLocaleString()} ₽ — Категория: ${catName}
+          Цена: ${product.price === 0 ? 'Бесплатно' : product.price.toLocaleString() + ' ₽'} — Категория: ${catName}
         </div>
         <div class="product-actions">
           <button data-id="${product.id}">Удалить</button>
@@ -193,11 +198,13 @@ async function renderProducts() {
 form.addEventListener('submit', async (e) => {
   e.preventDefault();
   const name = form.name.value.trim();
-  const price = parseFloat(form.price.value);
+  const isFree = form['is-free'].checked;
+  let price = parseFloat(form.price.value);
+  if (isFree) price = 0;
   const description = form.description.value.trim();
   const image = form.image.value.trim() || 'images/placeholder.png';
   const category = form.category.value;
-  if (!name || !price || !category) {
+  if (!name || (!isFree && (isNaN(price) || price < 0)) || !category) {
     alert('Пожалуйста, заполните обязательные поля.');
     return;
   }
@@ -244,6 +251,20 @@ categoryForm.addEventListener('submit', async (e) => {
   } else {
     const err = await res.json();
     alert('Ошибка: ' + (err.error || 'при добавлении категории'));
+  }
+});
+
+// Автоматическое управление полем цены
+const priceInput = document.getElementById('price');
+const isFreeCheckbox = document.getElementById('is-free');
+isFreeCheckbox.addEventListener('change', function() {
+  if (this.checked) {
+    priceInput.value = '';
+    priceInput.disabled = true;
+    priceInput.required = false;
+  } else {
+    priceInput.disabled = false;
+    priceInput.required = true;
   }
 });
 
