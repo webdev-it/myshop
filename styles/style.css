@@ -322,9 +322,6 @@ footer {
   min-width: 60px;
   max-width: 90px;
 }
-#min-price, #max-price {
-  width: 55px;
-}
 @media (max-width: 400px) {
   .filters {
     flex-direction: row;
