@@ -1,3 +1,31 @@
+/* --- МОБИЛЬНАЯ ОПТИМИЗАЦИЯ: САЙТ ТОЛЬКО ДЛЯ МОБИЛЬНЫХ --- */
+@media (min-width: 481px) {
+  html, body {
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    background: #181c24 !important;
+  }
+  body > *:not(.mobile-only-warning) {
+    display: none !important;
+  }
+  body::before, .mobile-only-warning {
+    content: 'Данный сайт доступен только с мобильного устройства.';
+    display: block;
+    color: #fff;
+    background: #181c24;
+    font-size: 1.3rem;
+    font-weight: 700;
+    text-align: center;
+    padding: 60px 24px;
+    border-radius: 18px;
+    box-shadow: 0 4px 32px #0008;
+    max-width: 420px;
+    margin: 0 auto;
+  }
+}
+
 /* --- ГЛОБАЛЬНЫЕ СТИЛИ --- */
 body {
   margin: 0;
