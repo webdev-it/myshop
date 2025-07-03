@@ -12,23 +12,26 @@
     <a href="index.html" class="back">← На главную</a>
   </header>
   <main>
-    <div class="filters" style="margin-bottom:18px;display:flex;flex-wrap:wrap;gap:10px;justify-content:center;align-items:center;">
-      <input type="text" id="search-input" placeholder="Поиск по названию..." style="padding:8px 12px;border-radius:8px;border:1px solid #ccc;font-size:15px;min-width:160px;">
-      <input type="number" id="min-price" placeholder="Мин. цена" style="padding:8px 8px;border-radius:8px;border:1px solid #ccc;width:90px;">
-      <input type="number" id="max-price" placeholder="Макс. цена" style="padding:8px 8px;border-radius:8px;border:1px solid #ccc;width:90px;">
-      <select id="sort-select" style="padding:8px 8px;border-radius:8px;border:1px solid #ccc;">
-        <option value="">Сортировка</option>
-        <option value="price-asc">Цена ↑</option>
-        <option value="price-desc">Цена ↓</option>
-        <option value="name-asc">Название A-Я</option>
-        <option value="name-desc">Название Я-А</option>
-      </select>
+    <div class="filters" style="margin-bottom:10px;display:flex;flex-direction:column;gap:6px;align-items:center;">
+      <div style="width:100%;display:flex;justify-content:center;">
+        <input type="text" id="search-input" placeholder="Поиск по названию..." style="padding:8px 12px;border-radius:8px;border:1px solid #ccc;font-size:15px;min-width:160px;width:100%;max-width:320px;">
+      </div>
+      <div style="display:flex;gap:10px;justify-content:center;align-items:center;">
+        <span style="font-size:13px;color:#00916e;font-weight:600;">Сортировка</span>
+        <select id="sort-select" style="padding:8px 8px;border-radius:8px;border:1px solid #ccc;">
+          <option value="">Сортировка</option>
+          <option value="price-asc">Цена ↑</option>
+          <option value="price-desc">Цена ↓</option>
+          <option value="name-asc">Название A-Я</option>
+          <option value="name-desc">Название Я-А</option>
+        </select>
+      </div>
     </div>
     <div class="products" id="product-list"></div>
   </main>
   <script>
-    const API_URL = 'https://store-backend-zpkh.onrender.com/products';
-    const CATEGORY_API = 'https://store-backend-zpkh.onrender.com/categories';
+    const API_URL = 'http://localhost:3000/products';
+    const CATEGORY_API = 'http://localhost:3000/categories';
 
     // Получаем id категории из URL
     const params = new URLSearchParams(window.location.search);
@@ -52,14 +55,11 @@
 
     // Фильтруем и отображаем товары
     function filterAndRender() {
+      // Удаляем minPrice/maxPrice из фильтрации
       const search = document.getElementById('search-input').value.trim().toLowerCase();
-      const minPrice = parseFloat(document.getElementById('min-price').value);
-      const maxPrice = parseFloat(document.getElementById('max-price').value);
       const sort = document.getElementById('sort-select').value;
       let filtered = allProducts.filter(p => p.category === categoryId);
       if (search) filtered = filtered.filter(p => p.name.toLowerCase().includes(search));
-      if (!isNaN(minPrice)) filtered = filtered.filter(p => p.price >= minPrice);
-      if (!isNaN(maxPrice)) filtered = filtered.filter(p => p.price <= maxPrice);
       if (sort === 'price-asc') filtered.sort((a,b)=>a.price-b.price);
       if (sort === 'price-desc') filtered.sort((a,b)=>b.price-a.price);
       if (sort === 'name-asc') filtered.sort((a,b)=>a.name.localeCompare(b.name,'ru'));
@@ -82,7 +82,7 @@
           <img src="${product.image}" alt="${product.name}" class="product-img" />
           <h2>${product.name}</h2>
           <p class="description">${product.description || ''}</p>
-          <p class="price">${product.price.toLocaleString()} ₽</p>
+          <p class="price">${product.price === 0 ? 'Бесплатно' : product.price.toLocaleString() + ' ₽'}</p>
           <button class="buy-btn">Купить</button>
         `;
         list.appendChild(div);
@@ -94,9 +94,8 @@
       await fetchCategoryName();
       await fetchProducts();
       filterAndRender();
+      // Удаляем обработчики событий для min/max price
       document.getElementById('search-input').addEventListener('input', filterAndRender);
-      document.getElementById('min-price').addEventListener('input', filterAndRender);
-      document.getElementById('max-price').addEventListener('input', filterAndRender);
       document.getElementById('sort-select').addEventListener('change', filterAndRender);
     }
     init();
