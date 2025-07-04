@@ -78,8 +78,9 @@
       products.forEach(product => {
         const div = document.createElement('div');
         div.className = 'product';
+        const imageUrl = product.image && product.image !== '' ? product.image : 'https://store-backend-zpkh.onrender.com/images/placeholder.png';
         div.innerHTML = `
-          <img src="${product.image}" alt="${product.name}" class="product-img" />
+          <img src="${imageUrl}" alt="${product.name}" class="product-img" />
           <h2>${product.name}</h2>
           <p class="description">${product.description || ''}</p>
           <p class="price">${product.price === 0 ? 'Бесплатно' : product.price.toLocaleString() + ' ₽'}</p>

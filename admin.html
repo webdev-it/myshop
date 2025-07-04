@@ -27,8 +27,13 @@
     <label for="description">Описание</label>
     <textarea id="description"></textarea>
 
-    <label for="image">Ссылка на изображение</label>
-    <input type="text" id="image" placeholder="например, images/phone.jpg" />
+    <label for="image" style="font-weight:700;color:#00916e;">Изображение товара</label>
+    <div id="drop-area" style="flex:1;max-width:220px;padding:12px 8px;border:2px dashed #43e97b;border-radius:10px;text-align:center;cursor:pointer;background:#f8fdfd;transition:background 0.2s;">
+      <input type="file" id="image-file" accept="image/*" style="display:none;" />
+      <span id="drop-text">Перетащите или выберите файл</span>
+      <div id="image-preview" style="margin-top:8px;display:none;"></div>
+    </div>
+    <input type="hidden" id="image" name="image" />
 
     <label for="category">Категория</label>
     <select id="category" required>
@@ -39,14 +44,8 @@
   </form>
   <hr>
 <h2>Управление категориями</h2>
-
-<form id="add-category-form">
-  <label for="category-name">Новая категория</label>
-  <input type="text" id="category-name" required placeholder="например, Аксессуары" />
-  <button type="submit">Добавить категорию</button>
-</form>
-
-<ul id="category-list"></ul>
+<button id="toggle-category-list" type="button" style="margin-bottom:10px;padding:8px 18px;border-radius:8px;background:#00916e;color:#fff;font-weight:700;border:none;cursor:pointer;">Показать категории</button>
+<ul id="category-list" style="display:none;"></ul>
 
   <section class="product-list" id="product-list">
     <h2>Список товаров</h2>
@@ -162,10 +161,15 @@ async function renderProducts() {
       }
       const item = document.createElement('div');
       item.className = 'product-item';
+      // Добавляем отображение изображения товара
+      const imageUrl = product.image && product.image !== '' ? product.image : 'https://store-backend-zpkh.onrender.com/images/placeholder.png';
       item.innerHTML = `
-        <div class="product-info">
-          <strong>${product.name}</strong> — ${product.description || '-'}<br>
-          Цена: ${product.price === 0 ? 'Бесплатно' : product.price.toLocaleString() + ' ₽'} — Категория: ${catName}
+        <div class="product-info" style="display:flex;align-items:center;gap:12px;">
+          <img src="${imageUrl}" alt="img" style="width:48px;height:48px;object-fit:cover;border-radius:8px;box-shadow:0 2px 8px #0002;">
+          <div>
+            <strong>${product.name}</strong> — ${product.description || '-'}<br>
+            Цена: ${product.price === 0 ? 'Бесплатно' : product.price.toLocaleString() + ' ₽'} — Категория: ${catName}
+          </div>
         </div>
         <div class="product-actions">
           <button data-id="${product.id}">Удалить</button>
@@ -202,12 +206,24 @@ form.addEventListener('submit', async (e) => {
   let price = parseFloat(form.price.value);
   if (isFree) price = 0;
   const description = form.description.value.trim();
-  const image = form.image.value.trim() || 'images/placeholder.png';
   const category = form.category.value;
   if (!name || (!isFree && (isNaN(price) || price < 0)) || !category) {
     alert('Пожалуйста, заполните обязательные поля.');
     return;
   }
+  let image = 'https://store-backend-zpkh.onrender.com/images/placeholder.png';
+  if (selectedImageFile) {
+    try {
+      dropText.textContent = 'Загрузка...';
+      image = await uploadFileToServer(selectedImageFile);
+      dropText.textContent = 'Файл загружен';
+    } catch (err) {
+      alert('Ошибка загрузки изображения');
+      dropText.textContent = 'Ошибка загрузки';
+      return;
+    }
+  }
+  if (image.startsWith('/')) image = image.slice(1);
   const newProduct = {
     name,
     price,
@@ -223,6 +239,11 @@ form.addEventListener('submit', async (e) => {
     });
     if (!res.ok) throw new Error('Ошибка при добавлении товара');
     form.reset();
+    imageInput.value = '';
+    imagePreview.innerHTML = '';
+    imagePreview.style.display = 'none';
+    dropText.textContent = 'Перетащите или выберите файл';
+    selectedImageFile = null;
     alert('Товар добавлен');
     renderProducts();
   } catch (err) {
@@ -268,9 +289,87 @@ isFreeCheckbox.addEventListener('change', function() {
   }
 });
 
+// --- Drag & Drop и загрузка изображения на сервер ---
+const dropArea = document.getElementById('drop-area');
+const imageFileInput = document.getElementById('image-file');
+const imageInput = document.getElementById('image');
+const imagePreview = document.getElementById('image-preview');
+const dropText = document.getElementById('drop-text');
+
+let selectedImageFile = null;
+
+function showPreviewFromFile(file) {
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    imagePreview.innerHTML = `<img src="${e.target.result}" alt="preview" style="max-width:60px;max-height:60px;border-radius:8px;box-shadow:0 2px 8px #0002;">`;
+    imagePreview.style.display = 'block';
+  };
+  reader.readAsDataURL(file);
+}
+
+// Новый uploadFile: только отправка на сервер, возвращает Promise с url
+function uploadFileToServer(file) {
+  const formData = new FormData();
+  formData.append('image', file);
+  return fetch('https://store-backend-zpkh.onrender.com/upload', {
+    method: 'POST',
+    body: formData
+  })
+    .then(res => res.json())
+    .then(data => {
+      if (data.url) {
+        let url = data.url;
+        if (url.startsWith('/')) url = url.slice(1);
+        return url;
+      } else {
+        throw new Error('Ошибка загрузки');
+      }
+    });
+}
+
+dropArea.addEventListener('click', () => imageFileInput.click());
+imageFileInput.addEventListener('change', function(e) {
+  const file = this.files[0];
+  if (file) {
+    selectedImageFile = file;
+    showPreviewFromFile(file);
+    dropText.textContent = 'Файл выбран';
+  }
+});
+
+dropArea.addEventListener('dragover', e => {
+  e.preventDefault();
+  dropArea.style.background = '#e0f7fa';
+});
+dropArea.addEventListener('dragleave', e => {
+  e.preventDefault();
+  dropArea.style.background = '#f8fdfd';
+});
+dropArea.addEventListener('drop', e => {
+  e.preventDefault();
+  dropArea.style.background = '#f8fdfd';
+  const file = e.dataTransfer.files[0];
+  if (file) {
+    selectedImageFile = file;
+    showPreviewFromFile(file);
+    dropText.textContent = 'Файл выбран';
+  }
+});
+
 // Инициализация
 renderCategories();
 renderProducts();
+
+const toggleCategoryListBtn = document.getElementById('toggle-category-list');
+toggleCategoryListBtn.addEventListener('click', function() {
+  if (categoryList.style.display === 'none' || categoryList.style.display === '') {
+    categoryList.style.display = 'block';
+    toggleCategoryListBtn.textContent = 'Скрыть категории';
+  } else {
+    categoryList.style.display = 'none';
+    toggleCategoryListBtn.textContent = 'Показать категории';
+  }
+});
   </script>
 
 
