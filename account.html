@@ -80,6 +80,11 @@
     const d = new Date(dateStr);
     return d.toLocaleDateString() + ' ' + d.toLocaleTimeString().slice(0,5);
   }
+  // Универсальная функция для формирования абсолютного URL к файлу/картинке
+  function getBackendFileUrl(type, filename) {
+    if (!filename) return '';
+    return `https://store-backend-zpkh.onrender.com/${type}/${encodeURIComponent(filename.replace(/^.*[\\/]/, ''))}`;
+  }
   async function loadHistory(telegramId) {
     const list = document.getElementById('history-list');
     list.innerHTML = '<div style="color:#888;text-align:center;">Загрузка...</div>';
@@ -93,7 +98,7 @@
         list.innerHTML = data.reverse().map(item => {
           const prod = products.find(p=>p.id===item.productId);
           if (!prod) return '';
-          const imageUrl = prod.image ? `images/${prod.image}` : 'images/placeholder.png';
+          const imageUrl = prod.image ? getBackendFileUrl('images', prod.image) : 'images/placeholder.png';
           const ext = prod.file ? prod.file.split('.').pop().toLowerCase() : '';
           let icon = '';
           if (["pdf"].includes(ext)) icon = '📄';
@@ -107,7 +112,7 @@
           if (!item.expired && item.daysLeft <= 2) extra = `<div style=\"color:#e67e22;font-size:0.97em;\">Внимание: доступ истекает через ${item.daysLeft} ${item.daysLeft===1?'день':'дня'}!</div>`;
           if (item.expired) extra = '<div style="color:#aaa;font-size:0.97em;">Доступ истёк. <a href="product.html?id='+prod.id+'" style="color:#00916e;text-decoration:underline;">Купить снова</a></div>';
           return `<div class="product" style="display:flex;align-items:center;gap:12px;margin-bottom:14px;background:${item.expired?'#f4f4f4':'#fff'};padding:10px 8px;border-radius:12px;box-shadow:0 2px 8px #0001;opacity:${item.expired?'0.6':'1'};">
-            <img src="images/${prod.image ? prod.image : 'placeholder.png'}" alt="img" style="width:48px;height:48px;object-fit:cover;border-radius:8px;filter:${item.expired?'grayscale(1)':''};">
+            <img src="${imageUrl}" alt="img" style="width:48px;height:48px;object-fit:cover;border-radius:8px;filter:${item.expired?'grayscale(1)':''};">
             <div style="flex:1;">
               <b>${prod.name}</b><br>
               <span style="color:#888;font-size:0.98em;">${icon} ${prod.file ? prod.file.split('/').pop() : ''}</span><br>
@@ -155,7 +160,7 @@
       const data = await res.json();
       if (data && data.length) {
         list.innerHTML = data.map(prod => {
-          const imageUrl = prod.image ? `images/${prod.image}` : 'images/placeholder.png';
+          const imageUrl = prod.image ? getBackendFileUrl('images', prod.image) : 'images/placeholder.png';
           const ext = prod.file ? prod.file.split('.').pop().toLowerCase() : '';
           let icon = '';
           if (["pdf"].includes(ext)) icon = '📄';

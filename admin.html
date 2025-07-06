@@ -88,6 +88,12 @@ const adminCategoryFilter = document.getElementById('admin-category-filter');
 
 let categories = [];
 
+// Универсальная функция для формирования абсолютного URL к файлу/картинке
+function getBackendFileUrl(type, filename) {
+  if (!filename) return '';
+  return `https://store-backend-zpkh.onrender.com/${type}/${encodeURIComponent(filename.replace(/^.*[\\/]/, ''))}`;
+}
+
 // Получить категории с сервера
 async function fetchCategories() {
   const res = await fetch(CATEGORY_API);
@@ -195,7 +201,7 @@ async function renderProducts() {
       const item = document.createElement('div');
       item.className = 'product-item';
       // Добавляем отображение изображения товара
-      const imageUrl = product.image && product.image !== '' ? 'images/' + product.image.replace(/^.*[\\/]/, '') : 'images/placeholder.png';
+      const imageUrl = product.image && product.image !== '' ? getBackendFileUrl('images', product.image) : 'images/placeholder.png';
       item.innerHTML = `
         <div class="product-info" style="display:flex;align-items:center;gap:12px;cursor:pointer;">
           <img src="${imageUrl}" alt="img" style="width:48px;height:48px;object-fit:cover;border-radius:8px;box-shadow:0 2px 8px #0002;">
@@ -213,7 +219,7 @@ async function renderProducts() {
       const infoDiv = item.querySelector('.product-info');
       infoDiv.addEventListener('click', (e) => {
         if (e.target.tagName.toLowerCase() === 'button') return;
-        window.open(`product.html?id=${product.id}`, '_blank');
+        window.location.href = `product.html?id=${product.id}`;
       });
       // Визуальный эффект наведения
       infoDiv.style.transition = 'background 0.15s';
@@ -572,7 +578,7 @@ async function renderProducts() {
       const item = document.createElement('div');
       item.className = 'product-item';
       // Добавляем отображение изображения товара
-      const imageUrl = product.image && product.image !== '' ? 'images/' + product.image.replace(/^.*[\\/]/, '') : 'images/placeholder.png';
+      const imageUrl = product.image && product.image !== '' ? getBackendFileUrl('images', product.image) : 'images/placeholder.png';
       item.innerHTML = `
         <div class="product-info" style="display:flex;align-items:center;gap:12px;cursor:pointer;">
           <img src="${imageUrl}" alt="img" style="width:48px;height:48px;object-fit:cover;border-radius:8px;box-shadow:0 2px 8px #0002;">
@@ -590,7 +596,7 @@ async function renderProducts() {
       const infoDiv = item.querySelector('.product-info');
       infoDiv.addEventListener('click', (e) => {
         if (e.target.tagName.toLowerCase() === 'button') return;
-        window.open(`product.html?id=${product.id}`, '_blank');
+        window.location.href = `product.html?id=${product.id}`;
       });
       // Визуальный эффект наведения
       infoDiv.style.transition = 'background 0.15s';

@@ -40,6 +40,12 @@
       document.getElementById('product-card').innerHTML = '<div style="color:#888;padding:40px 0;text-align:center;">Извините, этот товар не найден или был удалён.<br><a href="index.html" style="color:#00916e;text-decoration:underline;display:inline-block;margin-top:18px;">Вернуться на главную</a></div>';
     }
 
+    // Универсальная функция для формирования абсолютного URL к файлу/картинке
+    function getBackendFileUrl(type, filename) {
+      if (!filename) return '';
+      return `https://store-backend-zpkh.onrender.com/${type}/${encodeURIComponent(filename.replace(/^.*[\\/]/, ''))}`;
+    }
+
     async function loadProductAndCategory() {
       if (!id) return showNotFound();
       try {
@@ -68,7 +74,7 @@
         document.getElementById('product-category').innerHTML = category ? `<span aria-label="Категория">Категория:</span> <b>${category.name}</b>` : '<span style="color:#aaa;">Без категории</span>';
         document.getElementById('product-price').textContent = product.price === 0 ? 'Бесплатно' : product.price.toLocaleString() + ' ₽';
         document.getElementById('product-description').innerHTML = product.description ? `<span style="white-space:pre-line;">${product.description}</span>` : '<span style="color:#aaa;">Описание отсутствует.</span>';
-        const imageUrl = product.image && product.image !== '' ? 'images/' + product.image.replace(/^.*[\\/]/, '') : 'images/placeholder.png';
+        const imageUrl = product.image && product.image !== '' ? getBackendFileUrl('images', product.image) : 'images/placeholder.png';
         document.getElementById('product-image').innerHTML = `<img src="${imageUrl}" alt="img" style="max-width:220px;max-height:220px;border-radius:12px;box-shadow:0 2px 8px #0002;">`;
         // Кнопка возврата к категории
         if (category) {
@@ -89,9 +95,10 @@
           else if (["png","jpg","jpeg","gif","bmp","webp"].includes(ext)) icon = '🖼️';
           else if (["blend","obj","fbx","stl"].includes(ext)) icon = '🧩';
           else icon = '📦';
-          document.getElementById('product-file').innerHTML = `<span style="color:#00916e;font-weight:600;">Файл для скачивания:</span> <span style="font-size:1.2em;">${icon}</span> <span style="color:#444;">${fileName}</span> <span id="file-size" style="color:#888;font-size:0.98em;"></span>`;
+          const fileUrl = getBackendFileUrl('files', fileName);
+          document.getElementById('product-file').innerHTML = `<span style="color:#00916e;font-weight:600;">Файл для скачивания:</span> <span style="font-size:1.2em;">${icon}</span> <a href="${fileUrl}" target="_blank" style="color:#444;text-decoration:underline;">${fileName}</a> <span id="file-size" style="color:#888;font-size:0.98em;"></span>`;
           // Получить размер файла через HEAD-запрос
-          fetch(`/files/${fileName}`, { method: 'HEAD' }).then(resp => {
+          fetch(fileUrl, { method: 'HEAD' }).then(resp => {
             const size = resp.headers.get('content-length');
             if (size) {
               const kb = (parseInt(size,10)/1024).toFixed(1);
