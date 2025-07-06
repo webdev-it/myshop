@@ -52,10 +52,10 @@
           <div style="margin-left:auto;display:flex;align-items:center;">
             <label style="display:flex;align-items:center;gap:8px;border:2px solid #43e97b;border-radius:12px;padding:4px 14px 4px 10px;cursor:pointer;background:#f8fdfd;user-select:none;">
               <span style="font-size:13px;color:#00916e;font-weight:600;">Бесплатно</span>
-              <span style="position:relative;display:inline-block;width:38px;height:24px;">
-                <input type="checkbox" id="free-filter" style="opacity:0;width:38px;height:24px;margin:0;position:absolute;left:0;top:0;z-index:2;cursor:pointer;">
-                <span style="position:absolute;left:0;top:0;width:38px;height:24px;background:#e0f7fa;border-radius:12px;transition:.2s;"></span>
-                <span style="position:absolute;top:3px;left:3px;width:18px;height:18px;background:#43e97b;border-radius:50%;transition:.2s;"></span>
+              <span id="free-filter-switch">
+                <input type="checkbox" id="free-filter">
+                <span class="slider-bg"></span>
+                <span class="slider-dot"></span>
               </span>
             </label>
           </div>
@@ -80,6 +80,13 @@
       </div>
       <div id="account-status" style="margin-top:10px;color:#00916e;font-weight:600;"></div>
       <div id="balance-block" style="margin-top:18px;text-align:right;display:none;"></div>
+      <div id="theme-switch-block" style="margin-top:18px;">
+        <label for="theme-select" style="font-weight:600;color:#00916e;">Тема сайта:</label>
+        <select id="theme-select" style="margin-left:10px;padding:7px 14px;border-radius:8px;border:1.5px solid #e0f7fa;background:#f8fdfd;font-size:1em;">
+          <option value="light">Светлая</option>
+          <option value="dark">Тёмная</option>
+        </select>
+      </div>
     </div>
     <h2>История покупок и скачиваний</h2>
     <div id="history-list" style="margin-bottom:24px;">—</div>
@@ -170,13 +177,7 @@
   </nav>
 
   <style>
-    body { padding-bottom: 70px; }
-    #bottom-tabs .tab-btn.active span { color: #43e97b; }
-    #bottom-tabs .tab-btn span { transition: color 0.2s; }
-    @media (max-width: 600px) {
-      #bottom-tabs { height: 56px; }
-      #bottom-tabs .tab-btn span { font-size: 1.3em; }
-    }
+    /* Стили перенесены в style.css */
   </style>
 
   <footer>
@@ -480,7 +481,7 @@
       const cat = document.getElementById('category-filter').value;
       const free = document.getElementById('free-filter').checked;
       if (search) products = products.filter(p => p.name.toLowerCase().includes(search));
-      if (cat) products = products.filter(p => p.categoryId === cat);
+      if (cat) products = products.filter(p => p.category === cat);
       if (free) products = products.filter(p => p.price === 0);
       // Сортировка
       const sort = document.getElementById('sort-select').value;
@@ -550,12 +551,14 @@
     try {
       const res = await fetch('https://store-backend-zpkh.onrender.com/products');
       let products = await res.json();
-      products = products.filter(p => p.categoryId === categoryId);
+      products = products.filter(p => p.category === categoryId);
       if (!products.length) {
         list.innerHTML = '<div style="color:#888;text-align:center;">Нет товаров в категории.</div>';
         return;
       }
-      list.innerHTML = products.map(prod => {
+      // Кнопка назад
+      list.innerHTML = `<button class='back-btn' onclick='showPage("home-page")' title='Назад к списку категорий'>← Назад</button>` +
+        products.map(prod => {
         const imageUrl = prod.image ? getBackendFileUrl('images', prod.image) : 'images/placeholder.png';
         return `<div class="product" style="display:flex;align-items:center;gap:12px;margin-bottom:14px;background:#fff;padding:10px 8px;border-radius:12px;box-shadow:0 2px 8px #0001;cursor:pointer;" onclick="showProduct('${prod.id}')">
           <img src="${imageUrl}" alt="img" style="width:48px;height:48px;object-fit:cover;border-radius:8px;">
@@ -585,6 +588,7 @@
       }
       const imageUrl = prod.image ? getBackendFileUrl('images', prod.image) : 'images/placeholder.png';
       card.innerHTML = `
+        <button class='back-btn' onclick='history.back()' title='Назад'>← Назад</button>
         <div style="display:flex;gap:18px;align-items:flex-start;">
           <img src="${imageUrl}" alt="img" style="width:90px;height:90px;object-fit:cover;border-radius:12px;">
           <div style="flex:1;">
@@ -605,7 +609,7 @@
     showToast('Покупка товара реализуется на сервере', '#43e97b');
   }
 
-  // SPA: Рендеринг админки (заглушка)
+  // SPA: Рендеринг админки (исправлено)
   function renderAdmin() {
     // Заполнить выпадающий список категорий
     fetch('https://store-backend-zpkh.onrender.com/categories')
@@ -615,6 +619,78 @@
         sel.innerHTML = '<option value="">-- Выберите категорию --</option>' + cats.map(cat => `<option value="${cat.id}">${cat.name}</option>`).join('');
       });
 
+    // --- Загрузка изображения ---
+    const dropArea = document.getElementById('drop-area');
+    const imageInput = document.getElementById('image-file');
+    dropArea.onclick = () => imageInput.click();
+    imageInput.onchange = async function() {
+      if (!this.files.length) return;
+      const file = this.files[0];
+      const formData = new FormData();
+      formData.append('image', file);
+      document.getElementById('drop-text').textContent = 'Загрузка...';
+      try {
+        const resp = await fetch('https://store-backend-zpkh.onrender.com/upload', {
+          method: 'POST',
+          body: formData
+        });
+        const data = await resp.json();
+        if (data.url) {
+          document.getElementById('image').value = data.url;
+          document.getElementById('image-preview').style.display = '';
+          document.getElementById('image-preview').innerHTML = `<img src="https://store-backend-zpkh.onrender.com/images/${data.url}" style="max-width:100px;max-height:80px;border-radius:8px;">`;
+          document.getElementById('drop-text').textContent = 'Файл загружен';
+        } else {
+          document.getElementById('drop-text').textContent = 'Ошибка загрузки';
+        }
+      } catch {
+        document.getElementById('drop-text').textContent = 'Ошибка загрузки';
+      }
+    };
+    dropArea.ondragover = e => { e.preventDefault(); dropArea.style.background = '#e0f7fa'; };
+    dropArea.ondragleave = e => { e.preventDefault(); dropArea.style.background = '#f8fdfd'; };
+    dropArea.ondrop = function(e) {
+      e.preventDefault(); dropArea.style.background = '#f8fdfd';
+      imageInput.files = e.dataTransfer.files;
+      imageInput.onchange();
+    };
+
+    // --- Загрузка файла ---
+    const fileDropArea = document.getElementById('file-drop-area');
+    const fileInput = document.getElementById('file-input');
+    fileDropArea.onclick = () => fileInput.click();
+    fileInput.onchange = async function() {
+      if (!this.files.length) return;
+      const file = this.files[0];
+      const formData = new FormData();
+      formData.append('file', file);
+      document.getElementById('file-drop-text').textContent = 'Загрузка...';
+      try {
+        const resp = await fetch('https://store-backend-zpkh.onrender.com/upload/file', {
+          method: 'POST',
+          body: formData
+        });
+        const data = await resp.json();
+        if (data.url) {
+          document.getElementById('file').value = data.url;
+          document.getElementById('file-preview').style.display = '';
+          document.getElementById('file-preview').textContent = data.url;
+          document.getElementById('file-drop-text').textContent = 'Файл загружен';
+        } else {
+          document.getElementById('file-drop-text').textContent = 'Ошибка загрузки';
+        }
+      } catch {
+        document.getElementById('file-drop-text').textContent = 'Ошибка загрузки';
+      }
+    };
+    fileDropArea.ondragover = e => { e.preventDefault(); fileDropArea.style.background = '#e0f7fa'; };
+    fileDropArea.ondragleave = e => { e.preventDefault(); fileDropArea.style.background = '#f8fdfd'; };
+    fileDropArea.ondrop = function(e) {
+      e.preventDefault(); fileDropArea.style.background = '#f8fdfd';
+      fileInput.files = e.dataTransfer.files;
+      fileInput.onchange();
+    };
+
     // Обработка формы добавления товара
     document.getElementById('add-product-form').onsubmit = async function(e) {
       e.preventDefault();
@@ -623,12 +699,12 @@
       const description = document.getElementById('description').value.trim();
       const image = document.getElementById('image').value;
       const file = document.getElementById('file').value;
-      const categoryId = document.getElementById('category').value;
-      if (!name || !categoryId) {
+      const category = document.getElementById('category').value;
+      if (!name || !category) {
         showToast('Заполните все обязательные поля', '#e74c3c');
         return;
       }
-      const body = { name, price, description, image, file, categoryId };
+      const body = { name, price, description, image, file, category };
       try {
         const resp = await fetch('https://store-backend-zpkh.onrender.com/products', {
           method: 'POST',
@@ -638,9 +714,12 @@
         if (resp.ok) {
           showToast('Товар добавлен!', '#43e97b');
           document.getElementById('add-product-form').reset();
+          document.getElementById('image-preview').style.display = 'none';
+          document.getElementById('file-preview').style.display = 'none';
           renderProducts();
         } else {
-          showToast('Ошибка добавления товара', '#e74c3c');
+          const data = await resp.json();
+          showToast(data.error || 'Ошибка добавления товара', '#e74c3c');
         }
       } catch {
         showToast('Ошибка соединения с сервером', '#e74c3c');
@@ -666,7 +745,8 @@
           document.getElementById('add-category-form').reset();
           renderCategories();
         } else {
-          showToast('Ошибка добавления категории', '#e74c3c');
+          const data = await resp.json();
+          showToast(data.error || 'Ошибка добавления категории', '#e74c3c');
         }
       } catch {
         showToast('Ошибка соединения с сервером', '#e74c3c');
@@ -674,20 +754,35 @@
     };
   }
 
-  // --- SPA: Фильтры и поиск ---
+  // --- Тема сайта ---
+  function applyTheme(theme) {
+    if (theme === 'dark') {
+      document.body.classList.add('dark-theme');
+      document.body.classList.remove('light-theme');
+    } else {
+      document.body.classList.remove('dark-theme');
+      document.body.classList.add('light-theme');
+    }
+  }
+  function saveTheme(theme) {
+    localStorage.setItem('site-theme', theme);
+  }
+  function loadTheme() {
+    return localStorage.getItem('site-theme') || 'light';
+  }
   document.addEventListener('DOMContentLoaded', function() {
-    // SPA: инициализация
-    showPage('home-page');
-    renderProducts();
-    renderCategories();
-    // Фильтры
-    document.getElementById('search-input').addEventListener('input', renderProducts);
-    document.getElementById('category-filter').addEventListener('change', renderProducts);
-    document.getElementById('sort-select').addEventListener('change', renderProducts);
-    document.getElementById('free-filter').addEventListener('change', renderProducts);
-    // SPA: если есть hash в url, открыть нужную страницу
-    if (location.hash && document.getElementById(location.hash.slice(1))) {
-      showPage(location.hash.slice(1));
+    // Тема сайта
+    const themeSelect = document.getElementById('theme-select');
+    if (themeSelect) {
+      const savedTheme = loadTheme();
+      themeSelect.value = savedTheme;
+      applyTheme(savedTheme);
+      themeSelect.addEventListener('change', function() {
+        applyTheme(this.value);
+        saveTheme(this.value);
+      });
+    } else {
+      applyTheme(loadTheme());
     }
   });
 
