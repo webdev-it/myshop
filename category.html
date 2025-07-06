@@ -9,8 +9,8 @@
 <body>
   <header style="position:relative;">
     <h1 id="category-title">Категория</h1>
-    <a href="index.html" class="back">← На главную</a>
-    <a id="profile-link" href="account.html" style="display:none;position:absolute;top:16px;right:16px;text-decoration:none;">
+    <a href="#" class="back" onclick="goToPage('index.html'); return false;">← На главную</a>
+    <a id="profile-link" href="#" style="display:none;position:absolute;top:16px;right:16px;text-decoration:none;" onclick="goToPage('account.html'); return false;">
       <div id="profile-avatar" style="width:44px;height:44px;border-radius:50%;overflow:hidden;box-shadow:0 2px 8px #0002;background:#e0f7fa;display:flex;align-items:center;justify-content:center;font-size:1.3em;font-weight:700;color:#00916e;"></div>
     </a>
   </header>
@@ -124,6 +124,14 @@
       document.getElementById('sort-select').addEventListener('change', filterAndRender);
     }
     init();
+
+    function goToPage(url) {
+      if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.openTelegramLink) {
+        window.Telegram.WebApp.openTelegramLink(url);
+      } else {
+        window.location.href = url;
+      }
+    }
   </script>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <script>

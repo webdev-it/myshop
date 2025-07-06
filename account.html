@@ -8,7 +8,7 @@
 </head>
 <body class="admin-dark">
   <h1>Мой аккаунт</h1>
-  <a href="index.html" class="back">← На главную</a><br>
+  <a href="#" class="back" onclick="goToPage('index.html'); return false;">← На главную</a><br>
   <div id="account-info" style="margin:18px 0 24px 0;padding:18px 22px;border-radius:12px;background:#f8fdfd;max-width:420px;box-shadow:0 2px 12px #0001;">
     <div id="tg-user-block">
       <b>Telegram ID:</b> <span id="tg-id">—</span><br>
@@ -259,24 +259,55 @@
     } catch {}
   }
 
-  window.addEventListener('DOMContentLoaded', function() {
+  // === DEBUG: Показываем состояние Telegram WebApp API ===
+  function showDebugInfo() {
+    const debugDiv = document.createElement('div');
+    debugDiv.style = 'background:#fffbe6;color:#b36b00;padding:10px 14px;border-radius:8px;margin:18px 0;font-size:0.98em;word-break:break-all;';
+    debugDiv.innerHTML = '<b>DEBUG Telegram WebApp:</b><br>' +
+      '<pre style="white-space:pre-wrap;">' +
+      JSON.stringify({
+        Telegram: window.Telegram,
+        WebApp: window.Telegram && window.Telegram.WebApp,
+        initDataUnsafe: window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.initDataUnsafe
+      }, null, 2) + '</pre>';
+    document.body.insertBefore(debugDiv, document.getElementById('account-info').nextSibling);
+  }
+
+  // === Повторная попытка инициализации аккаунта ===
+  function tryInitAccount(attempt = 1) {
     const user = getTelegramUser();
     if (user) {
       showAccountInfo(user);
       createAccountIfNeeded(user);
       updateBalance(user.id);
-      // Polling баланса после открытия модалки
-      let pollInterval = null;
-      document.getElementById('topup-modal').addEventListener('transitionstart', function() {
-        if (this.style.display === 'flex') {
-          pollInterval = setInterval(()=>updateBalance(user.id, true), 7000);
-        } else {
-          clearInterval(pollInterval);
-        }
-      });
+    } else if (attempt < 5) {
+      setTimeout(() => tryInitAccount(attempt + 1), 600);
     } else {
       document.getElementById('account-status').textContent = 'Откройте мини-приложение через Telegram для создания аккаунта.';
+      showDebugInfo();
     }
+  }
+
+  function goToPage(url) {
+    if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.openTelegramLink) {
+      window.Telegram.WebApp.openTelegramLink(url);
+    } else {
+      window.location.href = url;
+    }
+  }
+
+  window.addEventListener('DOMContentLoaded', function() {
+    tryInitAccount();
+    // Polling баланса после открытия модалки
+    let pollInterval = null;
+    document.getElementById('topup-modal').addEventListener('transitionstart', function() {
+      const user = getTelegramUser();
+      if (this.style.display === 'flex' && user) {
+        pollInterval = setInterval(()=>updateBalance(user.id, true), 7000);
+      } else {
+        clearInterval(pollInterval);
+      }
+    });
   });
   </script>
 </body>

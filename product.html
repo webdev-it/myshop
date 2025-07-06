@@ -8,8 +8,8 @@
 </head>
 <body>
   <header style="position:relative;">
-    <a href="index.html" class="back">← На главную</a>
-    <a id="profile-link" href="account.html" style="display:none;position:absolute;top:16px;right:16px;text-decoration:none;">
+    <a href="#" class="back" onclick="goToPage('index.html'); return false;">← На главную</a>
+    <a id="profile-link" href="#" style="display:none;position:absolute;top:16px;right:16px;text-decoration:none;" onclick="goToPage('account.html'); return false;">
       <div id="profile-avatar" style="width:44px;height:44px;border-radius:50%;overflow:hidden;box-shadow:0 2px 8px #0002;background:#e0f7fa;display:flex;align-items:center;justify-content:center;font-size:1.3em;font-weight:700;color:#00916e;"></div>
     </a>
   </header>
@@ -37,7 +37,7 @@
     const API_CATEGORIES = 'https://store-backend-zpkh.onrender.com/categories';
 
     function showNotFound() {
-      document.getElementById('product-card').innerHTML = '<div style="color:#888;padding:40px 0;text-align:center;">Извините, этот товар не найден или был удалён.<br><a href="index.html" style="color:#00916e;text-decoration:underline;display:inline-block;margin-top:18px;">Вернуться на главную</a></div>';
+      document.getElementById('product-card').innerHTML = '<div style="color:#888;padding:40px 0;text-align:center;">Извините, этот товар не найден или был удалён.<br><a href="#" onclick="goToPage(\'index.html\'); return false;" style="color:#00916e;text-decoration:underline;display:inline-block;margin-top:18px;">Вернуться на главную</a></div>';
     }
 
     // Универсальная функция для формирования абсолютного URL к файлу/картинке
@@ -78,7 +78,7 @@
         document.getElementById('product-image').innerHTML = `<img src="${imageUrl}" alt="img" style="max-width:220px;max-height:220px;border-radius:12px;box-shadow:0 2px 8px #0002;">`;
         // Кнопка возврата к категории
         if (category) {
-          document.getElementById('back-to-category').innerHTML = `<a href="category.html?id=${category.id}" style="color:#00916e;text-decoration:underline;font-size:1em;">← К категории</a>`;
+          document.getElementById('back-to-category').innerHTML = `<a href="#" onclick=\"goToPage('category.html?id=${category.id}'); return false;\" style="color:#00916e;text-decoration:underline;font-size:1em;">← К категории</a>`;
         }
         // Кнопка купить/скачать
         const buyBtn = document.getElementById('buy-btn');
@@ -170,7 +170,7 @@
             const data = await resp.json();
             if (resp.ok) {
               balanceBlock.style.display = '';
-              balanceBlock.innerHTML = `<span style='color:#f9b32b;font-weight:600;'>Баланс: </span><span style='color:#222;font-weight:700;'>${data.balance.toLocaleString()} ₽</span> <a href='account.html' style='margin-left:8px;padding:4px 12px;border-radius:8px;background:#fff;color:#f9b32b;border:1px solid #f9b32b;cursor:pointer;font-size:0.98em;text-decoration:none;'>Пополнить</a>`;
+              balanceBlock.innerHTML = `<span style='color:#f9b32b;font-weight:600;'>Баланс: </span><span style='color:#222;font-weight:700;'>${data.balance.toLocaleString()} ₽</span> <a href="#" onclick=\"goToPage('account.html'); return false;\" style='margin-left:8px;padding:4px 12px;border-radius:8px;background:#fff;color:#f9b32b;border:1px solid #f9b32b;cursor:pointer;font-size:0.98em;text-decoration:none;'>Пополнить</a>`;
             }
           } catch {}
         }
@@ -266,6 +266,14 @@
         profileAvatar.textContent = initials.toUpperCase();
       }
       profileLink.style.display = '';
+    }
+
+    function goToPage(url) {
+      if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.openTelegramLink) {
+        window.Telegram.WebApp.openTelegramLink(url);
+      } else {
+        window.location.href = url;
+      }
     }
   </script>
 </body>

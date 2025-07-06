@@ -11,8 +11,8 @@
     <h1>Мой Интернет-Магазин</h1>
     <div id="welcome">Здравствуйте, гость!</div>
     <div id="balance-block" style="float:right;margin-top:8px;margin-right:8px;display:none;"></div>
-    <a href="index.html" class="back">← На главную</a>
-    <a id="profile-link" href="account.html" style="display:none;position:absolute;top:16px;right:16px;text-decoration:none;">
+    <a href="#" class="back" onclick="goToPage('index.html'); return false;">← На главную</a>
+    <a id="profile-link" href="#" style="display:none;position:absolute;top:16px;right:16px;text-decoration:none;" onclick="goToPage('account.html'); return false;">
       <div id="profile-avatar" style="width:44px;height:44px;border-radius:50%;overflow:hidden;box-shadow:0 2px 8px #0002;background:#e0f7fa;display:flex;align-items:center;justify-content:center;font-size:1.3em;font-weight:700;color:#00916e;"></div>
     </a>
   </header>
@@ -137,7 +137,7 @@
       ul.innerHTML = "";
       allCategories.forEach(cat => {
         const li = document.createElement("li");
-        li.innerHTML = `<a href="category.html?id=${cat.id}">${cat.name}</a>`;
+        li.innerHTML = `<a href="#" onclick=\"goToPage('category.html?id=${cat.id}'); return false;\">${cat.name}</a>`;
         ul.appendChild(li);
       });
     } catch (err) {
@@ -245,8 +245,16 @@
     if (!filename) return '';
     return `https://store-backend-zpkh.onrender.com/${type}/${encodeURIComponent(filename.replace(/^.*[\\/]/, ''))}`;
   }
+
+  function goToPage(url) {
+    if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.openTelegramLink) {
+      window.Telegram.WebApp.openTelegramLink(url);
+    } else {
+      window.location.href = url;
+    }
+  }
 </script>
-<a href="admin.html" class="admin-link">Админка</a>
+<a href="#" class="admin-link" onclick="goToPage('admin.html'); return false;">Админка</a>
   <footer>
     <p>&copy; 2025 Мой Интернет-Магазин</p>
   </footer>
