@@ -193,15 +193,15 @@
         <p class="price">${product.price === 0 ? 'Бесплатно' : product.price.toLocaleString() + ' ₽'}</p>
         <button class="buy-btn">Купить</button>
       `;
-      // Кнопка "Купить" теперь ведёт на страницу товара
+      // Кнопка "Купить" — отдельный обработчик
       div.querySelector('.buy-btn').addEventListener('click', function(e) {
         e.stopPropagation();
-        window.location.href = `product.html?id=${product.id}`;
+        goToPage(`product.html?id=${product.id}`);
       });
       // Переход на карточку товара по клику (кроме кнопки)
       div.addEventListener('click', function(e) {
         if (e.target.classList.contains('buy-btn')) return;
-        window.location.href = `product.html?id=${product.id}`;
+        goToPage(`product.html?id=${product.id}`);
       });
       // Визуальный эффект наведения
       div.style.transition = 'background 0.15s';

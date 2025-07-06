@@ -104,7 +104,12 @@
         // Переход на карточку товара по клику (кроме кнопки)
         div.addEventListener('click', function(e) {
           if (e.target.classList.contains('buy-btn')) return;
-          window.location.href = `product.html?id=${product.id}`;
+          goToPage(`product.html?id=${product.id}`);
+        });
+        // Кнопка "Купить" — отдельный обработчик
+        div.querySelector('.buy-btn').addEventListener('click', function(e) {
+          e.stopPropagation();
+          goToPage(`product.html?id=${product.id}`);
         });
         // Визуальный эффект наведения
         div.style.transition = 'background 0.15s';

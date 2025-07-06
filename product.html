@@ -207,41 +207,12 @@
         } else {
           buyBalanceBtn.style.display = 'none';
         }
+        // --- Кнопка купить ---
         buyBtn.onclick = async function() {
           buyBtn.disabled = true;
           buyBtn.style.background = '#43e97b';
           buyBtn.textContent = product.price === 0 ? 'Подготовка скачивания...' : 'Проверка доступа...';
-          // Получаем Telegram ID через Telegram WebApp API
-          let telegramId = null;
-          if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.initDataUnsafe && window.Telegram.WebApp.initDataUnsafe.user) {
-            telegramId = window.Telegram.WebApp.initDataUnsafe.user.id;
-          } else {
-            alert('Откройте мини-приложение через Telegram для скачивания файла.');
-            buyBtn.disabled = false;
-            buyBtn.style.background = '#00916e';
-            buyBtn.textContent = product.price === 0 ? 'Скачать бесплатно' : `Купить за ${product.price.toLocaleString()} ₽`;
-            return;
-          }
-          try {
-            const resp = await fetch('https://store-backend-zpkh.onrender.com/download', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ telegram_id: telegramId, productId: product.id })
-            });
-            const data = await resp.json();
-            if (resp.ok && data.url) {
-              const link = document.createElement('a');
-              link.href = data.url;
-              link.download = product.file.split('/').pop();
-              document.body.appendChild(link);
-              link.click();
-              document.body.removeChild(link);
-            } else {
-              alert(data.error || 'Ошибка скачивания.');
-            }
-          } catch (err) {
-            alert('Ошибка соединения с сервером.');
-          }
+          goToPage(`product.html?id=${product.id}`);
           buyBtn.disabled = false;
           buyBtn.style.background = '#00916e';
           buyBtn.textContent = product.price === 0 ? 'Скачать бесплатно' : `Купить за ${product.price.toLocaleString()} ₽`;

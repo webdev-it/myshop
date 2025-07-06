@@ -219,7 +219,7 @@ async function renderProducts() {
       const infoDiv = item.querySelector('.product-info');
       infoDiv.addEventListener('click', (e) => {
         if (e.target.tagName.toLowerCase() === 'button') return;
-        window.location.href = `product.html?id=${product.id}`;
+        goToPage(`product.html?id=${product.id}`);
       });
       // Визуальный эффект наведения
       infoDiv.style.transition = 'background 0.15s';
@@ -596,7 +596,7 @@ async function renderProducts() {
       const infoDiv = item.querySelector('.product-info');
       infoDiv.addEventListener('click', (e) => {
         if (e.target.tagName.toLowerCase() === 'button') return;
-        window.location.href = `product.html?id=${product.id}`;
+        goToPage(`product.html?id=${product.id}`);
       });
       // Визуальный эффект наведения
       infoDiv.style.transition = 'background 0.15s';
