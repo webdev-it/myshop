@@ -74,8 +74,8 @@
   </section>
 
   <script>
-const API_URL = 'http://localhost:3000/products';
-const CATEGORY_API = 'http://localhost:3000/categories';
+const API_URL = 'https://store-backend-zpkh.onrender.com/products';
+const CATEGORY_API = 'https://store-backend-zpkh.onrender.com/categories';
 
 const form = document.getElementById('add-product-form');
 const productList = document.getElementById('product-list');
@@ -195,7 +195,7 @@ async function renderProducts() {
       const item = document.createElement('div');
       item.className = 'product-item';
       // Добавляем отображение изображения товара
-      const imageUrl = product.image && product.image !== '' ? '../miniappdlaprodazhi/images/' + product.image.replace(/^.*[\\/]/, '') : '../miniappdlaprodazhi/images/placeholder.png';
+      const imageUrl = product.image && product.image !== '' ? 'images/' + product.image.replace(/^.*[\\/]/, '') : 'images/placeholder.png';
       item.innerHTML = `
         <div class="product-info" style="display:flex;align-items:center;gap:12px;cursor:pointer;">
           <img src="${imageUrl}" alt="img" style="width:48px;height:48px;object-fit:cover;border-radius:8px;box-shadow:0 2px 8px #0002;">
@@ -381,7 +381,7 @@ function showPreviewFromFile(file) {
 function uploadFileToServer(file) {
   const formData = new FormData();
   formData.append('image', file);
-  return fetch('http://localhost:3000/upload', {
+  return fetch('https://store-backend-zpkh.onrender.com/upload', {
     method: 'POST',
     body: formData
   })
@@ -401,7 +401,7 @@ function uploadFileToServer(file) {
 function uploadProductFileToServer(file) {
   const formData = new FormData();
   formData.append('file', file);
-  return fetch('http://localhost:3000/upload/file', {
+  return fetch('https://store-backend-zpkh.onrender.com/upload/file', {
     method: 'POST',
     body: formData
   })
@@ -572,7 +572,7 @@ async function renderProducts() {
       const item = document.createElement('div');
       item.className = 'product-item';
       // Добавляем отображение изображения товара
-      const imageUrl = product.image && product.image !== '' ? '../miniappdlaprodazhi/images/' + product.image.replace(/^.*[\\/]/, '') : '../miniappdlaprodazhi/images/placeholder.png';
+      const imageUrl = product.image && product.image !== '' ? 'images/' + product.image.replace(/^.*[\\/]/, '') : 'images/placeholder.png';
       item.innerHTML = `
         <div class="product-info" style="display:flex;align-items:center;gap:12px;cursor:pointer;">
           <img src="${imageUrl}" alt="img" style="width:48px;height:48px;object-fit:cover;border-radius:8px;box-shadow:0 2px 8px #0002;">
