@@ -7,24 +7,33 @@
   <link rel="stylesheet" href="styles/style.css" />
 </head>
 <body>
-  <header>
+  <header style="position:relative;">
     <h1 id="category-title">Категория</h1>
     <a href="index.html" class="back">← На главную</a>
+    <a id="profile-link" href="account.html" style="display:none;position:absolute;top:16px;right:16px;text-decoration:none;">
+      <div id="profile-avatar" style="width:44px;height:44px;border-radius:50%;overflow:hidden;box-shadow:0 2px 8px #0002;background:#e0f7fa;display:flex;align-items:center;justify-content:center;font-size:1.3em;font-weight:700;color:#00916e;"></div>
+    </a>
   </header>
   <main>
     <div class="filters" style="margin-bottom:10px;display:flex;flex-direction:column;gap:6px;align-items:center;">
       <div style="width:100%;display:flex;justify-content:center;">
         <input type="text" id="search-input" placeholder="Поиск по названию..." style="padding:8px 12px;border-radius:8px;border:1px solid #ccc;font-size:15px;min-width:160px;width:100%;max-width:320px;">
       </div>
-      <div style="display:flex;gap:10px;justify-content:center;align-items:center;">
-        <span style="font-size:13px;color:#00916e;font-weight:600;">Сортировка</span>
-        <select id="sort-select" style="padding:8px 8px;border-radius:8px;border:1px solid #ccc;">
-          <option value="">Сортировка</option>
-          <option value="price-asc">Цена ↑</option>
-          <option value="price-desc">Цена ↓</option>
-          <option value="name-asc">Название A-Я</option>
-          <option value="name-desc">Название Я-А</option>
-        </select>
+      <div style="display:flex;gap:10px;justify-content:space-between;align-items:center;">
+        <div style="display:flex;align-items:center;gap:8px;">
+          <span title="Сортировка" style="display:inline-flex;align-items:center;">
+            <svg width="18" height="18" style="margin-right:3px;vertical-align:middle;" viewBox="0 0 24 24">
+              <path fill="#00916e" d="M3 18h6v-2H3v2zm0-5h12v-2H3v2zm0-7v2h18V6H3z"/>
+            </svg>
+          </span>
+          <select id="sort-select" style="padding:8px 8px;border-radius:8px;border:1px solid #ccc;">
+            <option value="">Сортировка</option>
+            <option value="price-asc">Цена ↑</option>
+            <option value="price-desc">Цена ↓</option>
+            <option value="name-asc">Название A-Я</option>
+            <option value="name-desc">Название Я-А</option>
+          </select>
+        </div>
       </div>
     </div>
     <div class="products" id="product-list"></div>
@@ -78,7 +87,7 @@
       products.forEach(product => {
         const div = document.createElement('div');
         div.className = 'product';
-        const imageUrl = product.image && product.image !== '' ? product.image : 'https://store-backend-zpkh.onrender.com/images/placeholder.png';
+        const imageUrl = product.image && product.image !== '' ? 'images/' + product.image.replace(/^.*[\\/]/, '') : 'images/placeholder.png';
         div.innerHTML = `
           <img src="${imageUrl}" alt="${product.name}" class="product-img" />
           <h2>${product.name}</h2>
@@ -86,6 +95,15 @@
           <p class="price">${product.price === 0 ? 'Бесплатно' : product.price.toLocaleString() + ' ₽'}</p>
           <button class="buy-btn">Купить</button>
         `;
+        // Переход на карточку товара по клику (кроме кнопки)
+        div.addEventListener('click', function(e) {
+          if (e.target.classList.contains('buy-btn')) return;
+          window.open(`product.html?id=${product.id}`, '_blank');
+        });
+        // Визуальный эффект наведения
+        div.style.transition = 'background 0.15s';
+        div.addEventListener('mouseover', () => div.style.background = '#e0f7fa');
+        div.addEventListener('mouseout', () => div.style.background = '');
         list.appendChild(div);
       });
     }
@@ -100,6 +118,24 @@
       document.getElementById('sort-select').addEventListener('change', filterAndRender);
     }
     init();
+  </script>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <script>
+    const tg = window.Telegram && window.Telegram.WebApp ? window.Telegram.WebApp : null;
+    const user = tg && tg.initDataUnsafe ? tg.initDataUnsafe.user : null;
+    if (user) {
+      // --- Профиль ---
+      const profileLink = document.getElementById('profile-link');
+      const profileAvatar = document.getElementById('profile-avatar');
+      if (user.photo_url) {
+        profileAvatar.innerHTML = `<img src="${user.photo_url}" alt="avatar" style="width:100%;height:100%;object-fit:cover;">`;
+      } else {
+        let initials = user.first_name ? user.first_name[0] : '';
+        if (user.last_name) initials += user.last_name[0];
+        profileAvatar.textContent = initials.toUpperCase();
+      }
+      profileLink.style.display = '';
+    }
   </script>
 </body>
 </html>

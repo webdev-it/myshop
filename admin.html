@@ -11,7 +11,8 @@
 
   <h1>Админ-панель — Управление товарами</h1>
   <a href="index.html" class="back">← На главную</a><br>
-  <h2>Добавление нового товара:</h2>
+  
+  <button type="button" class="section-btn" style="margin:10px 0 16px 0;padding:10px 22px;border-radius:10px;background:#00916e;color:#fff;font-weight:700;border:none;cursor:pointer;font-size:1.1em;">Добавление нового товара</button>
   <form id="add-product-form">
     <label for="name">Название товара</label>
     <input type="text" id="name" required />
@@ -35,6 +36,14 @@
     </div>
     <input type="hidden" id="image" name="image" />
 
+    <label for="file" style="font-weight:700;color:#00916e;">Файл для скачивания/покупки</label>
+    <div id="file-drop-area" style="flex:1;max-width:320px;padding:12px 8px;border:2px dashed #43e97b;border-radius:10px;text-align:center;cursor:pointer;background:#f8fdfd;transition:background 0.2s;margin-bottom:8px;">
+      <input type="file" id="file-input" style="display:none;" />
+      <span id="file-drop-text">Перетащите или выберите файл</span>
+      <div id="file-preview" style="margin-top:8px;display:none;font-size:0.98em;color:#00916e;"></div>
+    </div>
+    <input type="hidden" id="file" name="file" />
+
     <label for="category">Категория</label>
     <select id="category" required>
       <option value="">-- Выберите категорию --</option>
@@ -43,22 +52,30 @@
     <button type="submit">Добавить товар</button>
   </form>
   <hr>
-<h2>Управление категориями</h2>
-<form id="add-category-form" style="margin-bottom:18px;">
+  
+  <button type="button" class="section-btn" style="margin:18px 0 10px 0;padding:10px 22px;border-radius:10px;background:#00916e;color:#fff;font-weight:700;border:none;cursor:pointer;font-size:1.1em;">Управление категориями</button>
+  <form id="add-category-form">
   <input type="text" id="category-name" placeholder="Новая категория" required style="padding:7px 12px;border-radius:7px;border:1.5px solid #e0f7fa;">
   <button type="submit">Добавить категорию</button>
 </form>
 <button id="toggle-category-list" type="button" style="margin-bottom:10px;padding:8px 18px;border-radius:8px;background:#00916e;color:#fff;font-weight:700;border:none;cursor:pointer;">Показать категории</button>
 <ul id="category-list" style="display:none;"></ul>
 
+  <button type="button" class="section-btn" style="margin:18px 0 10px 0;padding:10px 22px;border-radius:10px;background:#00916e;color:#fff;font-weight:700;border:none;cursor:pointer;font-size:1.1em;">Список товаров</button>
+  <div class="admin-filters" style="display:flex;gap:12px;align-items:center;margin-bottom:18px;">
+    <input type="text" id="admin-search-input" placeholder="Поиск по названию..." style="padding:8px 14px;border-radius:8px;border:1.5px solid #e0f7fa;min-width:160px;">
+    <select id="admin-category-filter" style="padding:8px 14px;border-radius:8px;border:1.5px solid #e0f7fa;min-width:110px;">
+      <option value="">Все категории</option>
+    </select>
+  </div>
   <section class="product-list" id="product-list">
     <h2>Список товаров</h2>
     <!-- Здесь будут отображаться товары -->
   </section>
 
   <script>
-const API_URL = 'https://store-backend-zpkh.onrender.com/products';
-const CATEGORY_API = 'https://store-backend-zpkh.onrender.com/categories';
+const API_URL = 'http://localhost:3000/products';
+const CATEGORY_API = 'http://localhost:3000/categories';
 
 const form = document.getElementById('add-product-form');
 const productList = document.getElementById('product-list');
@@ -66,6 +83,8 @@ const categorySelect = document.getElementById('category');
 const categoryForm = document.getElementById('add-category-form');
 const categoryNameInput = document.getElementById('category-name');
 const categoryList = document.getElementById('category-list');
+const adminSearchInput = document.getElementById('admin-search-input');
+const adminCategoryFilter = document.getElementById('admin-category-filter');
 
 let categories = [];
 
@@ -117,6 +136,16 @@ async function renderCategories() {
     li.appendChild(btn);
     categoryList.appendChild(li);
   });
+  // Обновляем фильтр категорий в админке
+  if (typeof adminCategoryFilter !== 'undefined') {
+    adminCategoryFilter.innerHTML = '<option value="">Все категории</option>';
+    categories.forEach(cat => {
+      const option = document.createElement('option');
+      option.value = cat.id;
+      option.textContent = cat.name;
+      adminCategoryFilter.appendChild(option);
+    });
+  }
 }
 
 // Получить список товаров с сервера
@@ -166,9 +195,9 @@ async function renderProducts() {
       const item = document.createElement('div');
       item.className = 'product-item';
       // Добавляем отображение изображения товара
-      const imageUrl = product.image && product.image !== '' ? product.image : 'https://store-backend-zpkh.onrender.com/images/placeholder.png';
+      const imageUrl = product.image && product.image !== '' ? '../miniappdlaprodazhi/images/' + product.image.replace(/^.*[\\/]/, '') : '../miniappdlaprodazhi/images/placeholder.png';
       item.innerHTML = `
-        <div class="product-info" style="display:flex;align-items:center;gap:12px;">
+        <div class="product-info" style="display:flex;align-items:center;gap:12px;cursor:pointer;">
           <img src="${imageUrl}" alt="img" style="width:48px;height:48px;object-fit:cover;border-radius:8px;box-shadow:0 2px 8px #0002;">
           <div>
             <strong>${product.name}</strong> — ${product.description || '-'}<br>
@@ -180,6 +209,17 @@ async function renderProducts() {
         </div>
       `;
       productList.appendChild(item);
+      // Переход на карточку товара по клику (кроме кнопки "Удалить")
+      const infoDiv = item.querySelector('.product-info');
+      infoDiv.addEventListener('click', (e) => {
+        if (e.target.tagName.toLowerCase() === 'button') return;
+        window.open(`product.html?id=${product.id}`, '_blank');
+      });
+      // Визуальный эффект наведения
+      infoDiv.style.transition = 'background 0.15s';
+      infoDiv.addEventListener('mouseover', () => infoDiv.style.background = '#e0f7fa');
+      infoDiv.addEventListener('mouseout', () => infoDiv.style.background = '');
+      // Кнопка удаления
       item.querySelector('button').addEventListener('click', async () => {
         const password = prompt('Для удаления товара введите пароль администратора:');
         if (password !== 'admin2024') {
@@ -215,7 +255,7 @@ form.addEventListener('submit', async (e) => {
     alert('Пожалуйста, заполните обязательные поля.');
     return;
   }
-  let image = 'https://store-backend-zpkh.onrender.com/images/placeholder.png';
+  let image = 'placeholder.png';
   if (selectedImageFile) {
     try {
       dropText.textContent = 'Загрузка...';
@@ -227,12 +267,27 @@ form.addEventListener('submit', async (e) => {
       return;
     }
   }
-  if (image.startsWith('/')) image = image.slice(1);
+  if (image.startsWith('/images/')) image = image.slice(8);
+  // --- загрузка файла товара ---
+  let file = '';
+  if (selectedProductFile) {
+    try {
+      fileDropText.textContent = 'Загрузка...';
+      file = await uploadProductFileToServer(selectedProductFile);
+      fileDropText.textContent = 'Файл загружен';
+    } catch (err) {
+      alert('Ошибка загрузки файла');
+      fileDropText.textContent = 'Ошибка загрузки';
+      return;
+    }
+  }
+  if (file.startsWith('/files/')) file = file.slice(7);
   const newProduct = {
     name,
     price,
     description,
     image,
+    file,
     category
   };
   try {
@@ -248,6 +303,11 @@ form.addEventListener('submit', async (e) => {
     imagePreview.style.display = 'none';
     dropText.textContent = 'Перетащите или выберите файл';
     selectedImageFile = null;
+    fileInput.value = '';
+    filePreview.innerHTML = '';
+    filePreview.style.display = 'none';
+    fileDropText.textContent = 'Перетащите или выберите файл';
+    selectedProductFile = null;
     alert('Товар добавлен');
     renderProducts();
   } catch (err) {
@@ -300,7 +360,13 @@ const imageInput = document.getElementById('image');
 const imagePreview = document.getElementById('image-preview');
 const dropText = document.getElementById('drop-text');
 
-let selectedImageFile = null;
+// --- Drag & Drop и загрузка файла товара ---
+const fileDropArea = document.getElementById('file-drop-area');
+const fileInput = document.getElementById('file-input');
+const fileInputHidden = document.getElementById('file');
+const fileDropText = document.getElementById('file-drop-text');
+const filePreview = document.getElementById('file-preview');
+let selectedProductFile = null;
 
 function showPreviewFromFile(file) {
   const reader = new FileReader();
@@ -315,7 +381,7 @@ function showPreviewFromFile(file) {
 function uploadFileToServer(file) {
   const formData = new FormData();
   formData.append('image', file);
-  return fetch('https://store-backend-zpkh.onrender.com/upload', {
+  return fetch('http://localhost:3000/upload', {
     method: 'POST',
     body: formData
   })
@@ -327,6 +393,26 @@ function uploadFileToServer(file) {
         return url;
       } else {
         throw new Error('Ошибка загрузки');
+      }
+    });
+}
+
+// Новый uploadProductFileToServer: отправка файла на сервер, возвращает Promise с url
+function uploadProductFileToServer(file) {
+  const formData = new FormData();
+  formData.append('file', file);
+  return fetch('http://localhost:3000/upload/file', {
+    method: 'POST',
+    body: formData
+  })
+    .then(res => res.json())
+    .then(data => {
+      if (data.url) {
+        let url = data.url;
+        if (url.startsWith('/')) url = url.slice(1);
+        return url;
+      } else {
+        throw new Error('Ошибка загрузки файла');
       }
     });
 }
@@ -360,6 +446,75 @@ dropArea.addEventListener('drop', e => {
   }
 });
 
+const ALLOWED_EXTS = [
+  'zip','pdf','doc','docx','blend','jpg','jpeg','png','gif','rar','7z','xls','xlsx','csv','txt','rtf','obj','fbx','stl','bmp','webp'
+];
+const MAX_FILE_SIZE = 100 * 1024 * 1024; // 100 МБ
+
+fileDropArea.addEventListener('click', () => fileInput.click());
+fileInput.addEventListener('change', function(e) {
+  const file = this.files[0];
+  if (file) {
+    const ext = file.name.split('.').pop().toLowerCase();
+    if (!ALLOWED_EXTS.includes(ext)) {
+      alert('Недопустимый тип файла. Разрешены: ' + ALLOWED_EXTS.join(', '));
+      fileInput.value = '';
+      filePreview.style.display = 'none';
+      fileDropText.textContent = 'Перетащите или выберите файл';
+      selectedProductFile = null;
+      return;
+    }
+    if (file.size > MAX_FILE_SIZE) {
+      alert('Файл слишком большой. Максимальный размер: 100 МБ');
+      fileInput.value = '';
+      filePreview.style.display = 'none';
+      fileDropText.textContent = 'Перетащите или выберите файл';
+      selectedProductFile = null;
+      return;
+    }
+    selectedProductFile = file;
+    filePreview.textContent = `Файл: ${file.name}`;
+    filePreview.style.display = 'block';
+    fileDropText.textContent = 'Файл выбран';
+  }
+});
+fileDropArea.addEventListener('dragover', e => {
+  e.preventDefault();
+  fileDropArea.style.background = '#e0f7fa';
+});
+fileDropArea.addEventListener('dragleave', e => {
+  e.preventDefault();
+  fileDropArea.style.background = '#f8fdfd';
+});
+fileDropArea.addEventListener('drop', e => {
+  e.preventDefault();
+  fileDropArea.style.background = '#f8fdfd';
+  const file = e.dataTransfer.files[0];
+  if (file) {
+    const ext = file.name.split('.').pop().toLowerCase();
+    if (!ALLOWED_EXTS.includes(ext)) {
+      alert('Недопустимый тип файла. Разрешены: ' + ALLOWED_EXTS.join(', '));
+      fileInput.value = '';
+      filePreview.style.display = 'none';
+      fileDropText.textContent = 'Перетащите или выберите файл';
+      selectedProductFile = null;
+      return;
+    }
+    if (file.size > MAX_FILE_SIZE) {
+      alert('Файл слишком большой. Максимальный размер: 100 МБ');
+      fileInput.value = '';
+      filePreview.style.display = 'none';
+      fileDropText.textContent = 'Перетащите или выберите файл';
+      selectedProductFile = null;
+      return;
+    }
+    selectedProductFile = file;
+    filePreview.textContent = `Файл: ${file.name}`;
+    filePreview.style.display = 'block';
+    fileDropText.textContent = 'Файл выбран';
+  }
+});
+
 // Инициализация
 renderCategories();
 renderProducts();
@@ -374,6 +529,95 @@ toggleCategoryListBtn.addEventListener('click', function() {
     toggleCategoryListBtn.textContent = 'Показать категории';
   }
 });
+
+// Фильтрация товаров по поисковому запросу и категории
+adminSearchInput.addEventListener('input', renderProducts);
+adminCategoryFilter.addEventListener('change', renderProducts);
+
+function filterProducts(products) {
+  const searchTerm = adminSearchInput.value.trim().toLowerCase();
+  const selectedCategory = adminCategoryFilter.value;
+  return products.filter(product => {
+    const matchesSearch = product.name.toLowerCase().includes(searchTerm);
+    const matchesCategory = selectedCategory === '' || product.category === selectedCategory;
+    return matchesSearch && matchesCategory;
+  });
+}
+
+// Обновляем список товаров при фильтрации
+async function renderProducts() {
+  try {
+    let products = await fetchProducts();
+    products = filterProducts(products);
+    // Сортировка по имени категории, затем по имени товара
+    products.sort((a, b) => {
+      const catA = getCategoryName(a.category).toLowerCase();
+      const catB = getCategoryName(b.category).toLowerCase();
+      if (catA < catB) return -1;
+      if (catA > catB) return 1;
+      return a.name.localeCompare(b.name, 'ru');
+    });
+    productList.querySelectorAll('.product-item, .category-title-sep').forEach(el => el.remove());
+    let lastCategory = null;
+    products.forEach(product => {
+      const catName = getCategoryName(product.category);
+      if (catName !== lastCategory) {
+        const sep = document.createElement('div');
+        sep.className = 'category-title-sep';
+        sep.textContent = catName;
+        sep.style = 'font-weight:700;font-size:1.1em;margin:22px 0 8px 0;color:#00916e;';
+        productList.appendChild(sep);
+        lastCategory = catName;
+      }
+      const item = document.createElement('div');
+      item.className = 'product-item';
+      // Добавляем отображение изображения товара
+      const imageUrl = product.image && product.image !== '' ? '../miniappdlaprodazhi/images/' + product.image.replace(/^.*[\\/]/, '') : '../miniappdlaprodazhi/images/placeholder.png';
+      item.innerHTML = `
+        <div class="product-info" style="display:flex;align-items:center;gap:12px;cursor:pointer;">
+          <img src="${imageUrl}" alt="img" style="width:48px;height:48px;object-fit:cover;border-radius:8px;box-shadow:0 2px 8px #0002;">
+          <div>
+            <strong>${product.name}</strong> — ${product.description || '-'}<br>
+            Цена: ${product.price === 0 ? 'Бесплатно' : product.price.toLocaleString() + ' ₽'} — Категория: ${catName}
+          </div>
+        </div>
+        <div class="product-actions">
+          <button data-id="${product.id}">Удалить</button>
+        </div>
+      `;
+      productList.appendChild(item);
+      // Переход на карточку товара по клику (кроме кнопки "Удалить")
+      const infoDiv = item.querySelector('.product-info');
+      infoDiv.addEventListener('click', (e) => {
+        if (e.target.tagName.toLowerCase() === 'button') return;
+        window.open(`product.html?id=${product.id}`, '_blank');
+      });
+      // Визуальный эффект наведения
+      infoDiv.style.transition = 'background 0.15s';
+      infoDiv.addEventListener('mouseover', () => infoDiv.style.background = '#e0f7fa');
+      infoDiv.addEventListener('mouseout', () => infoDiv.style.background = '');
+      // Кнопка удаления
+      item.querySelector('button').addEventListener('click', async () => {
+        const password = prompt('Для удаления товара введите пароль администратора:');
+        if (password !== 'admin2024') {
+          alert('Неверный пароль. Удаление отменено.');
+          return;
+        }
+        if (confirm(`Удалить товар "${product.name}"?`)) {
+          try {
+            await deleteProduct(product.id);
+            renderProducts();
+            alert('Товар удалён');
+          } catch (err) {
+            alert(err.message);
+          }
+        }
+      });
+    });
+  } catch (err) {
+    alert(err.message);
+  }
+}
   </script>
 
 
