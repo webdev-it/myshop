@@ -602,22 +602,31 @@
         return;
       }
       const imageUrl = prod.image ? getBackendFileUrl('images', prod.image) : 'images/placeholder.png';
+      // Проверяем, есть ли товар в избранном
+      let isFav = false;
+      const user = getTelegramUser();
+      if (user) {
+        try {
+          const favRes = await fetch('https://store-backend-zpkh.onrender.com/account/' + user.id + '/favorites');
+          const favs = await favRes.json();
+          isFav = Array.isArray(favs) && favs.some(f => f.id === prod.id);
+        } catch {}
+      }
       // --- Новый функционал и улучшенный вид карточки товара ---
       card.innerHTML = `
         <button class='back-btn' onclick='showPage("category-page")' title='Назад к категориям'>← Назад</button>
         <div class="product-detail">
-          <div class="product-detail-img-wrap">
-            <img src="${imageUrl}" alt="img" class="product-detail-img">
+          <div class="product-detail-img-wrap" style="width:320px;max-width:90vw;aspect-ratio:1/1;overflow:hidden;display:flex;align-items:center;justify-content:center;margin:0 auto 18px auto;">
+            <img src="${imageUrl}" alt="img" class="product-detail-img" style="width:100%;height:100%;object-fit:cover;object-position:center;display:block;">
           </div>
           <div class="product-detail-body">
             <h3 class="product-detail-title">${prod.name}</h3>
             <div class="product-detail-price">${prod.price ? prod.price + ' ₽' : 'Бесплатно'}</div>
             <div class="product-detail-desc">${prod.description || ''}</div>
             <div class="product-detail-category">Категория: <span>${prod.category || '-'}</span></div>
-            <div class="product-detail-file">${prod.file ? `<a href="${getBackendFileUrl('files', prod.file)}" target="_blank" class="product-detail-download">Скачать файл</a>` : '<span style="color:#aaa;">Файл не прикреплён</span>'}</div>
-            <div class="product-detail-actions">
-              <button onclick="buyProduct('${prod.id}')" class="product-detail-buy">Купить</button>
-              <button onclick="addToFavorites('${prod.id}')" class="product-detail-fav">★ В избранное</button>
+            <div class="product-detail-actions" style="margin-top:18px;display:flex;gap:12px;flex-wrap:wrap;">
+              ${prod.price === 0 && prod.file ? `<button onclick="buyProduct('${prod.id}')" class="product-detail-buy">Скачать бесплатно</button>` : `<button class="product-detail-buy" disabled style="background:#bbb;color:#fff;opacity:0.7;cursor:not-allowed;">Купить</button>`}
+              <button onclick="addToFavorites('${prod.id}')" class="product-detail-fav" ${isFav ? 'disabled style="background:#43e97b;color:#fff;opacity:0.7;"' : ''}>${isFav ? '★ В избранном' : '★ В избранное'}</button>
             </div>
           </div>
         </div>
@@ -627,9 +636,71 @@
     }
   }
 
-  // SPA: Покупка товара (заглушка)
-  function buyProduct(productId) {
-    showToast('Покупка товара реализуется на сервере', '#43e97b');
+  // SPA: Покупка или скачивание товара
+  async function buyProduct(productId) {
+    const user = getTelegramUser();
+    if (!user) {
+      showToast('Откройте через Telegram', '#e74c3c');
+      return;
+    }
+    try {
+      const res = await fetch('https://store-backend-zpkh.onrender.com/products');
+      const products = await res.json();
+      const prod = products.find(p => p.id === productId);
+      if (!prod) {
+        showToast('Товар не найден', '#e74c3c');
+        return;
+      }
+      if (prod.price === 0 && prod.file) {
+        // Бесплатный товар — скачивание и запись в историю
+        const fileUrl = getBackendFileUrl('files', prod.file);
+        const link = document.createElement('a');
+        link.href = fileUrl;
+        link.download = '';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        showToast('Скачивание началось!', '#43e97b');
+        // Добавить в историю
+        try {
+          await fetch('https://store-backend-zpkh.onrender.com/account/' + user.id + '/history', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ productId: prod.id, type: 'free-download' })
+          });
+          loadHistory(user.id);
+        } catch {}
+      } else {
+        showToast('Покупка товара реализуется на сервере', '#43e97b');
+      }
+    } catch {
+      showToast('Ошибка загрузки товара', '#e74c3c');
+    }
+  }
+
+  // SPA: Добавить в избранное
+  async function addToFavorites(productId) {
+    const user = getTelegramUser();
+    if (!user) {
+      showToast('Откройте через Telegram', '#e74c3c');
+      return;
+    }
+    try {
+      const resp = await fetch('https://store-backend-zpkh.onrender.com/account/' + user.id + '/favorites', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ productId })
+      });
+      if (resp.ok) {
+        showToast('Добавлено в избранное!', '#43e97b');
+        loadFavorites(user.id);
+      } else {
+        const data = await resp.json();
+        showToast(data.error || 'Ошибка добавления', '#e74c3c');
+      }
+    } catch {
+      showToast('Ошибка соединения с сервером', '#e74c3c');
+    }
   }
 
   // SPA: Рендеринг админки (исправлено)
