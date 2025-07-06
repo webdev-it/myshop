@@ -607,10 +607,71 @@
 
   // SPA: Рендеринг админки (заглушка)
   function renderAdmin() {
-    // Здесь можно добавить обработчики для форм добавления товара и категории
-    // Пример: document.getElementById('add-product-form').onsubmit = ...
-    // Для демонстрации выводим заглушку
-    document.getElementById('admin-content').innerHTML += '<div style="color:#888;text-align:center;">Раздел в разработке.</div>';
+    // Заполнить выпадающий список категорий
+    fetch('https://store-backend-zpkh.onrender.com/categories')
+      .then(res => res.json())
+      .then(cats => {
+        const sel = document.getElementById('category');
+        sel.innerHTML = '<option value="">-- Выберите категорию --</option>' + cats.map(cat => `<option value="${cat.id}">${cat.name}</option>`).join('');
+      });
+
+    // Обработка формы добавления товара
+    document.getElementById('add-product-form').onsubmit = async function(e) {
+      e.preventDefault();
+      const name = document.getElementById('name').value.trim();
+      const price = document.getElementById('is-free').checked ? 0 : Number(document.getElementById('price').value);
+      const description = document.getElementById('description').value.trim();
+      const image = document.getElementById('image').value;
+      const file = document.getElementById('file').value;
+      const categoryId = document.getElementById('category').value;
+      if (!name || !categoryId) {
+        showToast('Заполните все обязательные поля', '#e74c3c');
+        return;
+      }
+      const body = { name, price, description, image, file, categoryId };
+      try {
+        const resp = await fetch('https://store-backend-zpkh.onrender.com/products', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(body)
+        });
+        if (resp.ok) {
+          showToast('Товар добавлен!', '#43e97b');
+          document.getElementById('add-product-form').reset();
+          renderProducts();
+        } else {
+          showToast('Ошибка добавления товара', '#e74c3c');
+        }
+      } catch {
+        showToast('Ошибка соединения с сервером', '#e74c3c');
+      }
+    };
+
+    // Обработка формы добавления категории
+    document.getElementById('add-category-form').onsubmit = async function(e) {
+      e.preventDefault();
+      const name = document.getElementById('category-name').value.trim();
+      if (!name) {
+        showToast('Введите название категории', '#e74c3c');
+        return;
+      }
+      try {
+        const resp = await fetch('https://store-backend-zpkh.onrender.com/categories', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name })
+        });
+        if (resp.ok) {
+          showToast('Категория добавлена!', '#43e97b');
+          document.getElementById('add-category-form').reset();
+          renderCategories();
+        } else {
+          showToast('Ошибка добавления категории', '#e74c3c');
+        }
+      } catch {
+        showToast('Ошибка соединения с сервером', '#e74c3c');
+      }
+    };
   }
 
   // --- SPA: Фильтры и поиск ---
