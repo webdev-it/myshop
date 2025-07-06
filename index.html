@@ -7,243 +7,656 @@
   <link rel="stylesheet" href="styles/style.css" />
 </head>
 <body>
-  <header style="position:relative;">
-    <h1>Мой Интернет-Магазин</h1>
-    <div id="welcome">Здравствуйте, гость!</div>
-    <div id="balance-block" style="float:right;margin-top:8px;margin-right:8px;display:none;"></div>
-    <a href="#" class="back" onclick="goToPage('index.html'); return false;">← На главную</a>
-    <a id="profile-link" href="#" style="display:none;position:absolute;top:16px;right:16px;text-decoration:none;" onclick="goToPage('account.html'); return false;">
-      <div id="profile-avatar" style="width:44px;height:44px;border-radius:50%;overflow:hidden;box-shadow:0 2px 8px #0002;background:#e0f7fa;display:flex;align-items:center;justify-content:center;font-size:1.3em;font-weight:700;color:#00916e;"></div>
-    </a>
-  </header>
-
-  <main>
-    <section class="intro">
-      <h2>Добро пожаловать!</h2>
-      <p>Выберите категорию товаров выше, чтобы начать покупки.</p>
-    </section>
-    <div class="filters" style="margin:18px 0 10px 0;display:flex;flex-direction:column;gap:8px;align-items:center;max-width:440px;width:100%;margin-left:auto;margin-right:auto;">
-      <div style="width:100%;display:flex;justify-content:center;align-items:center;">
-        <input type="text" id="search-input" placeholder="Поиск по названию..." style="padding:10px 16px;border-radius:10px;border:1.5px solid #e0f7fa;font-size:15px;min-width:160px;width:100%;max-width:440px;box-sizing:border-box;background:#f8fdfd;outline:none;height:48px;">
-      </div>
-      <div style="display:flex;gap:12px;justify-content:space-between;align-items:center;width:100%;max-width:440px;flex-wrap:wrap;">
-        <div style="display:flex;align-items:center;gap:8px;">
-          <span title="Категория" style="display:inline-flex;align-items:center;"><svg width="18" height="18" style="margin-right:3px;vertical-align:middle;" viewBox="0 0 24 24"><path fill="#00916e" d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/></svg></span>
-          <select id="category-filter" style="padding:9px 14px;border-radius:9px;border:1.5px solid #e0f7fa;min-width:110px;font-size:14px;background:#f8fdfd;outline:none;height:48px;">
-            <option value="">Все категории</option>
-          </select>
+  <!-- Главная страница (каталог, фильтры, список товаров) -->
+  <div id="home-page" class="spa-page">
+    <header style="position:relative;">
+      <h1>Мой Интернет-Магазин</h1>
+      <div id="welcome">Здравствуйте, гость!</div>
+      <div id="balance-block" style="float:right;margin-top:8px;margin-right:8px;display:none;"></div>
+    </header>
+    <main>
+      <section class="intro">
+        <h2>Добро пожаловать!</h2>
+        <p>Выберите категорию товаров, чтобы начать покупки.</p>
+      </section>
+      <!-- Фильтры и поиск -->
+      <div class="filters" style="margin:18px 0 10px 0;display:flex;flex-direction:column;gap:8px;align-items:center;max-width:440px;width:100%;margin-left:auto;margin-right:auto;">
+        <div style="width:100%;display:flex;justify-content:center;align-items:center;">
+          <input type="text" id="search-input" placeholder="Поиск по названию..." style="padding:10px 16px;border-radius:10px;border:1.5px solid #e0f7fa;font-size:15px;min-width:160px;width:100%;max-width:440px;box-sizing:border-box;background:#f8fdfd;outline:none;height:48px;">
         </div>
-        <div style="display:flex;align-items:center;gap:8px;">
-          <span title="Сортировка" style="display:inline-flex;align-items:center;"><svg width="18" height="18" style="margin-right:3px;vertical-align:middle;" viewBox="0 0 24 24"><path fill="#00916e" d="M3 18h6v-2H3v2zm0-5h12v-2H3v2zm0-7v2h18V6H3z"/></svg></span>
-          <select id="sort-select" style="padding:9px 14px;border-radius:9px;border:1.5px solid #e0f7fa;min-width:110px;font-size:14px;background:#f8fdfd;outline:none;height:48px;">
-            <option value="">Сортировка</option>
-            <option value="price-asc">Цена ↑</option>
-            <option value="price-desc">Цена ↓</option>
-            <option value="name-asc">Название A-Я</option>
-            <option value="name-desc">Название Я-А</option>
-          </select>
-        </div>
-        <div style="margin-left:auto;display:flex;align-items:center;">
-          <label style="display:flex;align-items:center;gap:8px;border:2px solid #43e97b;border-radius:12px;padding:4px 14px 4px 10px;cursor:pointer;background:#f8fdfd;user-select:none;">
-            <span style="font-size:13px;color:#00916e;font-weight:600;">Бесплатно</span>
-            <span style="position:relative;display:inline-block;width:38px;height:24px;">
-              <input type="checkbox" id="free-filter" style="opacity:0;width:38px;height:24px;margin:0;position:absolute;left:0;top:0;z-index:2;cursor:pointer;">
-              <span style="position:absolute;left:0;top:0;width:38px;height:24px;background:#e0f7fa;border-radius:12px;transition:.2s;"></span>
-              <span style="position:absolute;top:3px;left:3px;width:18px;height:18px;background:#43e97b;border-radius:50%;transition:.2s;"></span>
+        <div style="display:flex;gap:12px;justify-content:space-between;align-items:center;width:100%;max-width:440px;flex-wrap:wrap;">
+          <div style="display:flex;align-items:center;gap:8px;">
+            <span title="Категория" style="display:inline-flex;align-items:center;">
+              <svg width="18" height="18" style="margin-right:3px;vertical-align:middle;" viewBox="0 0 24 24">
+                <path fill="#00916e" d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/>
+              </svg>
             </span>
+            <select id="category-filter" style="padding:9px 14px;border-radius:9px;border:1.5px solid #e0f7fa;min-width:110px;font-size:14px;background:#f8fdfd;outline:none;height:48px;">
+              <option value="">Все категории</option>
+            </select>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;">
+            <span title="Сортировка" style="display:inline-flex;align-items:center;">
+              <svg width="18" height="18" style="margin-right:3px;vertical-align:middle;" viewBox="0 0 24 24">
+                <path fill="#00916e" d="M3 18h6v-2H3v2zm0-5h12v-2H3v2zm0-7v2h18V6H3z"/>
+              </svg>
+            </span>
+            <select id="sort-select" style="padding:9px 14px;border-radius:9px;border:1.5px solid #e0f7fa;min-width:110px;font-size:14px;background:#f8fdfd;outline:none;height:48px;">
+              <option value="">Сортировка</option>
+              <option value="price-asc">Цена ↑</option>
+              <option value="price-desc">Цена ↓</option>
+              <option value="name-asc">Название A-Я</option>
+              <option value="name-desc">Название Я-А</option>
+            </select>
+          </div>
+          <div style="margin-left:auto;display:flex;align-items:center;">
+            <label style="display:flex;align-items:center;gap:8px;border:2px solid #43e97b;border-radius:12px;padding:4px 14px 4px 10px;cursor:pointer;background:#f8fdfd;user-select:none;">
+              <span style="font-size:13px;color:#00916e;font-weight:600;">Бесплатно</span>
+              <span style="position:relative;display:inline-block;width:38px;height:24px;">
+                <input type="checkbox" id="free-filter" style="opacity:0;width:38px;height:24px;margin:0;position:absolute;left:0;top:0;z-index:2;cursor:pointer;">
+                <span style="position:absolute;left:0;top:0;width:38px;height:24px;background:#e0f7fa;border-radius:12px;transition:.2s;"></span>
+                <span style="position:absolute;top:3px;left:3px;width:18px;height:18px;background:#43e97b;border-radius:50%;transition:.2s;"></span>
+              </span>
+            </label>
+          </div>
+        </div>
+      </div>
+      <!-- Список товаров -->
+      <div class="products" id="product-list"><!-- JS: renderProducts() --></div>
+      <!-- Список категорий -->
+      <nav>
+        <ul id="category-list"><li>Загрузка категорий...</li></ul>
+      </nav>
+    </main>
+  </div>
+
+  <!-- Страница аккаунта -->
+  <div id="account-page" class="spa-page" style="display:none;">
+    <h2>Мой аккаунт</h2>
+    <div id="account-info" style="margin:18px 0 24px 0;padding:18px 22px;border-radius:12px;background:#f8fdfd;max-width:420px;box-shadow:0 2px 12px #0001;">
+      <div id="tg-user-block">
+        <b>Telegram ID:</b> <span id="tg-id">—</span><br>
+        <b>Имя:</b> <span id="tg-name">—</span>
+      </div>
+      <div id="account-status" style="margin-top:10px;color:#00916e;font-weight:600;"></div>
+      <div id="balance-block" style="margin-top:18px;text-align:right;display:none;"></div>
+    </div>
+    <h2>История покупок и скачиваний</h2>
+    <div id="history-list" style="margin-bottom:24px;">—</div>
+    <h2>Избранное</h2>
+    <div id="favorites-list">—</div>
+  </div>
+
+  <!-- Страница админки -->
+  <div id="admin-page" class="spa-page" style="display:none;">
+    <h2>Админка</h2>
+    <div id="admin-content">
+      <button type="button" class="section-btn" style="margin:10px 0 16px 0;padding:10px 22px;border-radius:10px;background:#00916e;color:#fff;font-weight:700;border:none;cursor:pointer;font-size:1.1em;">Добавление нового товара</button>
+      <form id="add-product-form">
+        <label for="name">Название товара</label>
+        <input type="text" id="name" required />
+        <label for="price">Цена (в рублях)</label>
+        <div style="display:flex;align-items:center;gap:12px;">
+          <input type="number" id="price" min="0" required style="flex:1;" />
+          <label style="display:flex;align-items:center;gap:4px;font-size:1em;">
+            <input type="checkbox" id="is-free" style="accent-color:#43e97b;" /> Бесплатно
           </label>
         </div>
-      </div>
+        <label for="description">Описание</label>
+        <textarea id="description"></textarea>
+        <label for="image" style="font-weight:700;color:#00916e;">Изображение товара</label>
+        <div id="drop-area" style="flex:1;max-width:220px;padding:12px 8px;border:2px dashed #43e97b;border-radius:10px;text-align:center;cursor:pointer;background:#f8fdfd;transition:background 0.2s;">
+          <input type="file" id="image-file" accept="image/*" style="display:none;" />
+          <span id="drop-text">Перетащите или выберите файл</span>
+          <div id="image-preview" style="margin-top:8px;display:none;"></div>
+        </div>
+        <input type="hidden" id="image" name="image" />
+        <label for="file" style="font-weight:700;color:#00916e;">Файл для скачивания/покупки</label>
+        <div id="file-drop-area" style="flex:1;max-width:320px;padding:12px 8px;border:2px dashed #43e97b;border-radius:10px;text-align:center;cursor:pointer;background:#f8fdfd;transition:background 0.2s;margin-bottom:8px;">
+          <input type="file" id="file-input" style="display:none;" />
+          <span id="file-drop-text">Перетащите или выберите файл</span>
+          <div id="file-preview" style="margin-top:8px;display:none;font-size:0.98em;color:#00916e;"></div>
+        </div>
+        <input type="hidden" id="file" name="file" />
+        <label for="category">Категория</label>
+        <select id="category" required>
+          <option value="">-- Выберите категорию --</option>
+        </select>
+        <button type="submit">Добавить товар</button>
+      </form>
+      <hr>
+      <button type="button" class="section-btn" style="margin:18px 0 10px 0;padding:10px 22px;border-radius:10px;background:#00916e;color:#fff;font-weight:700;border:none;cursor:pointer;font-size:1.1em;">Управление категориями</button>
+      <form id="add-category-form">
+        <input type="text" id="category-name" placeholder="Новая категория" required style="padding:7px 12px;border-radius:7px;border:1.5px solid #e0f7fa;">
+        <button type="submit">Добавить категорию</button>
+      </form>
     </div>
-    <div class="products" id="product-list"></div>
-    <nav>
-      <ul id="category-list">
-        <li>Загрузка категорий...</li>
-      </ul>
-    </nav>
-  </main>
+  </div>
+
+  <!-- Страница категории -->
+  <div id="category-page" class="spa-page" style="display:none;">
+    <h2 id="category-title">Категория</h2>
+    <div id="category-products">—</div>
+  </div>
+
+  <!-- Страница товара -->
+  <div id="product-page" class="spa-page" style="display:none;">
+    <h2>Товар</h2>
+    <div id="product-card">—</div>
+  </div>
+
+  <!-- Нижнее меню навигации SPA -->
+  <nav id="bottom-tabs" style="position:fixed;left:0;right:0;bottom:0;height:62px;background:#fff;border-top:1.5px solid #e0f7fa;display:flex;justify-content:space-around;align-items:center;z-index:1000;box-shadow:0 -2px 16px #0001;">
+    <button class="tab-btn" onclick="showPage('home-page')" style="background:none;border:none;outline:none;display:flex;flex-direction:column;align-items:center;gap:2px;flex:1;cursor:pointer;font-size:1.2em;color:#00916e;">
+      <span style="font-size:1.6em;">🏠</span>
+      <span style="font-size:0.85em;">Главная</span>
+    </button>
+    <button class="tab-btn" onclick="showPage('category-page')" style="background:none;border:none;outline:none;display:flex;flex-direction:column;align-items:center;gap:2px;flex:1;cursor:pointer;font-size:1.2em;color:#00916e;">
+      <span style="font-size:1.6em;">📂</span>
+      <span style="font-size:0.85em;">Категории</span>
+    </button>
+    <button class="tab-btn" onclick="showPage('product-page')" style="background:none;border:none;outline:none;display:flex;flex-direction:column;align-items:center;gap:2px;flex:1;cursor:pointer;font-size:1.2em;color:#00916e;">
+      <span style="font-size:1.6em;">🛒</span>
+      <span style="font-size:0.85em;">Товары</span>
+    </button>
+    <button class="tab-btn" onclick="showPage('account-page')" style="background:none;border:none;outline:none;display:flex;flex-direction:column;align-items:center;gap:2px;flex:1;cursor:pointer;font-size:1.2em;color:#00916e;">
+      <span style="font-size:1.6em;">👤</span>
+      <span style="font-size:0.85em;">Аккаунт</span>
+    </button>
+    <button class="tab-btn" onclick="showPage('admin-page')" style="background:none;border:none;outline:none;display:flex;flex-direction:column;align-items:center;gap:2px;flex:1;cursor:pointer;font-size:1.2em;color:#00916e;">
+      <span style="font-size:1.6em;">⚙️</span>
+      <span style="font-size:0.85em;">Админ</span>
+    </button>
+  </nav>
+
+  <style>
+    body { padding-bottom: 70px; }
+    #bottom-tabs .tab-btn.active span { color: #43e97b; }
+    #bottom-tabs .tab-btn span { transition: color 0.2s; }
+    @media (max-width: 600px) {
+      #bottom-tabs { height: 56px; }
+      #bottom-tabs .tab-btn span { font-size: 1.3em; }
+    }
+  </style>
+
+  <footer>
+    <p>&copy; 2025 Мой Интернет-Магазин</p>
+  </footer>
+
+  <!-- Подключение Telegram WebApp SDK -->
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
+
+  <!-- Основная логика SPA и загрузки данных -->
   <script>
-    const tg = window.Telegram.WebApp;
-    const user = tg.initDataUnsafe?.user;
-    if (user) {
-      document.getElementById("welcome").textContent = `Здравствуйте, ${user.first_name}!`;
-      // Баланс
-      const balanceBlock = document.getElementById('balance-block');
-      async function updateBalance() {
-        try {
-          const resp = await fetch(`https://store-backend-zpkh.onrender.com/account/${user.id}/balance`);
-          const data = await resp.json();
-          if (resp.ok) {
-            balanceBlock.style.display = '';
-            balanceBlock.innerHTML = `<span style='color:#f9b32b;font-weight:600;'>Баланс: </span><span style='color:#222;font-weight:700;'>${data.balance.toLocaleString()} ₽</span> <button id='topup-btn' style='margin-left:8px;padding:4px 12px;border-radius:8px;background:#fff;color:#f9b32b;border:1px solid #f9b32b;cursor:pointer;font-size:0.98em;'>Пополнить</button>`;
-            document.getElementById('topup-btn').onclick = async function() {
-              const sum = prompt('Введите сумму для пополнения (₽):');
-              const amount = Number(sum);
-              if (!amount || isNaN(amount) || amount <= 0) return alert('Некорректная сумма');
-              const resp = await fetch(`https://store-backend-zpkh.onrender.com/account/${user.id}/balance`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ amount })
-              });
-              const data = await resp.json();
-              if (resp.ok) {
-                alert('Баланс успешно пополнен!');
-                updateBalance();
-              } else {
-                alert(data.error || 'Ошибка пополнения');
-              }
-            };
-          }
-        } catch {}
-      }
-      updateBalance();
-      // --- Профиль ---
-      const profileLink = document.getElementById('profile-link');
-      const profileAvatar = document.getElementById('profile-avatar');
-      if (user.photo_url) {
-        profileAvatar.innerHTML = `<img src="${user.photo_url}" alt="avatar" style="width:100%;height:100%;object-fit:cover;">`;
-      } else {
-        let initials = user.first_name ? user.first_name[0] : '';
-        if (user.last_name) initials += user.last_name[0];
-        profileAvatar.textContent = initials.toUpperCase();
-      }
-      profileLink.style.display = '';
+  // Проверка наличия Telegram WebApp API
+  function getTelegramUser() {
+    if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.initDataUnsafe && window.Telegram.WebApp.initDataUnsafe.user) {
+      return window.Telegram.WebApp.initDataUnsafe.user;
     }
-  </script>
-  <script>
-  const API_CATEGORIES = "https://store-backend-zpkh.onrender.com/categories";
-  const API_PRODUCTS = "https://store-backend-zpkh.onrender.com/products";
-
-  let allCategories = [];
-  let allProducts = [];
-
-  async function loadCategories() {
-    try {
-      const res = await fetch(API_CATEGORIES);
-      if (!res.ok) throw new Error("Ошибка загрузки категорий");
-      allCategories = await res.json();
-      // Для фильтра
-      const select = document.getElementById('category-filter');
-      select.innerHTML = '<option value="">Все категории</option>';
-      allCategories.forEach(cat => {
-        const option = document.createElement('option');
-        option.value = cat.id;
-        option.textContent = cat.name;
-        select.appendChild(option);
-      });
-      // Для перехода по категориям
-      const ul = document.getElementById("category-list");
-      ul.innerHTML = "";
-      allCategories.forEach(cat => {
-        const li = document.createElement("li");
-        li.innerHTML = `<a href="#" onclick=\"goToPage('category.html?id=${cat.id}'); return false;\">${cat.name}</a>`;
-        ul.appendChild(li);
-      });
-    } catch (err) {
-      document.getElementById("category-list").innerHTML = "<li>Ошибка загрузки категорий</li>";
-    }
+    return null;
   }
 
-  async function loadProducts() {
-    const res = await fetch(API_PRODUCTS);
-    allProducts = await res.json();
+  function showAccountInfo(user) {
+    document.getElementById('tg-id').textContent = user.id;
+    document.getElementById('tg-name').textContent = user.first_name + (user.last_name ? ' ' + user.last_name : '');
+    document.getElementById('account-status').textContent = 'Аккаунт создан и активен';
   }
 
-  function filterAndRender() {
-    const search = document.getElementById('search-input').value.trim().toLowerCase();
-    const catId = document.getElementById('category-filter').value;
-    const sort = document.getElementById('sort-select').value;
-    const freeOnly = document.getElementById('free-filter').checked;
-    // Если не выбран фильтр категории, не введён поисковый запрос и не включён чекбокс бесплатных — не показываем товары
-    if (!catId && !search && !freeOnly) {
-      renderProducts([], true);
-      return;
-    }
-    let filtered = allProducts.slice();
-    if (catId) filtered = filtered.filter(p => p.category === catId);
-    if (search) filtered = filtered.filter(p => p.name.toLowerCase().includes(search));
-    if (freeOnly) filtered = filtered.filter(p => p.price === 0);
-    if (sort === 'price-asc') filtered.sort((a,b)=>a.price-b.price);
-    if (sort === 'price-desc') filtered.sort((a,b)=>b.price-a.price);
-    if (sort === 'name-asc') filtered.sort((a,b)=>a.name.localeCompare(b.name,'ru'));
-    if (sort === 'name-desc') filtered.sort((a,b)=>b.name.localeCompare(a.name,'ru'));
-    renderProducts(filtered);
-  }
-
-  function renderProducts(products, showPlaceholder) {
-    const list = document.getElementById('product-list');
-    list.innerHTML = '';
-    if (showPlaceholder) {
-      list.innerHTML = '<div style="color:#888;padding:30px 0;text-align:center;">Выберите фильтр или введите запрос</div>';
-      return;
-    }
-    if (!products || products.length === 0) {
-      list.innerHTML = '<div style="color:#888;padding:30px 0;text-align:center;">Нет товаров по выбранным фильтрам</div>';
-      return;
-    }
-    products.forEach(product => {
-      const div = document.createElement('div');
-      div.className = 'product';
-      const imageUrl = product.image && product.image !== '' ? getBackendFileUrl('images', product.image) : 'images/placeholder.png';
-      div.innerHTML = `
-        <img src="${imageUrl}" alt="${product.name}" class="product-img" />
-        <h2>${product.name}</h2>
-        <p class="description">${product.description || ''}</p>
-        <p class="price">${product.price === 0 ? 'Бесплатно' : product.price.toLocaleString() + ' ₽'}</p>
-        <button class="buy-btn">Купить</button>
-      `;
-      // Кнопка "Купить" — отдельный обработчик
-      div.querySelector('.buy-btn').addEventListener('click', function(e) {
-        e.stopPropagation();
-        goToPage(`product.html?id=${product.id}`);
-      });
-      // Переход на карточку товара по клику (кроме кнопки)
-      div.addEventListener('click', function(e) {
-        if (e.target.classList.contains('buy-btn')) return;
-        goToPage(`product.html?id=${product.id}`);
-      });
-      // Визуальный эффект наведения
-      div.style.transition = 'background 0.15s';
-      div.addEventListener('mouseover', () => div.style.background = '#e0f7fa');
-      div.addEventListener('mouseout', () => div.style.background = '');
-      list.appendChild(div);
+  function createAccountIfNeeded(user) {
+    // Пример запроса на сервер для создания/получения аккаунта
+    fetch('https://store-backend-zpkh.onrender.com/account', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        telegram_id: user.id,
+        name: user.first_name + (user.last_name ? ' ' + user.last_name : '')
+      })
+    })
+    .then(res => res.json())
+    .then(data => {
+      // Можно обработать ответ, например, загрузить историю покупок и избранное
+      loadHistory(user.id);
+      loadFavorites(user.id);
+    })
+    .catch(() => {
+      document.getElementById('account-status').textContent = 'Ошибка создания аккаунта';
     });
   }
 
-  async function init() {
-    await loadCategories();
-    await loadProducts();
-    filterAndRender();
-    // Удаляем обработчики событий для min/max price
-    document.getElementById('search-input').addEventListener('input', filterAndRender);
-    document.getElementById('category-filter').addEventListener('change', filterAndRender);
-    document.getElementById('sort-select').addEventListener('change', filterAndRender);
-    document.getElementById('free-filter').addEventListener('change', filterAndRender);
+  function formatDate(dateStr) {
+    const d = new Date(dateStr);
+    return d.toLocaleDateString() + ' ' + d.toLocaleTimeString().slice(0,5);
   }
-  init();
-  // Стилизация ползунка "Бесплатные"
-  const freeFilter = document.getElementById('free-filter');
-  const switchBg = freeFilter.nextElementSibling;
-  const switchCircle = switchBg.nextElementSibling;
-  freeFilter.addEventListener('input', function() {
-    if (this.checked) {
-      switchBg.style.background = '#43e97b';
-      switchCircle.style.left = '17px';
-      switchCircle.style.background = '#fff';
-    } else {
-      switchBg.style.background = '#e0f7fa';
-      switchCircle.style.left = '3px';
-      switchCircle.style.background = '#43e97b';
-    }
-  });
-  // Инициализация состояния
-  freeFilter.dispatchEvent(new Event('input'));
-
   // Универсальная функция для формирования абсолютного URL к файлу/картинке
   function getBackendFileUrl(type, filename) {
     if (!filename) return '';
     return `https://store-backend-zpkh.onrender.com/${type}/${encodeURIComponent(filename.replace(/^.*[\\/]/, ''))}`;
+  }
+  async function loadHistory(telegramId) {
+    const list = document.getElementById('history-list');
+    list.innerHTML = '<div style="color:#888;text-align:center;">Загрузка...</div>';
+    try {
+      const res = await fetch('https://store-backend-zpkh.onrender.com/account/' + telegramId + '/history');
+      const data = await res.json();
+      if (data && data.length) {
+        // Получить все товары для подробностей
+        const productsRes = await fetch('https://store-backend-zpkh.onrender.com/products');
+        const products = await productsRes.json();
+        list.innerHTML = data.reverse().map(item => {
+          const prod = products.find(p=>p.id===item.productId);
+          if (!prod) return '';
+          const imageUrl = prod.image ? getBackendFileUrl('images', prod.image) : 'images/placeholder.png';
+          const ext = prod.file ? prod.file.split('.').pop().toLowerCase() : '';
+          let icon = '';
+          if (["pdf"].includes(ext)) icon = '📄';
+          else if (["zip","rar","7z"].includes(ext)) icon = '🗜️';
+          else if (["doc","docx","txt","rtf"].includes(ext)) icon = '📝';
+          else if (["xls","xlsx","csv"].includes(ext)) icon = '📊';
+          else if (["png","jpg","jpeg","gif","bmp","webp"].includes(ext)) icon = '🖼️';
+          else if (["blend","obj","fbx","stl"].includes(ext)) icon = '🧩';
+          else icon = '📦';
+          let extra = '';
+          if (!item.expired && item.daysLeft <= 2) extra = `<div style=\"color:#e67e22;font-size:0.97em;\">Внимание: доступ истекает через ${item.daysLeft} ${item.daysLeft===1?'день':'дня'}!</div>`;
+          if (item.expired) extra = '<div style="color:#aaa;font-size:0.97em;">Доступ истёк. <a href="#" onclick="showProduct(\''+prod.id+'\');return false;" style="color:#00916e;text-decoration:underline;">Купить снова</a></div>';
+          return `<div class="product" style="display:flex;align-items:center;gap:12px;margin-bottom:14px;background:${item.expired?'#f4f4f4':'#fff'};padding:10px 8px;border-radius:12px;box-shadow:0 2px 8px #0001;opacity:${item.expired?'0.6':'1'};">
+            <img src="${imageUrl}" alt="img" style="width:48px;height:48px;object-fit:cover;border-radius:8px;filter:${item.expired?'grayscale(1)':''};">
+            <div style="flex:1;">
+              <b>${prod.name}</b><br>
+              <span style="color:#888;font-size:0.98em;">${icon} ${prod.file ? prod.file.split('/').pop() : ''}</span><br>
+              <span style="color:#43e97b;font-size:0.97em;">${formatDate(item.date)}</span>
+              ${extra}
+            </div>
+            <a href="#" onclick="showProduct('${prod.id}');return false;" style="color:#00916e;font-size:1.3em;margin-right:8px;" title="К товару">🔎</a>
+            ${prod.file && !item.expired ? `<button onclick="downloadFile('${prod.id}')" style="background:#00916e;color:#fff;border:none;border-radius:8px;padding:7px 13px;cursor:pointer;font-size:1em;">⬇️</button>` : ''}
+          </div>`;
+        }).join('') + '<div style="color:#888;font-size:0.98em;margin-top:8px;">* Доступ к скачиванию купленного товара открыт 7 дней после покупки</div>';
+      } else {
+        list.innerHTML = '<div style="color:#888;text-align:center;">Нет покупок или скачиваний.</div>';
+      }
+    } catch {
+      list.textContent = 'Ошибка загрузки истории.';
+    }
+  }
+  async function downloadFile(productId) {
+    if (!window.Telegram || !window.Telegram.WebApp || !window.Telegram.WebApp.initDataUnsafe || !window.Telegram.WebApp.initDataUnsafe.user) {
+      alert('Откройте через Telegram'); return;
+    }
+    const telegramId = window.Telegram.WebApp.initDataUnsafe.user.id;
+    const resp = await fetch('https://store-backend-zpkh.onrender.com/download', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ telegram_id: telegramId, productId })
+    });
+    const data = await resp.json();
+    if (resp.ok && data.url) {
+      const link = document.createElement('a');
+      link.href = data.url;
+      link.download = '';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } else {
+      alert(data.error || 'Ошибка скачивания.');
+    }
+  }
+  async function loadFavorites(telegramId) {
+    const list = document.getElementById('favorites-list');
+    list.innerHTML = '<div style="color:#888;text-align:center;">Загрузка...</div>';
+    try {
+      const res = await fetch('https://store-backend-zpkh.onrender.com/account/' + telegramId + '/favorites');
+      const data = await res.json();
+      if (data && data.length) {
+        list.innerHTML = data.map(prod => {
+          const imageUrl = prod.image ? getBackendFileUrl('images', prod.image) : 'images/placeholder.png';
+          const ext = prod.file ? prod.file.split('.').pop().toLowerCase() : '';
+          let icon = '';
+          if (["pdf"].includes(ext)) icon = '📄';
+          else if (["zip","rar","7z"].includes(ext)) icon = '🗜️';
+          else if (["doc","docx","txt","rtf"].includes(ext)) icon = '📝';
+          else if (["xls","xlsx","csv"].includes(ext)) icon = '📊';
+          else if (["png","jpg","jpeg","gif","bmp","webp"].includes(ext)) icon = '🖼️';
+          else if (["blend","obj","fbx","stl"].includes(ext)) icon = '🧩';
+          else icon = '📦';
+          return `<div class="product" style="display:flex;align-items:center;gap:12px;margin-bottom:14px;background:#fff;padding:10px 8px;border-radius:12px;box-shadow:0 2px 8px #0001;">
+            <img src="${imageUrl}" alt="img" style="width:48px;height:48px;object-fit:cover;border-radius:8px;">
+            <div style="flex:1;">
+              <b>${prod.name}</b><br>
+              <span style="color:#888;font-size:0.98em;">${icon} ${prod.file ? prod.file.split('/').pop() : ''}</span>
+            </div>
+            <a href="#" onclick="showProduct('${prod.id}');return false;" style="color:#00916e;font-size:1.3em;margin-right:8px;" title="К товару">🔎</a>
+            ${prod.file ? `<button onclick="downloadFile('${prod.id}')" style="background:#00916e;color:#fff;border:none;border-radius:8px;padding:7px 13px;cursor:pointer;font-size:1em;">⬇️</button>` : ''}
+          </div>`;
+        }).join('');
+      } else {
+        list.textContent = 'Нет избранных товаров.';
+      }
+    } catch {
+      list.textContent = 'Ошибка загрузки избранного.';
+    }
+  }
+  function showToast(msg, color) {
+    const toast = document.getElementById('toast');
+    toast.textContent = msg;
+    toast.style.background = color || '#222';
+    toast.style.display = 'block';
+    toast.style.opacity = '0.97';
+    setTimeout(()=>{ toast.style.opacity = '0'; }, 2200);
+    setTimeout(()=>{ toast.style.display = 'none'; }, 2600);
+  }
+  // --- Оставляем только одно объявление переменной для баланса ---
+  let lastBalance = null;
+  async function updateBalance(telegramId, showToastOnChange) {
+    const balanceBlock = document.getElementById('balance-block');
+    if (!telegramId) return;
+    try {
+      const resp = await fetch(`https://store-backend-zpkh.onrender.com/account/${telegramId}/balance`);
+      const data = await resp.json();
+      if (resp.ok) {
+        balanceBlock.style.display = '';
+        balanceBlock.innerHTML = `<span style='color:#f9b32b;font-weight:600;'>Баланс: </span><span id='balance-value' style='color:#222;font-weight:700;'>${data.balance.toLocaleString()} ₽</span> <button id='topup-btn' style='margin-left:8px;padding:4px 12px;border-radius:8px;background:#fff;color:#f9b32b;border:1px solid #f9b32b;cursor:pointer;font-size:0.98em;'>Пополнить</button>`;
+        if (lastBalance !== null && data.balance !== lastBalance && showToastOnChange) {
+          showToast('Баланс обновлён!', '#43e97b');
+        }
+        lastBalance = data.balance;
+        document.getElementById('topup-btn').onclick = function() {
+          document.getElementById('topup-modal').style.display = 'flex';
+          document.getElementById('topup-amount').value = '';
+          document.getElementById('topup-error').textContent = '';
+          document.getElementById('topup-check').style.display = 'none';
+        };
+        document.getElementById('topup-close').onclick = function() {
+          document.getElementById('topup-modal').style.display = 'none';
+        };
+        document.getElementById('topup-check').onclick = function() {
+          updateBalance(telegramId, true);
+        };
+        document.getElementById('topup-confirm').onclick = async function() {
+          const sum = document.getElementById('topup-amount').value.trim();
+          const amount = Number(sum);
+          const system = document.getElementById('topup-system').value;
+          const errorDiv = document.getElementById('topup-error');
+          if (!amount || isNaN(amount) || amount <= 0) {
+            errorDiv.textContent = 'Введите корректную сумму';
+            return;
+          }
+          errorDiv.textContent = '';
+          document.getElementById('topup-confirm').disabled = true;
+          document.getElementById('topup-confirm').textContent = 'Создание платежа...';
+          try {
+            const resp = await fetch(`https://store-backend-zpkh.onrender.com/create_payment_link`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ amount, telegramId, system })
+            });
+            const data = await resp.json();
+            if (resp.ok && data.url) {
+              window.open(data.url, '_blank');
+              document.getElementById('topup-modal').style.display = 'flex';
+              document.getElementById('topup-check').style.display = '';
+              showToast('После оплаты нажмите "Проверить баланс"', '#f9b32b');
+            } else {
+              errorDiv.textContent = data.error || 'Ошибка создания платежа';
+            }
+          } catch {
+            errorDiv.textContent = 'Ошибка соединения с сервером';
+          }
+          document.getElementById('topup-confirm').disabled = false;
+          document.getElementById('topup-confirm').textContent = 'Пополнить';
+        };
+      }
+    } catch {}
+  }
+
+  // --- SPA: Навигация между страницами ---
+  function showPage(pageId) {
+    // Скрыть все страницы
+    document.querySelectorAll('.spa-page').forEach(p => p.style.display = 'none');
+    // Показать нужную
+    document.getElementById(pageId).style.display = '';
+    // Подсветить активную вкладку
+    document.querySelectorAll('#bottom-tabs .tab-btn').forEach(btn => btn.classList.remove('active'));
+    let idx = ['home-page','category-page','product-page','account-page','admin-page'].indexOf(pageId);
+    if (idx >= 0) document.querySelectorAll('#bottom-tabs .tab-btn')[idx].classList.add('active');
+    // SPA: подгрузка данных для страниц
+    if (pageId === 'home-page') {
+      renderProducts();
+      renderCategories();
+      updateBalance(getTelegramUser()?.id);
+    }
+    if (pageId === 'category-page') {
+      renderCategories(true);
+      // Если есть выбранная категория, обновить заголовок
+      if(window._currentCategoryId) {
+        updateCategoryTitle(window._currentCategoryId);
+        loadCategory(window._currentCategoryId);
+      }
+    }
+    if (pageId === 'account-page') {
+      const user = getTelegramUser();
+      if (user) {
+        showAccountInfo(user);
+        loadHistory(user.id);
+        loadFavorites(user.id);
+        updateBalance(user.id);
+      }
+    }
+    if (pageId === 'admin-page') {
+      renderAdmin();
+      // TODO: добавить обработчики для форм добавления товара и категории
+    }
+    if (pageId === 'product-page') {
+      if(window._currentProductId) {
+        loadProduct(window._currentProductId);
+      }
+    }
+    // Баланс показывать только на главной и аккаунте
+    document.getElementById('balance-block').style.display = (pageId === 'home-page' || pageId === 'account-page') ? '' : 'none';
+    // История навигации
+    if (!window._spaNavSilent) {
+      history.pushState({pageId}, '', '#' + pageId);
+    }
+  }
+
+  // SPA: обработка возврата назад
+  window.onpopstate = function(e) {
+    if (e.state && e.state.pageId) {
+      window._spaNavSilent = true;
+      showPage(e.state.pageId);
+      window._spaNavSilent = false;
+    }
+  };
+
+  // --- SPA: Рендеринг товаров и категорий ---
+  async function renderProducts() {
+    const list = document.getElementById('product-list');
+    list.innerHTML = '<div style="color:#888;text-align:center;">Загрузка...</div>';
+    try {
+      const res = await fetch('https://store-backend-zpkh.onrender.com/products');
+      let products = await res.json();
+      // Перемешать товары в случайном порядке
+      products = products.sort(() => Math.random() - 0.5);
+      // Фильтрация и поиск
+      const search = document.getElementById('search-input').value.trim().toLowerCase();
+      const cat = document.getElementById('category-filter').value;
+      const free = document.getElementById('free-filter').checked;
+      if (search) products = products.filter(p => p.name.toLowerCase().includes(search));
+      if (cat) products = products.filter(p => p.categoryId === cat);
+      if (free) products = products.filter(p => p.price === 0);
+      // Сортировка
+      const sort = document.getElementById('sort-select').value;
+      if (sort === 'price-asc') products.sort((a,b)=>a.price-b.price);
+      if (sort === 'price-desc') products.sort((a,b)=>b.price-a.price);
+      if (sort === 'name-asc') products.sort((a,b)=>a.name.localeCompare(b.name));
+      if (sort === 'name-desc') products.sort((a,b)=>b.name.localeCompare(a.name));
+      // Рендер
+      if (!products.length) {
+        list.innerHTML = '<div style="color:#888;text-align:center;">Нет товаров.</div>';
+        return;
+      }
+      list.innerHTML = products.map(prod => {
+        const imageUrl = prod.image ? getBackendFileUrl('images', prod.image) : 'images/placeholder.png';
+        return `<div class="product" style="display:flex;align-items:center;gap:12px;margin-bottom:14px;background:#fff;padding:10px 8px;border-radius:12px;box-shadow:0 2px 8px #0001;cursor:pointer;" onclick="showProduct('${prod.id}')">
+          <img src="${imageUrl}" alt="img" style="width:48px;height:48px;object-fit:cover;border-radius:8px;">
+          <div style="flex:1;">
+            <b>${prod.name}</b><br>
+            <span style="color:#888;font-size:0.98em;">${prod.price ? prod.price + ' ₽' : 'Бесплатно'}</span>
+          </div>
+          <span style="color:#00916e;font-size:1.3em;margin-right:8px;">🔎</span>
+        </div>`;
+      }).join('');
+    } catch {
+      list.textContent = 'Ошибка загрузки товаров.';
+    }
+  }
+
+  async function renderCategories(forPage = false) {
+    const list = forPage ? document.getElementById('category-products') : document.getElementById('category-list');
+    list.innerHTML = '<li style="color:#888;">Загрузка...</li>';
+    try {
+      const res = await fetch('https://store-backend-zpkh.onrender.com/categories');
+      const cats = await res.json();
+      if (!cats.length) {
+        list.innerHTML = '<li style="color:#888;">Нет категорий.</li>';
+        return;
+      }
+      if (forPage) {
+        // Категории как плитки
+        list.innerHTML = cats.map(cat =>
+          `<div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;cursor:pointer;background:#f8fdfd;padding:10px 12px;border-radius:10px;box-shadow:0 2px 8px #0001;" onclick="showCategory('${cat.id}')">
+            <span style="font-size:1.5em;">📂</span>
+            <span style="font-weight:600;">${cat.name}</span>
+          </div>`
+        ).join('');
+      } else {
+        // Категории как список
+        list.innerHTML = cats.map(cat =>
+          `<li style="margin-bottom:7px;cursor:pointer;" onclick="showCategory('${cat.id}')">${cat.name}</li>`
+        ).join('');
+        // Заполнить фильтр категорий
+        const sel = document.getElementById('category-filter');
+        sel.innerHTML = '<option value="">Все категории</option>' + cats.map(cat =>
+          `<option value="${cat.id}">${cat.name}</option>`
+        ).join('');
+      }
+    } catch {
+      list.innerHTML = '<li style="color:#888;">Ошибка загрузки категорий.</li>';
+    }
+  }
+
+  // SPA: Загрузка товаров выбранной категории
+  async function loadCategory(categoryId) {
+    const list = document.getElementById('category-products');
+    list.innerHTML = '<div style="color:#888;text-align:center;">Загрузка...</div>';
+    try {
+      const res = await fetch('https://store-backend-zpkh.onrender.com/products');
+      let products = await res.json();
+      products = products.filter(p => p.categoryId === categoryId);
+      if (!products.length) {
+        list.innerHTML = '<div style="color:#888;text-align:center;">Нет товаров в категории.</div>';
+        return;
+      }
+      list.innerHTML = products.map(prod => {
+        const imageUrl = prod.image ? getBackendFileUrl('images', prod.image) : 'images/placeholder.png';
+        return `<div class="product" style="display:flex;align-items:center;gap:12px;margin-bottom:14px;background:#fff;padding:10px 8px;border-radius:12px;box-shadow:0 2px 8px #0001;cursor:pointer;" onclick="showProduct('${prod.id}')">
+          <img src="${imageUrl}" alt="img" style="width:48px;height:48px;object-fit:cover;border-radius:8px;">
+          <div style="flex:1;">
+            <b>${prod.name}</b><br>
+            <span style="color:#888;font-size:0.98em;">${prod.price ? prod.price + ' ₽' : 'Бесплатно'}</span>
+          </div>
+          <span style="color:#00916e;font-size:1.3em;margin-right:8px;">🔎</span>
+        </div>`;
+      }).join('');
+    } catch {
+      list.textContent = 'Ошибка загрузки товаров.';
+    }
+  }
+
+  // SPA: Загрузка карточки товара
+  async function loadProduct(productId) {
+    const card = document.getElementById('product-card');
+    card.innerHTML = '<div style="color:#888;text-align:center;">Загрузка...</div>';
+    try {
+      const res = await fetch('https://store-backend-zpkh.onrender.com/products');
+      const products = await res.json();
+      const prod = products.find(p => p.id === productId);
+      if (!prod) {
+        card.innerHTML = '<div style="color:#888;text-align:center;">Товар не найден.</div>';
+        return;
+      }
+      const imageUrl = prod.image ? getBackendFileUrl('images', prod.image) : 'images/placeholder.png';
+      card.innerHTML = `
+        <div style="display:flex;gap:18px;align-items:flex-start;">
+          <img src="${imageUrl}" alt="img" style="width:90px;height:90px;object-fit:cover;border-radius:12px;">
+          <div style="flex:1;">
+            <h3 style="margin:0 0 8px 0;">${prod.name}</h3>
+            <div style="color:#888;font-size:1em;margin-bottom:8px;">${prod.price ? prod.price + ' ₽' : 'Бесплатно'}</div>
+            <div style="font-size:0.98em;margin-bottom:10px;">${prod.description || ''}</div>
+            <button onclick="buyProduct('${prod.id}')" style="background:#43e97b;color:#fff;border:none;border-radius:8px;padding:10px 18px;cursor:pointer;font-size:1.08em;">Купить</button>
+          </div>
+        </div>
+      `;
+    } catch {
+      card.textContent = 'Ошибка загрузки товара.';
+    }
+  }
+
+  // SPA: Покупка товара (заглушка)
+  function buyProduct(productId) {
+    showToast('Покупка товара реализуется на сервере', '#43e97b');
+  }
+
+  // SPA: Рендеринг админки (заглушка)
+  function renderAdmin() {
+    // Здесь можно добавить обработчики для форм добавления товара и категории
+    // Пример: document.getElementById('add-product-form').onsubmit = ...
+    // Для демонстрации выводим заглушку
+    document.getElementById('admin-content').innerHTML += '<div style="color:#888;text-align:center;">Раздел в разработке.</div>';
+  }
+
+  // --- SPA: Фильтры и поиск ---
+  document.addEventListener('DOMContentLoaded', function() {
+    // SPA: инициализация
+    showPage('home-page');
+    renderProducts();
+    renderCategories();
+    // Фильтры
+    document.getElementById('search-input').addEventListener('input', renderProducts);
+    document.getElementById('category-filter').addEventListener('change', renderProducts);
+    document.getElementById('sort-select').addEventListener('change', renderProducts);
+    document.getElementById('free-filter').addEventListener('change', renderProducts);
+    // SPA: если есть hash в url, открыть нужную страницу
+    if (location.hash && document.getElementById(location.hash.slice(1))) {
+      showPage(location.hash.slice(1));
+    }
+  });
+
+  // === DEBUG: Показываем состояние Telegram WebApp API ===
+  function showDebugInfo() {
+    const debugDiv = document.createElement('div');
+    debugDiv.style = 'background:#fffbe6;color:#b36b00;padding:10px 14px;border-radius:8px;margin:18px 0;font-size:0.98em;word-break:break-all;';
+    debugDiv.innerHTML = '<b>DEBUG Telegram WebApp:</b><br>' +
+      '<pre style="white-space:pre-wrap;">' +
+      JSON.stringify({
+        Telegram: window.Telegram,
+        WebApp: window.Telegram && window.Telegram.WebApp,
+        initDataUnsafe: window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.initDataUnsafe
+      }, null, 2) + '</pre>';
+    document.body.insertBefore(debugDiv, document.getElementById('account-info').nextSibling);
+  }
+
+  // === Повторная попытка инициализации аккаунта ===
+  function tryInitAccount(attempt = 1) {
+    const user = getTelegramUser();
+    if (user) {
+      showAccountInfo(user);
+      createAccountIfNeeded(user);
+      updateBalance(user.id);
+    } else if (attempt < 5) {
+      setTimeout(() => tryInitAccount(attempt + 1), 600);
+    } else {
+      document.getElementById('account-status').textContent = 'Откройте мини-приложение через Telegram для создания аккаунта.';
+      showDebugInfo();
+    }
   }
 
   function goToPage(url) {
@@ -253,10 +666,67 @@
       window.location.href = url;
     }
   }
-</script>
-<a href="#" class="admin-link" onclick="goToPage('admin.html'); return false;">Админка</a>
-  <footer>
-    <p>&copy; 2025 Мой Интернет-Магазин</p>
-  </footer>
+
+  // SPA: функция для показа карточки товара по id
+  function showProduct(productId) {
+    window._currentProductId = productId;
+    showPage('product-page');
+    loadProduct(productId);
+  }
+  // SPA: функция для показа категории по id
+  function showCategory(categoryId) {
+    window._currentCategoryId = categoryId;
+    showPage('category-page');
+    updateCategoryTitle(categoryId);
+    loadCategory(categoryId);
+  }
+  // Обновление заголовка категории
+  async function updateCategoryTitle(categoryId) {
+    try {
+      const res = await fetch('https://store-backend-zpkh.onrender.com/categories');
+      const cats = await res.json();
+      const cat = cats.find(c => c.id === categoryId);
+      document.getElementById('category-title').textContent = cat ? cat.name : 'Категория';
+    } catch {
+      document.getElementById('category-title').textContent = 'Категория';
+    }
+  }
+
+  window.addEventListener('DOMContentLoaded', function() {
+    tryInitAccount();
+    // Polling баланса после открытия модалки
+    let pollInterval = null;
+    document.getElementById('topup-modal').addEventListener('transitionstart', function() {
+      const user = getTelegramUser();
+      if (this.style.display === 'flex' && user) {
+        pollInterval = setInterval(()=>updateBalance(user.id, true), 7000);
+      } else {
+        clearInterval(pollInterval);
+      }
+    });
+  });
+  </script>
+
+  <!-- Модальное окно пополнения баланса -->
+  <div id="topup-modal" style="display:none;position:fixed;z-index:1000;left:0;top:0;width:100vw;height:100vh;background:rgba(0,0,0,0.25);align-items:center;justify-content:center;">
+    <div style="background:#fff;padding:32px 24px 24px 24px;border-radius:18px;box-shadow:0 8px 32px #0003;max-width:340px;width:90vw;position:relative;">
+      <button id="topup-close" style="position:absolute;top:12px;right:16px;background:none;border:none;font-size:1.3em;color:#bbb;cursor:pointer;">×</button>
+      <h2 style="margin:0 0 18px 0;font-size:1.2em;color:#00916e;">Пополнение баланса</h2>
+      <label for="topup-amount" style="color:#444;font-size:1em;">Сумма (₽):</label>
+      <input id="topup-amount" type="number" min="1" step="1" style="width:100%;margin:10px 0 12px 0;padding:10px 12px;border-radius:8px;border:1px solid #eee;font-size:1.1em;" placeholder="Введите сумму" />
+      <label for="topup-system" style="color:#444;font-size:1em;">Платёжная система:</label>
+      <select id="topup-system" style="width:100%;margin:10px 0 12px 0;padding:8px 10px;border-radius:8px;border:1px solid #eee;font-size:1.05em;">
+        <option value="yookassa">ЮKassa</option>
+        <option value="cloudpayments">CloudPayments</option>
+      </select>
+      <div id="topup-error" style="color:#e74c3c;font-size:0.98em;min-height:20px;margin-bottom:8px;"></div>
+      <button id="topup-confirm" style="width:100%;padding:12px 0;border-radius:10px;background:#f9b32b;color:#fff;font-weight:700;border:none;cursor:pointer;font-size:1.08em;">Пополнить</button>
+      <button id="topup-check" style="width:100%;padding:10px 0;border-radius:10px;background:#00916e;color:#fff;font-weight:700;border:none;cursor:pointer;font-size:1.02em;margin-top:10px;display:none;">Проверить баланс</button>
+    </div>
+  </div>
+
+  <!-- Toast уведомление -->
+  <div id="toast" style="display:none;position:fixed;left:50%;bottom:32px;transform:translateX(-50%);background:#222;color:#fff;padding:14px 28px;border-radius:12px;font-size:1.08em;z-index:2000;box-shadow:0 4px 24px #0005;opacity:0.97;transition:opacity 0.3s;"></div>
+
 </body>
 </html>
