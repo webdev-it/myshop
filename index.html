@@ -467,6 +467,18 @@
     }
   };
 
+  // --- Исправление: фильтры и поиск ---
+  function setupFilters() {
+    document.getElementById('search-input').addEventListener('input', renderProducts);
+    document.getElementById('category-filter').addEventListener('change', renderProducts);
+    document.getElementById('sort-select').addEventListener('change', renderProducts);
+    document.getElementById('free-filter').addEventListener('change', renderProducts);
+  }
+  window.addEventListener('DOMContentLoaded', function() {
+    tryInitAccount();
+    setupFilters();
+  });
+
   // --- SPA: Рендеринг товаров и категорий ---
   async function renderProducts() {
     const list = document.getElementById('product-list');
@@ -486,7 +498,7 @@
       // Сортировка
       const sort = document.getElementById('sort-select').value;
       if (sort === 'price-asc') products.sort((a,b)=>a.price-b.price);
-      if (sort === 'price-desc') products.sort((a,b)=>b.price-a.price);
+      if (sort === 'price-desc') products.sort((a,b)=>b.price-a-price);
       if (sort === 'name-asc') products.sort((a,b)=>a.name.localeCompare(b.name));
       if (sort === 'name-desc') products.sort((a,b)=>b.name.localeCompare(a.name));
       // Рендер
@@ -494,15 +506,18 @@
         list.innerHTML = '<div style="color:#888;text-align:center;">Нет товаров.</div>';
         return;
       }
+      // --- Новый (старый) вид карточки товара ---
       list.innerHTML = products.map(prod => {
         const imageUrl = prod.image ? getBackendFileUrl('images', prod.image) : 'images/placeholder.png';
-        return `<div class="product" style="display:flex;align-items:center;gap:12px;margin-bottom:14px;background:#fff;padding:10px 8px;border-radius:12px;box-shadow:0 2px 8px #0001;cursor:pointer;" onclick="showProduct('${prod.id}')">
-          <img src="${imageUrl}" alt="img" style="width:48px;height:48px;object-fit:cover;border-radius:8px;">
-          <div style="flex:1;">
-            <b>${prod.name}</b><br>
-            <span style="color:#888;font-size:0.98em;">${prod.price ? prod.price + ' ₽' : 'Бесплатно'}</span>
+        return `<div class="product-card" onclick="showProduct('${prod.id}')">
+          <div class="product-card-img-wrap">
+            <img src="${imageUrl}" alt="img" class="product-card-img">
           </div>
-          <span style="color:#00916e;font-size:1.3em;margin-right:8px;">🔎</span>
+          <div class="product-card-body">
+            <div class="product-card-title">${prod.name}</div>
+            <div class="product-card-price">${prod.price ? prod.price + ' ₽' : 'Бесплатно'}</div>
+          </div>
+          <button class="product-card-btn">Подробнее</button>
         </div>`;
       }).join('');
     } catch {
@@ -587,15 +602,23 @@
         return;
       }
       const imageUrl = prod.image ? getBackendFileUrl('images', prod.image) : 'images/placeholder.png';
+      // --- Новый функционал и улучшенный вид карточки товара ---
       card.innerHTML = `
-        <button class='back-btn' onclick='history.back()' title='Назад'>← Назад</button>
-        <div style="display:flex;gap:18px;align-items:flex-start;">
-          <img src="${imageUrl}" alt="img" style="width:90px;height:90px;object-fit:cover;border-radius:12px;">
-          <div style="flex:1;">
-            <h3 style="margin:0 0 8px 0;">${prod.name}</h3>
-            <div style="color:#888;font-size:1em;margin-bottom:8px;">${prod.price ? prod.price + ' ₽' : 'Бесплатно'}</div>
-            <div style="font-size:0.98em;margin-bottom:10px;">${prod.description || ''}</div>
-            <button onclick="buyProduct('${prod.id}')" style="background:#43e97b;color:#fff;border:none;border-radius:8px;padding:10px 18px;cursor:pointer;font-size:1.08em;">Купить</button>
+        <button class='back-btn' onclick='showPage("category-page")' title='Назад к категориям'>← Назад</button>
+        <div class="product-detail">
+          <div class="product-detail-img-wrap">
+            <img src="${imageUrl}" alt="img" class="product-detail-img">
+          </div>
+          <div class="product-detail-body">
+            <h3 class="product-detail-title">${prod.name}</h3>
+            <div class="product-detail-price">${prod.price ? prod.price + ' ₽' : 'Бесплатно'}</div>
+            <div class="product-detail-desc">${prod.description || ''}</div>
+            <div class="product-detail-category">Категория: <span>${prod.category || '-'}</span></div>
+            <div class="product-detail-file">${prod.file ? `<a href="${getBackendFileUrl('files', prod.file)}" target="_blank" class="product-detail-download">Скачать файл</a>` : '<span style="color:#aaa;">Файл не прикреплён</span>'}</div>
+            <div class="product-detail-actions">
+              <button onclick="buyProduct('${prod.id}')" class="product-detail-buy">Купить</button>
+              <button onclick="addToFavorites('${prod.id}')" class="product-detail-fav">★ В избранное</button>
+            </div>
           </div>
         </div>
       `;
