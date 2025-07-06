@@ -98,45 +98,63 @@
   <div id="admin-page" class="spa-page" style="display:none;">
     <h2>Админка</h2>
     <div id="admin-content">
-      <button type="button" class="section-btn" style="margin:10px 0 16px 0;padding:10px 22px;border-radius:10px;background:#00916e;color:#fff;font-weight:700;border:none;cursor:pointer;font-size:1.1em;">Добавление нового товара</button>
-      <form id="add-product-form">
-        <label for="name">Название товара</label>
-        <input type="text" id="name" required />
-        <label for="price">Цена (в рублях)</label>
-        <div style="display:flex;align-items:center;gap:12px;">
-          <input type="number" id="price" min="0" required style="flex:1;" />
-          <label style="display:flex;align-items:center;gap:4px;font-size:1em;">
-            <input type="checkbox" id="is-free" style="accent-color:#43e97b;" /> Бесплатно
-          </label>
+      <div style="display:flex;gap:18px;flex-wrap:wrap;margin-bottom:18px;">
+        <button type="button" class="section-btn" onclick="showAdminTab('products')" id="admin-tab-products" style="padding:10px 22px;border-radius:10px;background:#00916e;color:#fff;font-weight:700;border:none;cursor:pointer;font-size:1.1em;">Управление товарами</button>
+        <button type="button" class="section-btn" onclick="showAdminTab('categories')" id="admin-tab-categories" style="padding:10px 22px;border-radius:10px;background:#00916e;color:#fff;font-weight:700;border:none;cursor:pointer;font-size:1.1em;">Управление категориями</button>
+        <button type="button" class="section-btn" onclick="showAdminTab('add')" id="admin-tab-add" style="padding:10px 22px;border-radius:10px;background:#00916e;color:#fff;font-weight:700;border:none;cursor:pointer;font-size:1.1em;">Добавить товар</button>
+      </div>
+      <div id="admin-products-panel" style="display:none;">
+        <div style="display:flex;gap:12px;align-items:center;margin-bottom:10px;flex-wrap:wrap;">
+          <input id="admin-product-search" type="text" placeholder="Поиск товара..." style="padding:7px 14px;border-radius:8px;border:1.5px solid #e0f7fa;min-width:160px;">
+          <select id="admin-product-category-filter" style="padding:7px 14px;border-radius:8px;border:1.5px solid #e0f7fa;min-width:140px;"><option value="">Все категории</option></select>
         </div>
-        <label for="description">Описание</label>
-        <textarea id="description"></textarea>
-        <label for="image" style="font-weight:700;color:#00916e;">Изображение товара</label>
-        <div id="drop-area" style="flex:1;max-width:220px;padding:12px 8px;border:2px dashed #43e97b;border-radius:10px;text-align:center;cursor:pointer;background:#f8fdfd;transition:background 0.2s;">
-          <input type="file" id="image-file" accept="image/*" style="display:none;" />
-          <span id="drop-text">Перетащите или выберите файл</span>
-          <div id="image-preview" style="margin-top:8px;display:none;"></div>
+        <div id="admin-products-list" style="margin-bottom:18px;"></div>
+      </div>
+      <div id="admin-categories-panel" style="display:none;">
+        <div style="display:flex;gap:12px;align-items:center;margin-bottom:10px;flex-wrap:wrap;">
+          <input id="admin-category-search" type="text" placeholder="Поиск категории..." style="padding:7px 14px;border-radius:8px;border:1.5px solid #e0f7fa;min-width:160px;">
         </div>
-        <input type="hidden" id="image" name="image" />
-        <label for="file" style="font-weight:700;color:#00916e;">Файл для скачивания/покупки</label>
-        <div id="file-drop-area" style="flex:1;max-width:320px;padding:12px 8px;border:2px dashed #43e97b;border-radius:10px;text-align:center;cursor:pointer;background:#f8fdfd;transition:background 0.2s;margin-bottom:8px;">
-          <input type="file" id="file-input" style="display:none;" />
-          <span id="file-drop-text">Перетащите или выберите файл</span>
-          <div id="file-preview" style="margin-top:8px;display:none;font-size:0.98em;color:#00916e;"></div>
-        </div>
-        <input type="hidden" id="file" name="file" />
-        <label for="category">Категория</label>
-        <select id="category" required>
-          <option value="">-- Выберите категорию --</option>
-        </select>
-        <button type="submit">Добавить товар</button>
-      </form>
-      <hr>
-      <button type="button" class="section-btn" style="margin:18px 0 10px 0;padding:10px 22px;border-radius:10px;background:#00916e;color:#fff;font-weight:700;border:none;cursor:pointer;font-size:1.1em;">Управление категориями</button>
-      <form id="add-category-form">
-        <input type="text" id="category-name" placeholder="Новая категория" required style="padding:7px 12px;border-radius:7px;border:1.5px solid #e0f7fa;">
-        <button type="submit">Добавить категорию</button>
-      </form>
+        <div id="admin-categories-list" style="margin-bottom:18px;"></div>
+      </div>
+      <div id="admin-add-panel" style="display:none;">
+        <form id="add-product-form">
+          <label for="name">Название товара</label>
+          <input type="text" id="name" required />
+          <label for="price">Цена (в рублях)</label>
+          <div style="display:flex;align-items:center;gap:12px;">
+            <input type="number" id="price" min="0" required style="flex:1;" />
+            <label style="display:flex;align-items:center;gap:4px;font-size:1em;">
+              <input type="checkbox" id="is-free" style="accent-color:#43e97b;" /> Бесплатно
+            </label>
+          </div>
+          <label for="description">Описание</label>
+          <textarea id="description"></textarea>
+          <label for="image" style="font-weight:700;color:#00916e;">Изображение товара</label>
+          <div id="drop-area" style="flex:1;max-width:220px;padding:12px 8px;border:2px dashed #43e97b;border-radius:10px;text-align:center;cursor:pointer;background:#f8fdfd;transition:background 0.2s;">
+            <input type="file" id="image-file" accept="image/*" style="display:none;" />
+            <span id="drop-text">Перетащите или выберите файл</span>
+            <div id="image-preview" style="margin-top:8px;display:none;"></div>
+          </div>
+          <input type="hidden" id="image" name="image" />
+          <label for="file" style="font-weight:700;color:#00916e;">Файл для скачивания/покупки</label>
+          <div id="file-drop-area" style="flex:1;max-width:320px;padding:12px 8px;border:2px dashed #43e97b;border-radius:10px;text-align:center;cursor:pointer;background:#f8fdfd;transition:background 0.2s;margin-bottom:8px;">
+            <input type="file" id="file-input" style="display:none;" />
+            <span id="file-drop-text">Перетащите или выберите файл</span>
+            <div id="file-preview" style="margin-top:8px;display:none;font-size:0.98em;color:#00916e;"></div>
+          </div>
+          <input type="hidden" id="file" name="file" />
+          <label for="category">Категория</label>
+          <select id="category" required>
+            <option value="">-- Выберите категорию --</option>
+          </select>
+          <button type="submit">Добавить товар</button>
+        </form>
+        <hr>
+        <form id="add-category-form">
+          <input type="text" id="category-name" placeholder="Новая категория" required style="padding:7px 12px;border-radius:7px;border:1.5px solid #e0f7fa;">
+          <button type="submit">Добавить категорию</button>
+        </form>
+      </div>
     </div>
   </div>
 
@@ -713,6 +731,12 @@
         sel.innerHTML = '<option value="">-- Выберите категорию --</option>' + cats.map(cat => `<option value="${cat.id}">${cat.name}</option>`).join('');
       });
 
+    // Вкладки админки
+    showAdminTab('products');
+    // Поиск и фильтр
+    document.getElementById('admin-product-search').oninput = renderAdminProducts;
+    document.getElementById('admin-product-category-filter').onchange = renderAdminProducts;
+    document.getElementById('admin-category-search').oninput = renderAdminCategories;
     // --- Загрузка изображения ---
     const dropArea = document.getElementById('drop-area');
     const imageInput = document.getElementById('image-file');
@@ -846,6 +870,116 @@
         showToast('Ошибка соединения с сервером', '#e74c3c');
       }
     };
+  }
+
+  function showAdminTab(tab) {
+    document.getElementById('admin-products-panel').style.display = tab === 'products' ? '' : 'none';
+    document.getElementById('admin-categories-panel').style.display = tab === 'categories' ? '' : 'none';
+    document.getElementById('admin-add-panel').style.display = tab === 'add' ? '' : 'none';
+    document.getElementById('admin-tab-products').style.background = tab === 'products' ? '#43e97b' : '#00916e';
+    document.getElementById('admin-tab-categories').style.background = tab === 'categories' ? '#43e97b' : '#00916e';
+    document.getElementById('admin-tab-add').style.background = tab === 'add' ? '#43e97b' : '#00916e';
+    if (tab === 'products') renderAdminProducts();
+    if (tab === 'categories') renderAdminCategories();
+  }
+
+  async function renderAdminProducts() {
+    const list = document.getElementById('admin-products-list');
+    const search = document.getElementById('admin-product-search').value.trim().toLowerCase();
+    const cat = document.getElementById('admin-product-category-filter').value;
+    list.innerHTML = '<div style="color:#888;text-align:center;">Загрузка...</div>';
+    try {
+      const [productsRes, catsRes] = await Promise.all([
+        fetch('https://store-backend-zpkh.onrender.com/products'),
+        fetch('https://store-backend-zpkh.onrender.com/categories')
+      ]);
+      let products = await productsRes.json();
+      const cats = await catsRes.json();
+      // Заполнить фильтр категорий
+      const sel = document.getElementById('admin-product-category-filter');
+      sel.innerHTML = '<option value="">Все категории</option>' + cats.map(cat => `<option value="${cat.id}">${cat.name}</option>`).join('');
+      // Фильтрация
+      if (search) products = products.filter(p => p.name.toLowerCase().includes(search));
+      if (cat) products = products.filter(p => p.category === cat);
+      // Сортировка по категории, затем по имени
+      products.sort((a, b) => {
+        if (a.category !== b.category) return (a.category || '').localeCompare(b.category || '');
+        return a.name.localeCompare(b.name);
+      });
+      if (!products.length) {
+        list.innerHTML = '<div style="color:#888;text-align:center;">Нет товаров.</div>';
+        return;
+      }
+      list.innerHTML = products.map(prod => {
+        const imageUrl = prod.image ? getBackendFileUrl('images', prod.image) : 'images/placeholder.png';
+        const catName = cats.find(c => c.id === prod.category)?.name || '-';
+        return `<div class="product" style="display:flex;align-items:center;gap:12px;margin-bottom:10px;background:#fff;padding:8px 8px;border-radius:10px;box-shadow:0 2px 8px #0001;">
+          <img src="${imageUrl}" alt="img" style="width:44px;height:44px;object-fit:cover;border-radius:8px;">
+          <div style="flex:1;">
+            <b>${prod.name}</b><br>
+            <span style="color:#888;font-size:0.97em;">Категория: ${catName}</span>
+          </div>
+          <button onclick="deleteProductAdmin('${prod.id}')" style="background:#e74c3c;color:#fff;border:none;border-radius:8px;padding:7px 13px;cursor:pointer;font-size:1em;">Удалить</button>
+        </div>`;
+      }).join('');
+    } catch {
+      list.textContent = 'Ошибка загрузки товаров.';
+    }
+  }
+
+  async function renderAdminCategories() {
+    const list = document.getElementById('admin-categories-list');
+    const search = document.getElementById('admin-category-search').value.trim().toLowerCase();
+    list.innerHTML = '<div style="color:#888;text-align:center;">Загрузка...</div>';
+    try {
+      const catsRes = await fetch('https://store-backend-zpkh.onrender.com/categories');
+      let cats = await catsRes.json();
+      if (search) cats = cats.filter(c => c.name.toLowerCase().includes(search));
+      cats.sort((a, b) => a.name.localeCompare(b.name));
+      if (!cats.length) {
+        list.innerHTML = '<div style="color:#888;text-align:center;">Нет категорий.</div>';
+        return;
+      }
+      list.innerHTML = cats.map(cat =>
+        `<div style="display:flex;align-items:center;gap:12px;margin-bottom:10px;background:#fff;padding:8px 8px;border-radius:10px;box-shadow:0 2px 8px #0001;">
+          <div style="flex:1;"><b>${cat.name}</b></div>
+          <button onclick="deleteCategoryAdmin('${cat.id}')" style="background:#e74c3c;color:#fff;border:none;border-radius:8px;padding:7px 13px;cursor:pointer;font-size:1em;">Удалить</button>
+        </div>`
+      ).join('');
+    } catch {
+      list.textContent = 'Ошибка загрузки категорий.';
+    }
+  }
+
+  async function deleteProductAdmin(productId) {
+    if (!confirm('Удалить этот товар? Будут удалены файл и изображение!')) return;
+    try {
+      const resp = await fetch('https://store-backend-zpkh.onrender.com/products/' + productId, { method: 'DELETE' });
+      if (resp.ok) {
+        showToast('Товар удалён!', '#43e97b');
+        renderAdminProducts();
+      } else {
+        showToast('Ошибка удаления товара', '#e74c3c');
+      }
+    } catch {
+      showToast('Ошибка соединения с сервером', '#e74c3c');
+    }
+  }
+
+  async function deleteCategoryAdmin(categoryId) {
+    if (!confirm('Удалить эту категорию и все её товары? Все файлы и изображения будут удалены!')) return;
+    try {
+      const resp = await fetch('https://store-backend-zpkh.onrender.com/categories/' + categoryId, { method: 'DELETE' });
+      if (resp.ok) {
+        showToast('Категория и все товары удалены!', '#43e97b');
+        renderAdminCategories();
+        renderAdminProducts();
+      } else {
+        showToast('Ошибка удаления категории', '#e74c3c');
+      }
+    } catch {
+      showToast('Ошибка соединения с сервером', '#e74c3c');
+    }
   }
 
   // --- Тема сайта ---

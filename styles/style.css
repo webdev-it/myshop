@@ -576,6 +576,10 @@ footer {
   color: #fff;
   box-shadow: 0 4px 16px #43e97b33;
 }
+.section-btn.active {
+  background: #43e97b !important;
+  color: #fff !important;
+}
 #add-product-form, #add-category-form {
   display: flex;
   flex-direction: column;
@@ -1161,3 +1165,29 @@ body.dark-theme .product-detail-download {
 }
 
 /* --- Конец доработок --- */
+.section-btn.active {
+  background: #43e97b !important;
+  color: #fff !important;
+}
+.admin-product-row:hover, .admin-category-row:hover {
+  background: #e0f7fa !important;
+}
+.admin-delete-btn[disabled] {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+.spinner {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border: 2px solid #fff;
+  border-top: 2px solid #43e97b;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  margin-right: 6px;
+  vertical-align: middle;
+}
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
