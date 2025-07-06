@@ -139,13 +139,10 @@ main {
 .products {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 20px;
-  margin-top: 28px;
-  justify-items: center;
-  width: 100%;
-  box-sizing: border-box;
-  grid-auto-rows: 1fr;
-  padding: 0 6px;
+  gap: 18px 16px;
+  max-width: 700px;
+  margin: 0 auto 24px auto;
+  align-items: stretch;
 }
 
 /* --- КАРТОЧКА ТОВАРА --- */
