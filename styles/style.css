@@ -84,7 +84,7 @@ footer {
 .spa-page {
   opacity: 0;
   pointer-events: none;
-  position: absolute;
+  position: relative;
   left: 0; top: 0; width: 100%;
   min-height: 100vh;
   background: transparent;
@@ -95,7 +95,6 @@ footer {
 .spa-page.active {
   opacity: 1;
   pointer-events: auto;
-  position: relative;
   z-index: 1;
 }
 
