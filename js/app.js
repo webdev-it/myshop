@@ -248,10 +248,23 @@ async function openCategoryPage(categoryId) {
   };
 }
 
+// --- Профиль: автозаполнение из Telegram ---
+function fillProfileFromTelegram() {
+  if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.initDataUnsafe && window.Telegram.WebApp.initDataUnsafe.user) {
+    const user = window.Telegram.WebApp.initDataUnsafe.user;
+    document.getElementById('profile-name').textContent = user.first_name + (user.last_name ? ' ' + user.last_name : '');
+    document.getElementById('profile-tg-id').textContent = user.id;
+    if (user.photo_url) {
+      document.getElementById('profile-avatar').src = user.photo_url;
+    }
+  }
+}
+
 // --- Инициализация SPA ---
 document.addEventListener('DOMContentLoaded', function() {
   loadCategories();
   updateCategoryFilterOptions();
+  fillProfileFromTelegram();
   // Товары загружаются только по поиску
   // TODO: инициализация профиля, корзины, истории, поддержки и т.д.
 
