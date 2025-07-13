@@ -326,15 +326,38 @@ document.addEventListener('DOMContentLoaded', function() {
         return;
       }
       const formData = new FormData(addProductForm);
+      // 1. Загрузка файла товара
+      const fileInput = document.getElementById('add-product-file');
+      let fileUrl = '';
+      if (fileInput && fileInput.files && fileInput.files[0]) {
+        const fileData = new FormData();
+        fileData.append('file', fileInput.files[0]);
+        const uploadRes = await fetch('https://store-backend-zpkh.onrender.com/upload/file', {
+          method: 'POST',
+          body: fileData
+        });
+        if (uploadRes.ok) {
+          const uploadJson = await uploadRes.json();
+          fileUrl = 'https://store-backend-zpkh.onrender.com/files/' + uploadJson.url;
+        } else {
+          showToast('Ошибка загрузки файла', '#e94e43');
+          return;
+        }
+      } else {
+        showToast('Выберите файл товара', '#e94e43');
+        return;
+      }
+      // 2. Загрузка изображения (опционально, если нужно)
+      // ...можно реализовать аналогично через /upload
+      // 3. Отправка товара
       const data = {
         name: formData.get('title'),
         description: formData.get('description'),
         category: formData.get('category'),
         price: Number(formData.get('price')),
         ownerId: user.id,
-        // image: ... (реализовать загрузку файла отдельно)
+        fileUrl
       };
-      // TODO: реализовать загрузку изображения отдельно, сейчас без image
       const res = await fetch('https://store-backend-zpkh.onrender.com/products', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
