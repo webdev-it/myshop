@@ -404,8 +404,8 @@ document.addEventListener('DOMContentLoaded', function() {
           </div>
           <div id="admin-panel-content" style="margin-top:16px;"></div>
         `;
-        // Вкладка "Товары на проверке"
         const adminPanelContent = document.getElementById('admin-panel-content');
+        // Вкладка "Товары на проверке"
         document.getElementById('admin-tab-moderation').onclick = async function() {
           adminPanelContent.innerHTML = '<div class="loading">Загрузка...</div>';
           const res = await fetch('https://store-backend-zpkh.onrender.com/products/moderation');
@@ -432,6 +432,64 @@ document.addEventListener('DOMContentLoaded', function() {
               </div>
             </div>
           `).join('');
+        };
+        // Вкладка "Управление категориями"
+        document.getElementById('admin-categories-btn').onclick = async function() {
+          adminPanelContent.innerHTML = '<div class="loading">Загрузка категорий...</div>';
+          try {
+            const res = await fetch('https://store-backend-zpkh.onrender.com/categories');
+            let cats = await res.json();
+            adminPanelContent.innerHTML = `
+              <h3>Категории</h3>
+              <ul id="admin-categories-list" style="padding-left:0;list-style:none;"></ul>
+              <form id="admin-add-category-form" style="margin-top:16px;display:flex;gap:8px;">
+                <input id="admin-add-category-input" type="text" placeholder="Новая категория" required style="flex:1;min-width:0;">
+                <button type="submit" class="modal-btn">Добавить</button>
+              </form>
+            `;
+            const list = document.getElementById('admin-categories-list');
+            list.innerHTML = cats.map(cat => `
+              <li style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+                <span>${cat.name}</span>
+                <button class="modal-btn admin-delete-category-btn" data-id="${cat.id}" style="background:#e94e43;min-width:32px;padding:4px 10px;">✕</button>
+              </li>
+            `).join('');
+            // Добавление категории
+            document.getElementById('admin-add-category-form').onsubmit = async function(e) {
+              e.preventDefault();
+              const input = document.getElementById('admin-add-category-input');
+              const name = input.value.trim();
+              if (!name) return;
+              const res = await fetch('https://store-backend-zpkh.onrender.com/categories', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name })
+              });
+              if (res.ok) {
+                showToast('Категория добавлена', '#43e97b');
+                document.getElementById('admin-categories-btn').click();
+              } else {
+                showToast('Ошибка добавления', '#e94e43');
+              }
+            };
+            // Удаление категории
+            list.addEventListener('click', async function(e) {
+              const delBtn = e.target.closest('.admin-delete-category-btn');
+              if (delBtn) {
+                if (!confirm('Удалить категорию?')) return;
+                const id = delBtn.getAttribute('data-id');
+                const res = await fetch('https://store-backend-zpkh.onrender.com/categories/' + id, { method: 'DELETE' });
+                if (res.ok) {
+                  showToast('Категория удалена', '#43e97b');
+                  document.getElementById('admin-categories-btn').click();
+                } else {
+                  showToast('Ошибка удаления', '#e94e43');
+                }
+              }
+            });
+          } catch {
+            adminPanelContent.innerHTML = '<div class="error">Ошибка загрузки категорий.</div>';
+          }
         };
         // Сразу открыть вкладку модерации
         setTimeout(()=>document.getElementById('admin-tab-moderation').click(), 100);
