@@ -4,7 +4,9 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Интернет-магазин</title>
+  <link rel="stylesheet" href="styles/theme-vars.css" />
   <link rel="stylesheet" href="styles/style.css" />
+  <link rel="stylesheet" href="styles/style2.css">
 </head>
 <body>
   <!-- Главная страница -->
@@ -50,8 +52,8 @@
       <h2>Категории товаров</h2>
       <div id="main-categories-list" class="categories-list"></div>
     </section>
+    <div class="page-spacer"></div>
   </div>
-
   <!-- Страница профиля -->
   <div id="profile-page" class="spa-page">
     <!-- 2.1. Основная информация -->
@@ -129,8 +131,15 @@
       </div>
       <div id="my-products-list" class="products-list"></div>
     </section>
-  </div>
+    <div class="page-spacer"></div>
+    <div class="page-spacer"></div>
+    <div class="page-spacer"></div>
+    <div class="page-spacer"></div>
+    <div class="page-spacer"></div>
+    <div class="page-spacer"></div>
 
+
+  </div>
   <!-- Страница параметров -->
   <div id="settings-page" class="spa-page">
     <!-- 3.1. Настройки аккаунта -->
@@ -167,6 +176,7 @@
       </select>
       <button id="settings-theme-edit-btn" class="modal-btn">Изменить/Создать свою тему</button>
     </section>
+    <div class="page-spacer"></div>
   </div>
 
   <!-- Модальные окна -->
@@ -271,26 +281,27 @@
     </div>
   </div>
   <div id="toast" class="toast" style="display:none;"></div>
-
+  <footer>
+    <p>&copy; 2025 Мой Интернет-Магазин</p>
+  </footer>
+  <div class="page-spacer"></div>
   <!-- Нижняя панель навигации -->
   <nav id="bottom-tabs">
     <button class="tab-btn" data-page="main-page">
       <span>🏠</span>
-      <span>Главная</span>
+      
     </button>
     <button class="tab-btn" data-page="profile-page">
       <span>👤</span>
-      <span>Профиль</span>
+      
     </button>
     <button class="tab-btn" data-page="settings-page">
       <span>⚙️</span>
-      <span>Параметры</span>
+      
     </button>
   </nav>
 
-  <footer>
-    <p>&copy; 2025 Мой Интернет-Магазин</p>
-  </footer>
+
 
   <!-- Подключение Telegram WebApp SDK -->
   <script src="https://telegram.org/js/telegram-web-app.js"></script>

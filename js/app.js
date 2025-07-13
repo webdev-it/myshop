@@ -19,6 +19,8 @@ function showToast(msg, color) {
   setTimeout(()=>{ toast.style.display = 'none'; }, 2600);
 }
 
+const adminsID = ['6956702448', '5106121080', '']
+
 // --- SPA-навигация ---
 function showPage(pageId) {
   document.querySelectorAll('.spa-page').forEach(p => p.classList.remove('active'));
@@ -262,6 +264,142 @@ function fillProfileFromTelegram() {
 
 // --- Инициализация SPA ---
 document.addEventListener('DOMContentLoaded', function() {
+  // --- ТЕМЫ: логика смены темы и пользовательской темы ---
+  const THEME_KEYS = ['light','dark','newyear','spring','custom'];
+  function applyTheme(theme, customVars) {
+    document.documentElement.setAttribute('data-theme', theme);
+    if (theme === 'custom' && customVars) {
+      for (const key in customVars) {
+        document.documentElement.style.setProperty(key, customVars[key]);
+      }
+    } else {
+      // Сбросить кастомные переменные
+      const style = document.documentElement.style;
+      style.removeProperty('--color-bg');
+      style.removeProperty('--color-bg-gradient');
+      style.removeProperty('--color-text');
+      style.removeProperty('--color-primary');
+      style.removeProperty('--color-primary-dark');
+      style.removeProperty('--color-accent');
+      style.removeProperty('--color-card-bg');
+      style.removeProperty('--color-card-shadow');
+      style.removeProperty('--color-border');
+      style.removeProperty('--color-error');
+      style.removeProperty('--color-success');
+      style.removeProperty('--color-footer-bg');
+      style.removeProperty('--color-footer-text');
+      style.removeProperty('--color-modal-bg');
+      style.removeProperty('--color-modal-shadow');
+      style.removeProperty('--color-toast-bg');
+      style.removeProperty('--color-toast-text');
+    }
+  }
+  function saveTheme(theme, customVars) {
+    localStorage.setItem('site-theme', theme);
+    if (theme === 'custom' && customVars) {
+      localStorage.setItem('site-theme-custom', JSON.stringify(customVars));
+    }
+  }
+  function loadTheme() {
+    let theme = localStorage.getItem('site-theme') || 'light';
+    let customVars = null;
+    if (theme === 'custom') {
+      try {
+        customVars = JSON.parse(localStorage.getItem('site-theme-custom') || '{}');
+      } catch {}
+    }
+    applyTheme(theme, customVars);
+    // выставить select
+    const selects = [document.getElementById('theme-select'), document.getElementById('settings-theme-select')];
+    selects.forEach(sel => { if(sel) sel.value = theme; });
+  }
+  // Смена темы по select
+  ['theme-select','settings-theme-select'].forEach(id => {
+    const sel = document.getElementById(id);
+    if (sel) {
+      sel.addEventListener('change', function() {
+        const theme = sel.value;
+        if (theme === 'custom') {
+          openCustomThemeModal();
+        } else {
+          applyTheme(theme);
+          saveTheme(theme);
+        }
+        // синхронизировать оба select
+        const other = document.getElementById(id === 'theme-select' ? 'settings-theme-select' : 'theme-select');
+        if (other) other.value = theme;
+      });
+    }
+  });
+  // Модалка создания своей темы
+  function openCustomThemeModal() {
+    let modal = document.getElementById('modal-custom-theme');
+    if (!modal) {
+      modal = document.createElement('div');
+      modal.id = 'modal-custom-theme';
+      modal.className = 'modal active';
+      modal.innerHTML = `
+        <div class="modal-content">
+          <button class="modal-close" id="custom-theme-close">×</button>
+          <h2>Своя тема</h2>
+          <form id="custom-theme-form">
+            <label>Фон (градиент): <input type="text" name="--color-bg-gradient" value="" placeholder="linear-gradient(...)" /></label><br>
+            <label>Цвет текста: <input type="color" name="--color-text" value="#222222" /></label><br>
+            <label>Основной цвет: <input type="color" name="--color-primary" value="#43e97b" /></label><br>
+            <label>Акцент: <input type="color" name="--color-accent" value="#00b894" /></label><br>
+            <label>Фон карточек: <input type="color" name="--color-card-bg" value="#ffffff" /></label><br>
+            <label>Тень карточек: <input type="color" name="--color-card-shadow" value="#43e97b22" /></label><br>
+            <label>Цвет ошибок: <input type="color" name="--color-error" value="#e94e43" /></label><br>
+            <label>Цвет успеха: <input type="color" name="--color-success" value="#43e97b" /></label><br>
+            <label>Фон футера: <input type="color" name="--color-footer-bg" value="#e0f7fa" /></label><br>
+            <label>Текст футера: <input type="color" name="--color-footer-text" value="#00916e" /></label><br>
+            <button type="submit" class="modal-btn modal-btn-main">Сохранить</button>
+          </form>
+        </div>
+      `;
+      document.body.appendChild(modal);
+    } else {
+      modal.classList.add('active');
+      modal.style.display = 'flex';
+    }
+    document.body.classList.add('modal-open');
+    // Закрытие
+    modal.querySelector('#custom-theme-close').onclick = function() {
+      modal.classList.remove('active');
+      modal.style.display = 'none';
+      document.body.classList.remove('modal-open');
+    };
+    // Заполнить текущие значения
+    let customVars = {};
+    try { customVars = JSON.parse(localStorage.getItem('site-theme-custom') || '{}'); } catch {}
+    const form = modal.querySelector('#custom-theme-form');
+    Array.from(form.elements).forEach(el => {
+      if (el.name && customVars[el.name]) el.value = customVars[el.name];
+    });
+    // Сохранение
+    form.onsubmit = function(e) {
+      e.preventDefault();
+      const data = {};
+      Array.from(form.elements).forEach(el => {
+        if (el.name && el.value) data[el.name] = el.value;
+      });
+      applyTheme('custom', data);
+      saveTheme('custom', data);
+      modal.classList.remove('active');
+      modal.style.display = 'none';
+      document.body.classList.remove('modal-open');
+      // синхронизировать select
+      const selects = [document.getElementById('theme-select'), document.getElementById('settings-theme-select')];
+      selects.forEach(sel => { if(sel) sel.value = 'custom'; });
+    };
+  }
+  // Кнопки "Изменить/Создать свою тему"
+  ['theme-edit-btn','settings-theme-edit-btn'].forEach(id => {
+    const btn = document.getElementById(id);
+    if (btn) btn.onclick = openCustomThemeModal;
+  });
+  // Применить тему при загрузке
+  loadTheme();
   // --- Мои товары: загрузка и фильтрация ---
   async function loadMyProducts() {
     const user = getTelegramUser && getTelegramUser();
@@ -393,7 +531,7 @@ document.addEventListener('DOMContentLoaded', function() {
       const user = getTelegramUser && getTelegramUser();
       if (user && user.id) userId = user.id.toString();
       supportBody.innerHTML = '';
-      if (userId === '6956702448') {
+      if (userId === adminsID) {
         // Админ-панель
         supportBody.innerHTML = `
           <h2>Админ-панель</h2>

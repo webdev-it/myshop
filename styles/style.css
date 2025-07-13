@@ -1,39 +1,108 @@
-/* --- ГЛОБАЛЬНЫЕ СТИЛИ --- */
+/* --- MOBILE UX: 100vh, безопасные зоны, предотвращение перекрытия --- */
+html, body {
+  min-height: 100dvh;
+  height: 100dvh;
+  box-sizing: border-box;
+}
 body {
+  padding-bottom: env(safe-area-inset-bottom, 64px); /* для overlap с навигацией */
+}
+.spa-page {
+  min-height: calc(100dvh - 56px - 48px - env(safe-area-inset-bottom, 0px));
+  padding-bottom: 24px;
+  box-sizing: border-box;
+  position: relative;
+  z-index: 0;
+}
+footer {
+  position: relative;
+  z-index: 10;
+  margin-bottom: 56px; /* чтобы не перекрывалось навигацией */
+}
+#bottom-tabs {
+  position: fixed;
+  left: 0; right: 0; bottom: 0;
+  width: 100vw;
+  max-width: none;
   margin: 0;
+  z-index: 1001;
+  height: 56px;
+  background: var(--color-card-bg);
+  border-top: 1.5px solid var(--color-border);
+  box-shadow: 0 -2px 16px #0001;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+/* --- Гарантия что ни один блок не перекроет другой --- */
+section, .main-description, .profile-info, .profile-balance, .profile-cart, .profile-themes, .products-list, .categories-list, .cart-list, .cart-summary, .modal-content, .modal-topup-content, .modal-withdraw-content, .modal-product-content, .modal-history-content, .modal-bonus-history-content, .product-card, .category-card {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 100vw;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* --- Обводка для ползунка "Бесплатные" --- */
+.main-switch .switch-slider {
+  border: 2px solid #43e97b;
+  box-shadow: 0 1px 4px #43e97b11;
+}
+.main-switch input[type="checkbox"]:checked + .switch-slider {
+  border-color: #00916e;
+}
+
+/* --- Исправление перекрытия модалок и навигации --- */
+.modal {
+  z-index: 2000;
+}
+
+/* --- ГЛОБАЛЬНЫЕ СТИЛИ --- */
+html, body {
+  margin: 0;
+  padding: 0;
   font-family: 'Segoe UI', 'Roboto', Arial, sans-serif;
-  background: linear-gradient(135deg, #e0f7fa 0%, #f4f4f4 100%);
+  background: #f4f4f4;
   color: #222;
-  max-width: 480px;
-  margin: 0 auto;
   min-height: 100vh;
+  width: 100vw;
+  max-width: 100vw;
   overflow-x: hidden;
+  -webkit-tap-highlight-color: transparent;
+}
+body {
   display: flex;
   flex-direction: column;
+  min-height: 100vh;
+  width: 100vw;
+  max-width: 100vw;
+  margin: 0 auto;
 }
 
 header {
-  background: linear-gradient(90deg, #00b894 60%, #43e97b 100%);
+  background: #fff;
   background-size: cover;
   background-position: center;
-  padding: 28px 10px 20px 10px;
-  color: #fff;
+  padding: 20px 10px 14px 10px;
+  color: #222;
   text-align: center;
   border-radius: 0 0 18px 18px;
-  box-shadow: 0 4px 24px rgba(0,0,0,0.10);
+  box-shadow: 0 4px 24px rgba(0,0,0,0.08);
   position: relative;
 }
 header h1 {
   margin: 0;
-  font-size: 2.2rem;
-  letter-spacing: 1.5px;
-  font-weight: 800;
-  text-shadow: 0 2px 8px rgba(0,0,0,0.10);
+  font-size: 1.5rem;
+  letter-spacing: 1px;
+  font-weight: 700;
+  text-shadow: none;
 }
 #welcome {
-  margin-top: 10px;
-  font-size: 1.1rem;
-  color: #e0f7fa;
+  margin-top: 8px;
+  font-size: 1rem;
+  color: #43e97b;
 }
 
 nav ul {
@@ -73,19 +142,23 @@ footer {
   background: #e0f7fa;
   color: #00916e;
   text-align: center;
-  padding: 18px 0 12px 0;
+  padding: 12px 0 8px 0;
   font-size: 1rem;
-  border-radius: 18px 18px 0 0;
-  margin-top: 30px;
-  box-shadow: 0 -2px 12px rgba(0,0,0,0.06);
+  border-radius: 14px 14px 0 0;
+  margin-top: 18px;
+  box-shadow: 0 -2px 12px rgba(0,0,0,0.04);
+  width: 100vw;
+  max-width: 480px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 /* --- Секции SPA --- */
 .spa-page {
   opacity: 0;
   pointer-events: none;
-  position: relative;
-  left: 0; top: 0; width: 100%;
+  position: absolute;
+  left: 0; top: 0; width: 100vw;
   min-height: 100vh;
   background: transparent;
   transition: opacity 0.25s;
@@ -95,6 +168,7 @@ footer {
 .spa-page.active {
   opacity: 1;
   pointer-events: auto;
+  position: relative;
   z-index: 1;
 }
 
@@ -117,7 +191,7 @@ footer {
   opacity: 1;
   pointer-events: auto;
 }
-.modal-content, .modal-topup-content, .modal-withdraw-content, .modal-product-content, .modal-history-content, .modal-bonus-history-content {
+.modal-content, .modal-topup-content, .modal-withdraw-content, .modal-product-content, .modal-history-content, .modal-bonus-history-content, .modal-admin-content, .modal-support-content {
   background: #fff;
   padding: 32px 24px 24px 24px;
   border-radius: 20px;
@@ -129,10 +203,10 @@ footer {
   flex-direction: column;
   align-items: stretch;
   animation: modalContentIn 0.28s cubic-bezier(.4,1.4,.6,1);
-  opacity: 0;
-  transform: translateY(40px) scale(0.98);
   transition: opacity 0.22s, transform 0.22s;
   /* убираем общий скролл, будет только для активной модалки */
+  opacity: 0;
+  transform: translateY(40px) scale(0.98);
 }
 .modal.active .modal-content,
 .modal.active .modal-topup-content,
@@ -141,17 +215,10 @@ footer {
 .modal.active .modal-history-content,
 .modal.active .modal-bonus-history-content,
 .modal.active .modal-add-product-content,
-.modal.active .modal-support-content {
+.modal.active .modal-support-content,
+.modal.active .modal-admin-content {
   overflow-y: auto;
   max-height: 90vh;
-}
-
-.modal.active .modal-content,
-.modal.active .modal-topup-content,
-.modal.active .modal-withdraw-content,
-.modal.active .modal-product-content,
-.modal.active .modal-history-content,
-.modal.active .modal-bonus-history-content {
   opacity: 1;
   transform: none;
 }
@@ -445,15 +512,15 @@ button:disabled, .buy-btn:disabled, .modal-btn:disabled, .section-btn:disabled, 
     flex-direction: column;
     align-items: flex-start;
     gap: 10px;
-    padding: 12px 6px;
+    padding: 10px 4px;
   }
   .profile-avatar-wrap {
-    width: 56px;
-    height: 56px;
+    width: 48px;
+    height: 48px;
   }
   .profile-balance, .profile-cart, .profile-themes {
-    padding: 10px 6px;
-    gap: 7px;
+    padding: 8px 2px;
+    gap: 6px;
   }
 }
 
@@ -479,32 +546,37 @@ button:disabled, .buy-btn:disabled, .modal-btn:disabled, .section-btn:disabled, 
 #bottom-tabs {
   position: fixed;
   left: 0; right: 0; bottom: 0;
-  height: 62px;
-  background: #fff;
-  border-top: 1.5px solid #e0f7fa;
+  width: 100vw;
+  max-width: 480px;
+  margin-left: auto;
+  margin-right: auto;
+  z-index: 1001;
+  height: 56px;
+  background: var(--color-card-bg);
+  border-top: 1.5px solid var(--color-border);
+  box-shadow: 0 -2px 16px #0001;
   display: flex;
   justify-content: space-around;
   align-items: center;
-  z-index: 1000;
-  box-shadow: 0 -2px 16px #0001;
+  padding-bottom: env(safe-area-inset-bottom, 0px);
 }
 .tab-btn {
   background: none;
   border: none;
   color: #00916e;
-  font-size: 1.1em;
+  font-size: 1.2em;
   font-weight: 700;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 2px;
-  padding: 0 10px;
+  padding: 0 8px;
   cursor: pointer;
   border-radius: 10px;
   transition: background 0.18s, color 0.18s;
 }
 .tab-btn.active, .tab-btn:active {
-  background: linear-gradient(90deg, #43e97b 60%, #00916e 100%);
+  background: #43e97b;
   color: #fff;
 }
 .tab-btn span {
@@ -524,12 +596,15 @@ button:disabled, .buy-btn:disabled, .modal-btn:disabled, .section-btn:disabled, 
 /* --- Адаптивность --- */
 @media (max-width: 400px) {
   .main-search input[type="text"] {
-    max-width: 120px;
-    font-size: 0.98em;
+    max-width: 100px;
+    font-size: 0.96em;
   }
   .main-search button {
-    min-width: 70px;
-    font-size: 0.98em;
+    min-width: 60px;
+    font-size: 0.96em;
+  }
+  .main-description h1 {
+    font-size: 1.1rem;
   }
 }
 @media (max-width: 350px) {
@@ -624,18 +699,20 @@ button:disabled, .buy-btn:disabled, .modal-btn:disabled, .section-btn:disabled, 
   .products-list {
     grid-template-columns: 1fr 1fr;
     max-width: 100vw;
-    gap: 16px 8px;
+    gap: 10px 6px;
+    padding: 0 2vw;
   }
   .product-card {
-    max-width: 44vw; /* чуть меньше для мобильных */
-    height: 210px;
-    min-height: 180px;
-    padding: 10px 4px 8px 4px;
+    max-width: 46vw;
+    min-width: 0;
+    height: 170px;
+    min-height: 140px;
+    padding: 8px 2px 6px 2px;
   }
   .product-card-img-wrap {
-    width: 90px;
-    height: 90px;
-    margin-bottom: 6px;
+    width: 70px;
+    height: 70px;
+    margin-bottom: 4px;
   }
 }
 
@@ -713,6 +790,7 @@ button:disabled, .buy-btn:disabled, .modal-btn:disabled, .section-btn:disabled, 
   border-radius: 14px;
   position: relative;
   transition: background 0.18s;
+  border: 2px solid #43e97b;
   box-shadow: 0 1px 4px #43e97b11;
 }
 .main-switch .switch-slider:before {
@@ -732,3 +810,193 @@ button:disabled, .buy-btn:disabled, .modal-btn:disabled, .section-btn:disabled, 
   left: 19px;
   background: #43e97b;
 }
+
+/* --- ДОПОЛНИТЕЛЬНЫЕ СТИЛИ ДЛЯ ВСЕХ ЭЛЕМЕНТОВ И ТЕМЫ --- */
+
+/* Универсальные стили для select, input, textarea */
+input, select, textarea {
+  font-family: inherit;
+  font-size: 1em;
+  border-radius: 8px;
+  border: 1px solid #e0e0e0;
+  background: #fff;
+  color: #222;
+  padding: 7px 10px;
+  outline: none;
+  box-sizing: border-box;
+  transition: border 0.18s, box-shadow 0.18s;
+}
+input:focus, select:focus, textarea:focus {
+  border-color: #43e97b;
+  box-shadow: 0 2px 8px #43e97b33;
+}
+
+/* Стили для .modal-btn и .modal-error */
+.modal-btn {
+  background: #43e97b;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 9px 0;
+  font-size: 1em;
+  font-weight: 600;
+  margin-top: 8px;
+  cursor: pointer;
+  transition: background 0.18s;
+  width: 100%;
+}
+.modal-btn:hover {
+  background: #00916e;
+}
+.modal-btn-main {
+  background: #43e97b;
+}
+.modal-btn-secondary {
+  background: #00b894;
+}
+.modal-error {
+  color: #e94e43;
+  font-size: 0.97em;
+  margin-top: 2px;
+  min-height: 18px;
+}
+
+/* Стили для .empty, .loading, .error */
+.empty, .loading, .error {
+  text-align: center;
+  color: #888;
+  font-size: 1em;
+  margin: 10px 0;
+}
+
+/* Стили для .admin-tabs и .admin-panel-content */
+.admin-tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+#admin-panel-content {
+  margin-top: 12px;
+}
+
+/* --- ТЕМЫ: поддержка смены темы через data-theme --- */
+:root {
+  --color-bg: #f4f4f4;
+  --color-text: #222;
+  --color-primary: #43e97b;
+  --color-primary-dark: #00916e;
+  --color-accent: #00b894;
+  --color-card-bg: #fff;
+  --color-card-shadow: #43e97b22;
+  --color-border: #e0f7fa;
+  --color-error: #e94e43;
+  --color-footer-bg: #e0f7fa;
+  --color-footer-text: #00916e;
+  --color-modal-bg: #fff;
+}
+[data-theme="dark"] {
+  --color-bg: #181c1f;
+  --color-text: #f4f4f4;
+  --color-primary: #43e97b;
+  --color-primary-dark: #00b894;
+  --color-accent: #43e97b;
+  --color-card-bg: #232526;
+  --color-card-shadow: #0008;
+  --color-border: #232526;
+  --color-error: #e94e43;
+  --color-footer-bg: #232526;
+  --color-footer-text: #43e97b;
+  --color-modal-bg: #232526;
+}
+[data-theme="newyear"] {
+  --color-bg: #fffbe7;
+  --color-text: #b71c1c;
+  --color-primary: #e53935;
+  --color-primary-dark: #b71c1c;
+  --color-accent: #43e97b;
+  --color-card-bg: #fff;
+  --color-card-shadow: #e5393522;
+  --color-border: #e53935;
+  --color-error: #e94e43;
+  --color-footer-bg: #e53935;
+  --color-footer-text: #fff;
+  --color-modal-bg: #fff;
+}
+[data-theme="spring"] {
+  --color-bg: #e8f5e9;
+  --color-text: #388e3c;
+  --color-primary: #43e97b;
+  --color-primary-dark: #388e3c;
+  --color-accent: #00b894;
+  --color-card-bg: #fff;
+  --color-card-shadow: #43e97b22;
+  --color-border: #43e97b;
+  --color-error: #e94e43;
+  --color-footer-bg: #43e97b;
+  --color-footer-text: #fff;
+  --color-modal-bg: #fff;
+}
+
+html, body {
+  background: var(--color-bg);
+  color: var(--color-text);
+}
+header, .profile-info, .profile-balance, .profile-cart, .profile-themes, .main-description, .category-card, .cart-list, .cart-summary, .modal-content, .modal-topup-content, .modal-withdraw-content, .modal-product-content, .modal-history-content, .modal-bonus-history-content, .product-card {
+  background: var(--color-card-bg);
+  color: var(--color-text);
+  box-shadow: 0 2px 12px var(--color-card-shadow);
+}
+footer {
+  background: var(--color-footer-bg);
+  color: var(--color-footer-text);
+}
+#bottom-tabs {
+  background: var(--color-card-bg);
+  border-top: 1.5px solid var(--color-border);
+}
+.tab-btn {
+  color: var(--color-primary);
+}
+.tab-btn.active, .tab-btn:active {
+  background: var(--color-primary);
+  color: #fff;
+}
+button, .modal-btn, .product-card-btn {
+  background: var(--color-primary);
+  color: #fff;
+}
+button:hover, .modal-btn:hover, .product-card-btn:hover {
+  background: var(--color-primary-dark);
+}
+input, select, textarea {
+  background: var(--color-card-bg);
+  color: var(--color-text);
+  border: 1px solid var(--color-border);
+}
+input:focus, select:focus, textarea:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 2px 8px var(--color-card-shadow);
+}
+
+/* --- Футер и "Все права защищены" --- */
+
+footer, .footer-copyright {
+  width: 100vw;
+  max-width: none;
+  margin: 0;
+  background: var(--color-footer-bg);
+  color: var(--color-footer-text);
+  text-align: center;
+  font-size: 1rem;
+  border-radius: 14px 14px 0 0;
+  box-shadow: 0 -2px 12px rgba(0,0,0,0.04);
+  padding: 10px 0 8px 0;
+  position: static;
+  z-index: auto;
+}
+.page-spacer {
+  height: 56px;
+  width: 100vw;
+  flex-shrink: 0;
+}
+/* У .spa-page и footer больше не нужны отступы снизу, за них отвечает .page-spacer */

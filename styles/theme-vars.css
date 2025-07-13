@@ -1,0 +1,80 @@
+/* CSS переменные для тем оформления */
+:root {
+  --color-bg: #f4f4f4;
+  --color-bg-gradient: linear-gradient(135deg, #e0f7fa 0%, #f4f4f4 100%);
+  --color-text: #222;
+  --color-primary: #43e97b;
+  --color-primary-dark: #00916e;
+  --color-accent: #00b894;
+  --color-card-bg: #fff;
+  --color-card-shadow: #43e97b22;
+  --color-border: #e0f7fa;
+  --color-error: #e94e43;
+  --color-success: #43e97b;
+  --color-footer-bg: #e0f7fa;
+  --color-footer-text: #00916e;
+  --color-modal-bg: #fff;
+  --color-modal-shadow: #43e97b22;
+  --color-toast-bg: #222;
+  --color-toast-text: #fff;
+}
+
+[data-theme="dark"] {
+  --color-bg: #181c1f;
+  --color-bg-gradient: linear-gradient(135deg, #232526 0%, #414345 100%);
+  --color-text: #f4f4f4;
+  --color-primary: #43e97b;
+  --color-primary-dark: #00b894;
+  --color-accent: #43e97b;
+  --color-card-bg: #232526;
+  --color-card-shadow: #0008;
+  --color-border: #232526;
+  --color-error: #e94e43;
+  --color-success: #43e97b;
+  --color-footer-bg: #232526;
+  --color-footer-text: #43e97b;
+  --color-modal-bg: #232526;
+  --color-modal-shadow: #0008;
+  --color-toast-bg: #232526;
+  --color-toast-text: #fff;
+}
+
+[data-theme="newyear"] {
+  --color-bg: #fffbe7;
+  --color-bg-gradient: linear-gradient(135deg, #fffbe7 0%, #e0f7fa 100%);
+  --color-text: #b71c1c;
+  --color-primary: #e53935;
+  --color-primary-dark: #b71c1c;
+  --color-accent: #43e97b;
+  --color-card-bg: #fff;
+  --color-card-shadow: #e5393522;
+  --color-border: #e53935;
+  --color-error: #e94e43;
+  --color-success: #43e97b;
+  --color-footer-bg: #e53935;
+  --color-footer-text: #fff;
+  --color-modal-bg: #fff;
+  --color-modal-shadow: #e5393522;
+  --color-toast-bg: #e53935;
+  --color-toast-text: #fff;
+}
+
+[data-theme="spring"] {
+  --color-bg: #e8f5e9;
+  --color-bg-gradient: linear-gradient(135deg, #e8f5e9 0%, #f4f4f4 100%);
+  --color-text: #388e3c;
+  --color-primary: #43e97b;
+  --color-primary-dark: #388e3c;
+  --color-accent: #00b894;
+  --color-card-bg: #fff;
+  --color-card-shadow: #43e97b22;
+  --color-border: #43e97b;
+  --color-error: #e94e43;
+  --color-success: #43e97b;
+  --color-footer-bg: #43e97b;
+  --color-footer-text: #fff;
+  --color-modal-bg: #fff;
+  --color-modal-shadow: #43e97b22;
+  --color-toast-bg: #43e97b;
+  --color-toast-text: #fff;
+}
