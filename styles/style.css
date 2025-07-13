@@ -132,6 +132,8 @@ footer {
   opacity: 0;
   transform: translateY(40px) scale(0.98);
   transition: opacity 0.22s, transform 0.22s;
+  overflow-y: auto;
+  max-height: 90vh;
 }
 .modal.active .modal-content,
 .modal.active .modal-topup-content,

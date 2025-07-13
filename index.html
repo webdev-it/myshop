@@ -317,6 +317,20 @@
           }
           return;
         }
+        // Подгрузка категорий в select
+        const catSelect = document.getElementById('add-product-category');
+        if (catSelect) {
+          catSelect.innerHTML = '<option value="">Загрузка...</option>';
+          fetch('https://store-backend-zpkh.onrender.com/categories')
+            .then(res => res.json())
+            .then(cats => {
+              catSelect.innerHTML = '<option value="">Выберите категорию</option>' +
+                cats.map(cat => `<option value="${cat.id}">${cat.name}</option>`).join('');
+            })
+            .catch(()=>{
+              catSelect.innerHTML = '<option value="">Ошибка загрузки</option>';
+            });
+        }
         modalAddProduct.classList.add('active');
         document.body.classList.add('modal-open');
       });
