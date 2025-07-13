@@ -132,9 +132,20 @@ footer {
   opacity: 0;
   transform: translateY(40px) scale(0.98);
   transition: opacity 0.22s, transform 0.22s;
+  /* убираем общий скролл, будет только для активной модалки */
+}
+.modal.active .modal-content,
+.modal.active .modal-topup-content,
+.modal.active .modal-withdraw-content,
+.modal.active .modal-product-content,
+.modal.active .modal-history-content,
+.modal.active .modal-bonus-history-content,
+.modal.active .modal-add-product-content,
+.modal.active .modal-support-content {
   overflow-y: auto;
   max-height: 90vh;
 }
+
 .modal.active .modal-content,
 .modal.active .modal-topup-content,
 .modal.active .modal-withdraw-content,
