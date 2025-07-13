@@ -268,6 +268,52 @@ document.addEventListener('DOMContentLoaded', function() {
   // Товары загружаются только по поиску
   // TODO: инициализация профиля, корзины, истории, поддержки и т.д.
 
+  // Обработчик для кнопки поддержки
+  const supportBtn = document.getElementById('support-form-btn');
+  const supportModal = document.getElementById('modal-support');
+  const supportClose = document.getElementById('support-close');
+  const supportBody = document.getElementById('modal-support-body');
+  if (supportBtn && supportModal && supportClose && supportBody) {
+    supportBtn.addEventListener('click', function() {
+      // Получаем Telegram ID пользователя
+      let userId = null;
+      const user = getTelegramUser && getTelegramUser();
+      if (user && user.id) userId = user.id.toString();
+      supportBody.innerHTML = '';
+      if (userId === '6956702448') {
+        // Админ-панель
+        supportBody.innerHTML = `
+          <h2>Админ-панель</h2>
+          <button id="admin-categories-btn" class="modal-btn">Управление категориями</button>
+          <button id="admin-products-btn" class="modal-btn">Управление товарами</button>
+          <div id="admin-panel-content" style="margin-top:16px;"></div>
+        `;
+        // Здесь можно добавить обработчики для кнопок админки
+      } else {
+        // Ссылка на чат с админом
+        supportBody.innerHTML = `
+          <h2>Связь с поддержкой</h2>
+          <p>Перейдите в <a href="https://t.me/your_admin_chat" target="_blank">чат с админом</a> для решения вашего вопроса.</p>
+        `;
+      }
+      supportModal.classList.add('active');
+      supportModal.style.display = 'flex';
+      document.body.classList.add('modal-open');
+    });
+    supportClose.addEventListener('click', function() {
+      supportModal.classList.remove('active');
+      supportModal.style.display = 'none';
+      document.body.classList.remove('modal-open');
+    });
+    supportModal.addEventListener('mousedown', function(e) {
+      if (e.target === supportModal) {
+        supportModal.classList.remove('active');
+        supportModal.style.display = 'none';
+        document.body.classList.remove('modal-open');
+      }
+    });
+  }
+
   // SPA: показать страницу по hash при загрузке
   const hash = window.location.hash.replace('#','');
   if(['main-page','profile-page','settings-page'].includes(hash)) {
