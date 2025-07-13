@@ -304,6 +304,19 @@
     const addProductClose = document.getElementById('add-product-close');
     if (addProductBtn && modalAddProduct && addProductClose) {
       addProductBtn.addEventListener('click', function() {
+        // Проверка на наличие Telegram ID
+        let user = null;
+        if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.initDataUnsafe && window.Telegram.WebApp.initDataUnsafe.user) {
+          user = window.Telegram.WebApp.initDataUnsafe.user;
+        }
+        if (!user || !user.id) {
+          if (typeof showToast === 'function') {
+            showToast('Добавлять товары можно только через Telegram', '#e94e43');
+          } else {
+            alert('Добавлять товары можно только через Telegram');
+          }
+          return;
+        }
         modalAddProduct.classList.add('active');
         document.body.classList.add('modal-open');
       });
