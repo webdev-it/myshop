@@ -262,6 +262,96 @@ function fillProfileFromTelegram() {
 
 // --- Инициализация SPA ---
 document.addEventListener('DOMContentLoaded', function() {
+  // --- Мои товары: загрузка и фильтрация ---
+  async function loadMyProducts() {
+    const user = getTelegramUser && getTelegramUser();
+    if (!user || !user.id) return;
+    const status = document.getElementById('my-products-status').value;
+    let res = await fetch('https://store-backend-zpkh.onrender.com/products?all=1');
+    let products = await res.json();
+    products = products.filter(p => p.ownerId == user.id);
+    if (status !== 'all') products = products.filter(p => p.status === status);
+    const list = document.getElementById('my-products-list');
+    if (!products.length) {
+      list.innerHTML = '<div class="empty">Нет товаров.</div>';
+      return;
+    }
+    list.innerHTML = products.map(prod => `
+      <div class="product-card my-product-card" data-product-id="${prod.id}">
+        <div class="product-card-img-wrap">
+          <img src="${prod.image ? `https://store-backend-zpkh.onrender.com/images/${encodeURIComponent(prod.image)}` : 'images/placeholder.png'}" alt="img" class="product-card-img">
+        </div>
+        <div class="product-card-body">
+          <div class="product-card-title">${prod.name}</div>
+          <div class="product-card-price">${prod.price ? prod.price + ' ₽' : 'Бесплатно'}</div>
+          <div class="product-card-status">Статус: <b>${prod.status === 'pending' ? 'На модерации' : prod.status === 'approved' ? 'Одобрено' : 'Отклонено'}</b></div>
+        </div>
+        <button class="product-card-btn product-delete-btn" data-id="${prod.id}">Удалить</button>
+      </div>
+    `).join('');
+  }
+
+  // Обработчик фильтрации "Мои товары"
+  const myProductsStatus = document.getElementById('my-products-status');
+  if (myProductsStatus) {
+    myProductsStatus.onchange = loadMyProducts;
+  }
+  // Загрузка при открытии профиля
+  document.querySelector('[data-page="profile-page"]').addEventListener('click', loadMyProducts);
+
+  // Удаление товара пользователем
+  document.getElementById('my-products-list').addEventListener('click', async function(e) {
+    const btn = e.target.closest('.product-delete-btn');
+    if (btn) {
+      if (!confirm('Удалить этот товар?')) return;
+      const id = btn.getAttribute('data-id');
+      const res = await fetch('https://store-backend-zpkh.onrender.com/products/' + id, { method: 'DELETE' });
+      if (res.ok) {
+        showToast('Товар удалён', '#43e97b');
+        loadMyProducts();
+      } else {
+        showToast('Ошибка удаления', '#e94e43');
+      }
+    }
+  });
+
+  // --- Добавление товара ---
+  const addProductForm = document.getElementById('add-product-form');
+  if (addProductForm) {
+    addProductForm.addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const user = getTelegramUser && getTelegramUser();
+      if (!user || !user.id) {
+        showToast('Ошибка: не найден Telegram ID', '#e94e43');
+        return;
+      }
+      const formData = new FormData(addProductForm);
+      const data = {
+        name: formData.get('title'),
+        description: formData.get('description'),
+        category: formData.get('category'),
+        price: Number(formData.get('price')),
+        ownerId: user.id,
+        // image: ... (реализовать загрузку файла отдельно)
+      };
+      // TODO: реализовать загрузку изображения отдельно, сейчас без image
+      const res = await fetch('https://store-backend-zpkh.onrender.com/products', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      });
+      if (res.ok) {
+        showToast('Товар отправлен на модерацию', '#43e97b');
+        addProductForm.reset();
+        document.getElementById('modal-add-product').style.display = 'none';
+        document.body.classList.remove('modal-open');
+        loadMyProducts();
+      } else {
+        const err = await res.json();
+        showToast('Ошибка: ' + (err.error || 'Не удалось добавить'), '#e94e43');
+      }
+    });
+  }
   loadCategories();
   updateCategoryFilterOptions();
   fillProfileFromTelegram();
@@ -284,16 +374,74 @@ document.addEventListener('DOMContentLoaded', function() {
         // Админ-панель
         supportBody.innerHTML = `
           <h2>Админ-панель</h2>
-          <button id="admin-categories-btn" class="modal-btn">Управление категориями</button>
-          <button id="admin-products-btn" class="modal-btn">Управление товарами</button>
+          <div class="admin-tabs">
+            <button id="admin-tab-moderation" class="modal-btn modal-btn-main">Товары на проверке</button>
+            <button id="admin-categories-btn" class="modal-btn">Управление категориями</button>
+            <button id="admin-products-btn" class="modal-btn">Управление товарами</button>
+          </div>
           <div id="admin-panel-content" style="margin-top:16px;"></div>
         `;
-        // Здесь можно добавить обработчики для кнопок админки
+        // Вкладка "Товары на проверке"
+        const adminPanelContent = document.getElementById('admin-panel-content');
+        document.getElementById('admin-tab-moderation').onclick = async function() {
+          adminPanelContent.innerHTML = '<div class="loading">Загрузка...</div>';
+          const res = await fetch('https://store-backend-zpkh.onrender.com/products/moderation');
+          const products = await res.json();
+          if (!products.length) {
+            adminPanelContent.innerHTML = '<div class="empty">Нет товаров на проверке.</div>';
+            return;
+          }
+          adminPanelContent.innerHTML = products.map(prod => `
+            <div class="product-card moderation-card" data-product-id="${prod.id}">
+              <div class="product-card-img-wrap">
+                <img src="${prod.image ? `https://store-backend-zpkh.onrender.com/images/${encodeURIComponent(prod.image)}` : 'images/placeholder.png'}" alt="img" class="product-card-img">
+              </div>
+              <div class="product-card-body">
+                <div class="product-card-title">${prod.name}</div>
+                <div class="product-card-price">${prod.price ? prod.price + ' ₽' : 'Бесплатно'}</div>
+                <div class="product-card-desc">${prod.description || ''}</div>
+                <div class="product-card-owner">ID пользователя: <b>${prod.ownerId}</b></div>
+                <div class="product-card-file">Файл: <a href="${prod.fileUrl || '#'}" target="_blank">Скачать</a></div>
+                <div class="product-card-actions">
+                  <button class="modal-btn approve-btn" data-id="${prod.id}">Одобрить</button>
+                  <button class="modal-btn reject-btn" data-id="${prod.id}">Отклонить</button>
+                </div>
+              </div>
+            </div>
+          `).join('');
+        };
+        // Сразу открыть вкладку модерации
+        setTimeout(()=>document.getElementById('admin-tab-moderation').click(), 100);
+        // Делегирование на approve/reject
+        adminPanelContent.addEventListener('click', async function(e) {
+          const approveBtn = e.target.closest('.approve-btn');
+          const rejectBtn = e.target.closest('.reject-btn');
+          if (approveBtn) {
+            const id = approveBtn.getAttribute('data-id');
+            const res = await fetch(`https://store-backend-zpkh.onrender.com/products/${id}/approve`, { method: 'POST' });
+            if (res.ok) {
+              showToast('Товар одобрен', '#43e97b');
+              document.getElementById('admin-tab-moderation').click();
+            } else {
+              showToast('Ошибка', '#e94e43');
+            }
+          }
+          if (rejectBtn) {
+            const id = rejectBtn.getAttribute('data-id');
+            const res = await fetch(`https://store-backend-zpkh.onrender.com/products/${id}/reject`, { method: 'POST' });
+            if (res.ok) {
+              showToast('Товар отклонён', '#e94e43');
+              document.getElementById('admin-tab-moderation').click();
+            } else {
+              showToast('Ошибка', '#e94e43');
+            }
+          }
+        });
       } else {
         // Ссылка на чат с админом
         supportBody.innerHTML = `
           <h2>Связь с поддержкой</h2>
-          <p>Перейдите в <a href="https://t.me/your_admin_chat" target="_blank">чат с админом</a> для решения вашего вопроса.</p>
+          <p>Перейдите в <a href="https://t.me/abdumalikovvvvvvv" target="_blank">чат с админом</a> для решения вашего вопроса.</p>
         `;
       }
       supportModal.classList.add('active');
