@@ -19,7 +19,7 @@ function showToast(msg, color) {
   setTimeout(()=>{ toast.style.display = 'none'; }, 2600);
 }
 
-const adminsID = ['6956702448', '5106121080', '']
+const adminsID = [6956702448, 5106121080, ]
 
 // --- SPA-навигация ---
 function showPage(pageId) {
