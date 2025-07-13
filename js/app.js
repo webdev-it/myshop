@@ -531,7 +531,7 @@ document.addEventListener('DOMContentLoaded', function() {
       const user = getTelegramUser && getTelegramUser();
       if (user && user.id) userId = user.id.toString();
       supportBody.innerHTML = '';
-      if (userId === adminsID) {
+      if (adminsID.includes(Number(userId))) {
         // Админ-панель
         supportBody.innerHTML = `
           <h2>Админ-панель</h2>
