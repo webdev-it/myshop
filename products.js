@@ -86,7 +86,7 @@ window.addEventListener('DOMContentLoaded', () => {
       <img src="${product.image}" alt="${product.name}" class="product-img" />
       <h2>${product.name}</h2>
       <p class="description">${product.description}</p>
-      <p class="price">Цена: ${product.price.toLocaleString()} ₽</p>
+      <p class="price">Цена: ${product.price === 0 ? 'Бесплатно' : product.price.toLocaleString() + ' ₽'}</p>
       <button class="buy-btn">Купить</button>
     `;
 
@@ -98,7 +98,7 @@ window.addEventListener('DOMContentLoaded', () => {
       const product = e.target.closest('.product');
       const name = product.dataset.name;
       const price = product.dataset.price;
-      alert(`Вы выбрали товар: ${name} за ${price} ₽`);
+      alert(`Вы выбрали товар: ${name} за ${price == 0 ? 'Бесплатно' : price + ' ₽'}`);
     });
   });
 

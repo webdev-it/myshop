@@ -1,0 +1,1388 @@
+/* --- МОБИЛЬНАЯ ОПТИМИЗАЦИЯ: САЙТ ТОЛЬКО ДЛЯ МОБИЛЬНЫХ --- */
+@media (min-width: 481px) {
+  html, body {
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    background: #181c24 !important;
+  }
+  body > *:not(.mobile-only-warning) {
+    display: none !important;
+  }
+  body::before, .mobile-only-warning {
+    content: 'Данный сайт доступен только с мобильного устройства.';
+    display: block;
+    color: #fff;
+    background: #181c24;
+    font-size: 1.3rem;
+    font-weight: 700;
+    text-align: center;
+    padding: 60px 24px;
+    border-radius: 18px;
+    box-shadow: 0 4px 32px #0008;
+    max-width: 420px;
+    margin: 0 auto;
+  }
+}
+
+/* --- ГЛОБАЛЬНЫЕ СТИЛИ --- */
+body {
+  margin: 0;
+  font-family: 'Segoe UI', 'Roboto', Arial, sans-serif;
+  background: linear-gradient(135deg, #e0f7fa 0%, #f4f4f4 100%);
+  color: #222;
+  max-width: 480px;
+  margin: 0 auto;
+  min-height: 100vh;
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* --- ШАПКА --- */
+header {
+  background: linear-gradient(90deg, #00b894 60%, #43e97b 100%);
+  background-size: cover;
+  background-position: center;
+  padding: 28px 10px 20px 10px;
+  color: #fff;
+  text-align: center;
+  border-radius: 0 0 18px 18px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.10);
+  position: relative;
+}
+header h1 {
+  margin: 0;
+  font-size: 2.2rem;
+  letter-spacing: 1.5px;
+  font-weight: 800;
+  text-shadow: 0 2px 8px rgba(0,0,0,0.10);
+}
+#welcome {
+  margin-top: 10px;
+  font-size: 1.1rem;
+  color: #e0f7fa;
+}
+
+/* --- НАВИГАЦИЯ --- */
+nav ul {
+  list-style: none;
+  padding: 0;
+  margin: 22px 0 0;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 16px;
+}
+nav ul li {
+  margin: 0;
+}
+nav ul li a {
+  background: linear-gradient(90deg, #00b894 60%, #43e97b 100%);
+  border: none;
+  border-radius: 14px;
+  color: #fff;
+  padding: 12px 26px;
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 1.08rem;
+  box-shadow: 0 2px 12px rgba(0, 255, 255, 0.10);
+  transition: background 0.2s, transform 0.18s, box-shadow 0.18s;
+  letter-spacing: 0.5px;
+  display: inline-block;
+}
+nav ul li a:hover {
+  background: linear-gradient(90deg, #43e97b 60%, #00b894 100%);
+  color: #fff;
+  transform: translateY(-2px) scale(1.06);
+  box-shadow: 0 6px 25px rgba(0, 255, 255, 0.18);
+}
+
+.back {
+  display: inline-block;
+  margin: 18px 0 0 0;
+  background: linear-gradient(90deg, #00b894 60%, #43e97b 100%);
+  color: #fff;
+  border-radius: 10px;
+  padding: 10px 22px;
+  font-weight: 700;
+  text-decoration: none;
+  transition: background 0.2s, transform 0.18s;
+  box-shadow: 0 2px 12px rgba(0, 255, 255, 0.10);
+}
+.back:hover {
+  background: linear-gradient(90deg, #43e97b 60%, #00b894 100%);
+  color: #fff;
+  transform: scale(1.04);
+}
+
+/* --- КОНТЕНТ --- */
+main {
+  padding: 36px 10px 24px 10px;
+  text-align: center;
+  flex: 1 1 auto;
+}
+.intro h2 {
+  font-size: 1.6rem;
+  margin-bottom: 10px;
+  font-weight: 700;
+  color: #00916e;
+}
+.intro p {
+  font-size: 1.13rem;
+  color: #555;
+  margin-bottom: 18px;
+}
+
+/* --- СЕТКА ТОВАРОВ --- */
+.products {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 18px 16px;
+  max-width: 700px;
+  margin: 0 auto 24px auto;
+  align-items: stretch;
+}
+
+/* --- КАРТОЧКА ТОВАРА --- */
+.product {
+  width: 100%;
+  max-width: 180px;
+  min-width: 150px;
+  background: #fff;
+  padding: 15px 10px 15px 10px;
+  border-radius: 16px;
+  box-shadow: 0 4px 18px rgba(0,0,0,0.13);
+  color: #181818;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+  position: relative;
+  overflow: hidden;
+  box-sizing: border-box;
+  transition: transform 0.22s, box-shadow 0.22s;
+  border: 1.5px solid #e0f7fa;
+}
+
+.product-img {
+  width: 100%;
+  max-width: 130px;
+  height: 130px;
+  object-fit: cover;
+  border-radius: 12px;
+  background-color: #e0f7fa;
+  margin: 0 auto 13px auto;
+  display: block;
+  flex-shrink: 0;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.09);
+}
+
+.product h2 {
+  font-size: 18px;
+  margin: 8px 0 5px 0;
+  font-weight: 800;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  width: 100%;
+  color: #00916e;
+  text-align: left;
+  box-sizing: border-box;
+  padding: 0 2px;
+}
+
+.product .description {
+  font-size: 14px;
+  color: #555;
+  margin-bottom: 8px;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  text-overflow: ellipsis;
+  line-height: 1.3;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0 2px;
+  text-align: left;
+}
+
+.product .price {
+  font-weight: bold;
+  margin-bottom: 12px;
+  color: #00b894;
+  font-size: 17px;
+  width: 100%;
+  text-align: left;
+  box-sizing: border-box;
+  padding: 0 2px;
+}
+
+.buy-btn {
+  margin-top: auto;
+  width: 100%;
+  padding: 13px 0;
+  background: linear-gradient(90deg, #00b894 60%, #43e97b 100%);
+  color: #fff;
+  border: none;
+  border-radius: 9px;
+  font-weight: bold;
+  font-size: 17px;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.15s;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.10);
+  letter-spacing: 0.5px;
+  text-align: center;
+}
+
+.buy-btn:active {
+  background: #00916e;
+  transform: scale(0.97);
+}
+
+.buy-btn:hover {
+  background: #00916e;
+}
+
+.product:hover {
+  transform: translateY(-5px) scale(1.045);
+  box-shadow: 0 10px 36px rgba(0,0,0,0.20);
+  border-color: #43e97b;
+}
+
+/* Если нужна анимация появления, используйте отдельный класс, например .fade-in */
+.fade-in {
+  opacity: 0;
+  animation: fadeIn 0.5s forwards;
+}
+@keyframes fadeIn {
+  to { opacity: 1; }
+}
+
+/* --- ФУТЕР --- */
+footer {
+  background: #e0f7fa;
+  color: #00916e;
+  text-align: center;
+  padding: 18px 0 12px 0;
+  font-size: 1rem;
+  border-radius: 18px 18px 0 0;
+  margin-top: 30px;
+  box-shadow: 0 -2px 12px rgba(0,0,0,0.06);
+}
+
+/* --- БЛОК ФИЛЬТРОВ/ПОИСКА --- */
+.filters {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 1px 8px rgba(0, 185, 148, 0.07);
+  padding: 8px 6px 6px 6px;
+  margin: 12px 0 12px 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  justify-content: center;
+  align-items: center;
+  transition: box-shadow 0.18s;
+  min-height: unset;
+}
+.filters:focus-within {
+  box-shadow: 0 4px 24px rgba(0, 185, 148, 0.18);
+}
+.filters input,
+.filters select {
+  padding: 5px 8px;
+  border-radius: 7px;
+  border: 1px solid #e0f7fa;
+  font-size: 13px;
+  background: #f8fdfd;
+  transition: border 0.18s, box-shadow 0.18s;
+  outline: none;
+  margin: 0;
+  min-width: 0;
+  height: 28px;
+  box-sizing: border-box;
+}
+.filters input:focus,
+.filters select:focus {
+  border-color: #00b894;
+  box-shadow: 0 1px 4px rgba(0, 185, 148, 0.10);
+}
+#search-input {
+  min-width: 80px;
+  max-width: 120px;
+  flex: 1 1 80px;
+}
+#category-filter, #sort-select {
+  min-width: 60px;
+  max-width: 90px;
+}
+@media (max-width: 400px) {
+  .filters {
+    flex-direction: row;
+    gap: 4px;
+    padding: 6px 2px 4px 2px;
+  }
+  .filters input, .filters select {
+    width: auto;
+    min-width: 0;
+    font-size: 12px;
+    height: 26px;
+  }
+}
+
+/* --- АДАПТИВНОСТЬ --- */
+@media (min-width: 481px) {
+  body {
+    max-width: 480px;
+    margin: 0 auto;
+  }
+  .products {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+@media (max-width: 350px) {
+  .product {
+    max-width: 98vw;
+    min-width: 0;
+  }
+  .products {
+    grid-template-columns: 1fr;
+  }
+}
+@media (max-width: 600px) {
+  .category-product-card {
+    width: 98vw !important;
+    min-width: 0 !important;
+    max-width: 100vw !important;
+    margin-bottom: 12px !important;
+  }
+}
+.category-product-card {
+  transition: box-shadow .18s, transform .18s;
+}
+.category-product-card:hover {
+  box-shadow: 0 4px 24px #00916e22;
+  transform: translateY(-2px) scale(1.03);
+}
+
+.admin-link {
+  display: inline-block;
+  margin: 20px auto;
+  background: linear-gradient(90deg, #790800 60%, #ff0000 100%);
+  color: #fff;
+  padding: 12px 24px;
+  border-radius: 10px;
+  text-decoration: none;
+  font-weight: bold;
+  transition: background 0.2s, transform 0.18s;
+}
+
+/* --- АДМИН-ПАНЕЛЬ (МОБИЛЬНЫЙ ТЁМНЫЙ UX) --- */
+.admin-dark {
+  max-width: 480px;
+  margin: 0 auto;
+  font-family: 'Segoe UI', 'Roboto', Arial, sans-serif;
+  background: linear-gradient(135deg, #181c24 0%, #232a34 100%);
+  color: #f3f3f3;
+  min-height: 100vh;
+  padding: 0 0 32px 0;
+  box-sizing: border-box;
+}
+.admin-dark h1 {
+  text-align: center;
+  margin: 0 0 32px 0;
+  font-size: 2.1rem;
+  font-weight: 900;
+  letter-spacing: 1.2px;
+  color: #ffb300;
+  text-shadow: 0 2px 16px #232a34, 0 1px 0 #fff2;
+}
+.admin-dark h2 {
+  font-size: 1.25rem;
+  color: #43e97b;
+  margin: 32px 0 16px 0;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+}
+.admin-dark form {
+  background: #232a34;
+  border-radius: 18px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.18);
+  padding: 22px 16px 18px 16px;
+  margin-bottom: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+.admin-dark label {
+  font-weight: 700;
+  color: #ffb300;
+  margin-bottom: 2px;
+}
+.admin-dark input[type="text"],
+.admin-dark input[type="number"],
+.admin-dark select,
+.admin-dark textarea {
+  padding: 14px 16px;
+  border-radius: 10px;
+  border: 1.5px solid #313a48;
+  font-size: 16px;
+  background: #232a34;
+  color: #f3f3f3;
+  transition: border 0.18s, box-shadow 0.18s;
+  outline: none;
+  margin: 0;
+  box-sizing: border-box;
+}
+.admin-dark input:focus, .admin-dark select:focus, .admin-dark textarea:focus {
+  border-color: #43e97b;
+  box-shadow: 0 2px 8px #43e97b33;
+}
+.admin-dark textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+.admin-dark button[type="submit"] {
+  padding: 16px 0;
+  background: linear-gradient(90deg, #ffb300 60%, #ff6f00 100%);
+  color: #232a34;
+  border: none;
+  border-radius: 12px;
+  font-weight: bold;
+  font-size: 18px;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.15s;
+  box-shadow: 0 2px 12px #ffb30022;
+  letter-spacing: 0.5px;
+}
+.admin-dark button[type="submit"]:hover {
+  background: linear-gradient(90deg, #ff6f00 60%, #ffb300 100%);
+  color: #fff;
+  transform: scale(1.03);
+}
+.admin-dark .product-list {
+  margin-top: 44px;
+  padding: 0 4px;
+}
+.admin-dark .category-title-sep {
+  font-weight: 900;
+  font-size: 1.15em;
+  margin: 36px 0 14px 0;
+  color: #232a34;
+  background: linear-gradient(90deg, #43e97b 60%, #00b894 100%);
+  border-radius: 14px;
+  padding: 13px 0 13px 0;
+  text-align: center;
+  box-shadow: 0 2px 12px #43e97b22;
+  letter-spacing: 0.5px;
+}
+.admin-dark .product-item {
+  background: #232a34;
+  border: 2px solid #313a48;
+  padding: 22px 12px 16px 12px;
+  margin-bottom: 18px;
+  border-radius: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  box-shadow: 0 2px 12px #0005;
+  position: relative;
+  transition: box-shadow 0.18s, border 0.18s;
+}
+.admin-dark .product-item:hover {
+  box-shadow: 0 8px 32px #43e97b33;
+  border-color: #43e97b;
+}
+.admin-dark .product-info {
+  font-size: 1.12em;
+  color: #f3f3f3;
+  font-weight: 500;
+  word-break: break-word;
+}
+.admin-dark .product-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+.admin-dark .product-actions button {
+  padding: 12px 22px;
+  background: linear-gradient(90deg, #ffb300 60%, #ff6f00 100%);
+  color: #232a34;
+  border: none;
+  border-radius: 9px;
+  font-weight: bold;
+  font-size: 17px;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.15s;
+  box-shadow: 0 2px 8px #ffb30022;
+}
+.admin-dark .product-actions button:hover {
+  background: linear-gradient(90deg, #ff6f00 60%, #ffb300 100%);
+  color: #fff;
+  transform: scale(1.04);
+}
+.admin-dark .back {
+  display: inline-block;
+  margin: 24px 0 24px 0;
+  background: linear-gradient(90deg, #43e97b 60%, #00b894 100%);
+  color: #fff;
+  border-radius: 12px;
+  padding: 14px 32px;
+  font-weight: 700;
+  text-decoration: none;
+  font-size: 1.15em;
+  transition: background 0.2s, transform 0.18s;
+  box-shadow: 0 2px 12px #43e97b22;
+}
+.admin-dark .back:hover {
+  background: linear-gradient(90deg, #00b894 60%, #43e97b 100%);
+  color: #fff;
+  transform: scale(1.04);
+}
+@media (max-width: 500px) {
+  .admin-dark {
+    max-width: 100vw;
+    padding: 0 0 32px 0;
+  }
+  .admin-dark .product-list {
+    padding: 0 2px;
+  }
+  .admin-dark form {
+    padding: 12px 4px 10px 4px;
+  }
+}
+
+/* --- Стили для раздела Админ --- */
+#admin-content {
+  background: #f8fdfd;
+  border-radius: 14px;
+  box-shadow: 0 2px 12px #43e97b11;
+  padding: 18px 12px 24px 12px;
+  margin: 0 auto 18px auto;
+  max-width: 480px;
+}
+#admin-content h2 {
+  color: #00916e;
+  margin-top: 0;
+}
+.section-btn {
+  display: inline-block;
+  background: linear-gradient(90deg, #43e97b 60%, #00916e 100%);
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  padding: 10px 22px;
+  font-weight: 700;
+  font-size: 1.08em;
+  margin-bottom: 10px;
+  margin-top: 10px;
+  cursor: pointer;
+  box-shadow: 0 2px 8px #43e97b22;
+  transition: background 0.18s, box-shadow 0.18s, color 0.18s;
+}
+.section-btn:hover {
+  background: linear-gradient(90deg, #00916e 60%, #43e97b 100%);
+  color: #fff;
+  box-shadow: 0 4px 16px #43e97b33;
+}
+.section-btn.active {
+  background: #43e97b !important;
+  color: #fff !important;
+}
+#add-product-form, #add-category-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 18px;
+}
+#add-product-form label, #add-category-form label {
+  font-weight: 600;
+  color: #00916e;
+  margin-bottom: 2px;
+}
+#add-product-form input[type="text"],
+#add-product-form input[type="number"],
+#add-product-form textarea,
+#add-product-form select,
+#add-category-form input[type="text"] {
+  padding: 9px 14px;
+  border-radius: 8px;
+  border: 1.5px solid #e0f7fa;
+  font-size: 1em;
+  background: #fff;
+  outline: none;
+  transition: border 0.18s, box-shadow 0.18s;
+}
+#add-product-form input:focus,
+#add-product-form textarea:focus,
+#add-product-form select:focus,
+#add-category-form input:focus {
+  border-color: #43e97b;
+  box-shadow: 0 2px 8px #43e97b33;
+}
+#add-product-form button, #add-category-form button {
+  background: #43e97b;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 0;
+  font-weight: 700;
+  font-size: 1.08em;
+  cursor: pointer;
+  margin-top: 8px;
+  transition: background 0.18s, box-shadow 0.18s;
+}
+#add-product-form button:hover, #add-category-form button:hover {
+  background: #00916e;
+  box-shadow: 0 4px 16px #43e97b33;
+}
+#drop-area, #file-drop-area {
+  border: 2px dashed #43e97b;
+  border-radius: 10px;
+  background: #f8fdfd;
+  padding: 12px 8px;
+  text-align: center;
+  cursor: pointer;
+  transition: background 0.2s, border 0.18s;
+  margin-bottom: 6px;
+}
+#drop-area:hover, #file-drop-area:hover {
+  background: #e0f7fa;
+  border-color: #00916e;
+}
+#image-preview img {
+  max-width: 100px;
+  max-height: 80px;
+  border-radius: 8px;
+  margin-top: 6px;
+}
+#file-preview {
+  margin-top: 8px;
+  display: none;
+  font-size: 0.98em;
+  color: #00916e;
+  word-break: break-all;
+}
+hr {
+  border: none;
+  border-top: 1.5px solid #e0f7fa;
+  margin: 18px 0;
+}
+
+/* --- Тёмная тема для админки --- */
+body.dark-theme #admin-content {
+  background: #23272f !important;
+  color: #f4f4f4 !important;
+}
+body.dark-theme #add-product-form input,
+body.dark-theme #add-product-form textarea,
+body.dark-theme #add-product-form select,
+body.dark-theme #add-category-form input {
+  background: #181c24 !important;
+  color: #f4f4f4 !important;
+  border-color: #00916e !important;
+}
+body.dark-theme #drop-area,
+body.dark-theme #file-drop-area {
+  background: #181c24 !important;
+  border-color: #43e97b !important;
+}
+body.dark-theme #drop-area:hover,
+body.dark-theme #file-drop-area:hover {
+  background: #23272f !important;
+  border-color: #43e97b !important;
+}
+body.dark-theme #add-product-form button,
+body.dark-theme #add-category-form button {
+  background: #00916e;
+  color: #fff;
+}
+body.dark-theme #add-product-form button:hover,
+body.dark-theme #add-category-form button:hover {
+  background: #43e97b;
+}
+
+/* --- Тема сайта: светлая и тёмная --- */
+body.light-theme {
+  background: linear-gradient(135deg, #e0f7fa 0%, #f4f4f4 100%);
+  color: #222;
+}
+body.dark-theme {
+  background: linear-gradient(135deg, #181c24 0%, #23272f 100%);
+  color: #f4f4f4;
+}
+body.dark-theme header {
+  background: linear-gradient(90deg, #23272f 60%, #00916e 100%);
+  color: #fff;
+}
+body.dark-theme .spa-page,
+body.dark-theme #account-info,
+body.dark-theme .product,
+body.dark-theme .category-tile,
+body.dark-theme nav,
+body.dark-theme .filters,
+body.dark-theme #topup-modal > div {
+  background: #23272f !important;
+  color: #f4f4f4 !important;
+  box-shadow: 0 2px 12px #0008;
+}
+body.dark-theme input,
+body.dark-theme select,
+body.dark-theme textarea {
+  background: #23272f !important;
+  color: #f4f4f4 !important;
+  border-color: #00916e !important;
+}
+body.dark-theme .back-btn {
+  background: #181c24;
+  color: #43e97b;
+}
+body.dark-theme .back-btn:hover {
+  background: #00916e;
+  color: #fff;
+}
+body.dark-theme #bottom-tabs {
+  background: #181c24;
+  border-top: 1.5px solid #23272f;
+}
+body.dark-theme #toast {
+  background: #23272f !important;
+  color: #43e97b !important;
+}
+body.dark-theme .slider-bg {
+  background: #23272f !important;
+}
+body.dark-theme .slider-dot {
+  background: #43e97b !important;
+}
+
+/* --- Нижнее меню навигации SPA --- */
+#bottom-tabs {
+  position: fixed;
+  left: 0; right: 0; bottom: 0;
+  height: 62px;
+  background: #fff;
+  border-top: 1.5px solid #e0f7fa;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  z-index: 1000;
+  box-shadow: 0 -2px 16px #0001;
+}
+#bottom-tabs .tab-btn.active span { color: #43e97b; }
+#bottom-tabs .tab-btn span { transition: color 0.2s; }
+@media (max-width: 600px) {
+  #bottom-tabs { height: 56px; }
+  #bottom-tabs .tab-btn span { font-size: 1.3em; }
+}
+
+/* --- Анимация ползунка "Бесплатно" --- */
+#free-filter-switch {
+  position: relative;
+  display: inline-block;
+  width: 38px;
+  height: 24px;
+}
+#free-filter-switch input[type="checkbox"] {
+  opacity: 0;
+  width: 38px;
+  height: 24px;
+  margin: 0;
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 2;
+  cursor: pointer;
+}
+#free-filter-switch .slider-bg {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 38px;
+  height: 24px;
+  background: #e0f7fa;
+  border-radius: 12px;
+  transition: background 0.25s;
+}
+#free-filter-switch .slider-dot {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 18px;
+  height: 18px;
+  background: #43e97b;
+  border-radius: 50%;
+  transition: left 0.25s, background 0.25s, box-shadow 0.18s;
+  box-shadow: 0 2px 8px #43e97b33;
+}
+#free-filter-switch input[type="checkbox"]:checked ~ .slider-bg {
+  background: #43e97b;
+}
+#free-filter-switch input[type="checkbox"]:checked ~ .slider-dot {
+  left: 17px;
+  background: #fff;
+  box-shadow: 0 2px 8px #43e97b99;
+}
+#free-filter-switch:active .slider-dot {
+  box-shadow: 0 4px 16px #43e97b55;
+}
+
+/* --- Кнопки "Назад" --- */
+.back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #e0f7fa;
+  color: #00916e;
+  border: none;
+  border-radius: 9px;
+  padding: 8px 18px;
+  font-size: 1.05em;
+  font-weight: 600;
+  cursor: pointer;
+  margin-bottom: 18px;
+  margin-top: 2px;
+  box-shadow: 0 2px 8px #43e97b11;
+  transition: background 0.18s, color 0.18s, box-shadow 0.18s;
+}
+.back-btn:hover {
+  background: #43e97b;
+  color: #fff;
+  box-shadow: 0 4px 16px #43e97b33;
+}
+
+/* --- Микроанимации карточек и категорий --- */
+.product:hover, .category-tile:hover {
+  box-shadow: 0 8px 32px #43e97b33;
+  border-color: #43e97b;
+  transform: translateY(-2px) scale(1.03);
+  transition: box-shadow 0.18s, border 0.18s, transform 0.18s;
+}
+.category-tile {
+  transition: box-shadow 0.18s, border 0.18s, transform 0.18s;
+}
+
+/* --- Подсветка активных фильтров --- */
+.filters select:focus, .filters input:focus {
+  border-color: #43e97b;
+  box-shadow: 0 2px 8px #43e97b33;
+}
+
+/* --- Подсказки при наведении --- */
+[title] {
+  cursor: help;
+}
+
+/* --- Toast уведомление --- */
+#toast {
+  display: none;
+  position: fixed;
+  left: 50%;
+  bottom: 32px;
+  transform: translateX(-50%);
+  background: #222;
+  color: #fff;
+  padding: 14px 28px;
+  border-radius: 12px;
+  font-size: 1.08em;
+  z-index: 2000;
+  box-shadow: 0 4px 24px #0005;
+  opacity: 0.97;
+  transition: opacity 0.3s;
+  animation: toastFadeIn 0.3s, toastFadeOut 0.3s 2.7s;
+}
+@keyframes toastFadeIn {
+  from { opacity: 0; transform: translateY(20px) scale(0.98); }
+  to { opacity: 0.97; transform: none; }
+}
+@keyframes toastFadeOut {
+  from { opacity: 0.97; }
+  to { opacity: 0; }
+}
+
+/* --- Улучшенная подсветка активных табов и кнопок --- */
+#bottom-tabs .tab-btn.active span, .section-btn.active, .buy-btn.active {
+  color: #fff !important;
+  background: linear-gradient(90deg, #43e97b 60%, #00916e 100%) !important;
+  box-shadow: 0 4px 16px #43e97b55 !important;
+  transform: scale(1.08);
+  transition: background 0.22s, color 0.22s, box-shadow 0.22s, transform 0.22s;
+}
+
+/* --- Плавная анимация появления/скрытия секций SPA --- */
+.spa-page {
+  opacity: 0;
+  pointer-events: none;
+  position: absolute;
+  left: 0; top: 0; width: 100%;
+  transition: opacity 0.25s;
+  z-index: 0;
+  display: block;
+}
+.spa-page.active {
+  opacity: 1;
+  pointer-events: auto;
+  position: relative;
+  z-index: 1;
+}
+
+/* --- Универсальные стили для модалок (фон чуть темнее) --- */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0; top: 0; width: 100vw; height: 100vh;
+  background: rgba(0,0,0,0.32);
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(6px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.22s;
+}
+.modal.active {
+  display: flex;
+  opacity: 1;
+  pointer-events: auto;
+}
+@keyframes modalFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+.modal-content {
+  background: #fff;
+  padding: 32px 24px 24px 24px;
+  border-radius: 20px;
+  box-shadow: 0 12px 40px #0002, 0 2px 8px #43e97b22;
+  max-width: 420px;
+  width: 95vw;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  animation: modalContentIn 0.28s cubic-bezier(.4,1.4,.6,1);
+  opacity: 0;
+  transform: translateY(40px) scale(0.98);
+  transition: opacity 0.22s, transform 0.22s;
+}
+.modal.active .modal-content {
+  opacity: 1;
+  transform: none;
+}
+@keyframes modalContentIn {
+  from { transform: translateY(40px) scale(0.98); opacity: 0.7; }
+  to { transform: none; opacity: 1; }
+}
+.modal-close {
+  position: absolute;
+  top: 12px; right: 16px;
+  background: none;
+  border: none;
+  font-size: 1.5em;
+  color: #bbb;
+  cursor: pointer;
+  width: auto;
+  padding: 0 8px;
+  line-height: 1;
+  transition: color 0.18s;
+}
+.modal-close:hover {
+  color: #00916e;
+}
+
+/* --- Современные универсальные стили для всех кнопок и интерактивных элементов --- */
+button, .tab-btn, .section-btn, .buy-btn, .modal-btn, .back-btn, .admin-link, #promo-activate-btn, #cart-pay-btn, #support-send-btn, .filters button, input[type="submit"] {
+  background: linear-gradient(90deg, #00b894 60%, #43e97b 100%);
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 1.08em;
+  padding: 12px 24px;
+  box-shadow: 0 2px 12px #43e97b22;
+  cursor: pointer;
+  transition: background 0.18s, color 0.18s, box-shadow 0.18s, transform 0.13s;
+  outline: none;
+  position: relative;
+  overflow: hidden;
+  letter-spacing: 0.5px;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+button:active, .tab-btn:active, .section-btn:active, .buy-btn:active, .modal-btn:active, .back-btn:active, .admin-link:active, #promo-activate-btn:active, #cart-pay-btn:active, #support-send-btn:active {
+  background: linear-gradient(90deg, #43e97b 60%, #00916e 100%);
+  transform: scale(0.97);
+  box-shadow: 0 2px 8px #00916e33;
+}
+button:hover, .tab-btn:hover, .section-btn:hover, .buy-btn:hover, .modal-btn:hover, .back-btn:hover, .admin-link:hover, #promo-activate-btn:hover, #cart-pay-btn:hover, #support-send-btn:hover {
+  background: linear-gradient(90deg, #43e97b 60%, #00916e 100%);
+  color: #fff;
+  box-shadow: 0 4px 16px #43e97b33;
+  transform: scale(1.03);
+}
+button:disabled, .buy-btn:disabled, .modal-btn:disabled, .section-btn:disabled, .back-btn:disabled, .admin-link:disabled, #promo-activate-btn:disabled, #cart-pay-btn:disabled, #support-send-btn:disabled {
+  background: #bbb !important;
+  color: #fff !important;
+  opacity: 0.7;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+/* Ripple-эффект для всех кнопок */
+button.button-ripple, .button-ripple, .tab-btn, .section-btn, .buy-btn, .modal-btn, .back-btn, .admin-link, #promo-activate-btn, #cart-pay-btn, #support-send-btn {
+  position: relative;
+  overflow: hidden;
+}
+button.button-ripple:after, .button-ripple:after, .tab-btn:after, .section-btn:after, .buy-btn:after, .modal-btn:after, .back-btn:after, .admin-link:after, #promo-activate-btn:after, #cart-pay-btn:after, #support-send-btn:after {
+  content: '';
+  display: block;
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  width: 100px; height: 100px;
+  left: 50%; top: 50%;
+  background: rgba(67,233,123,0.18);
+  transform: translate(-50%, -50%) scale(0);
+  transition: transform 0.4s, opacity 0.4s;
+  opacity: 0;
+}
+button.button-ripple:active:after, .button-ripple:active:after, .tab-btn:active:after, .section-btn:active:after, .buy-btn:active:after, .modal-btn:active:after, .back-btn:active:after, .admin-link:active:after, #promo-activate-btn:active:after, #cart-pay-btn:active:after, #support-send-btn:active:after {
+  transform: translate(-50%, -50%) scale(1.5);
+  opacity: 1;
+  transition: 0s;
+}
+
+/* --- Современный стиль для input/select/filters --- */
+input[type="search"], .filters input, .filters select, select {
+  background: #f8fdfd;
+  border: 1.5px solid #e0f7fa;
+  border-radius: 9px;
+  padding: 10px 16px;
+  font-size: 1.08em;
+  color: #222;
+  transition: border 0.18s, box-shadow 0.18s;
+  outline: none;
+  box-shadow: 0 1px 4px #43e97b11;
+}
+input[type="search"]:focus, .filters input:focus, .filters select:focus, select:focus {
+  border-color: #43e97b;
+  box-shadow: 0 2px 12px #43e97b33;
+}
+select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: url('data:image/svg+xml;utf8,<svg fill="%2343e97b" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/></svg>');
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  padding-right: 36px;
+}
+
+/* --- Адаптивность и плавная смена темы --- */
+body, body.dark-theme, body.light-theme {
+  transition: background 0.4s, color 0.4s;
+}
+
+/* --- Современные универсальные стили для всех кнопок и интерактивных элементов --- */
+button, .tab-btn, .section-btn, .buy-btn, .modal-btn, .back-btn, .admin-link, #promo-activate-btn, #cart-pay-btn, #support-send-btn, .filters button, input[type="submit"] {
+  background: linear-gradient(90deg, #00b894 60%, #43e97b 100%);
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 1.08em;
+  padding: 12px 24px;
+  box-shadow: 0 2px 12px #43e97b22;
+  cursor: pointer;
+  transition: background 0.18s, color 0.18s, box-shadow 0.18s, transform 0.13s;
+  outline: none;
+  position: relative;
+  overflow: hidden;
+  letter-spacing: 0.5px;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+button:active, .tab-btn:active, .section-btn:active, .buy-btn:active, .modal-btn:active, .back-btn:active, .admin-link:active, #promo-activate-btn:active, #cart-pay-btn:active, #support-send-btn:active {
+  background: linear-gradient(90deg, #43e97b 60%, #00916e 100%);
+  transform: scale(0.97);
+  box-shadow: 0 2px 8px #00916e33;
+}
+button:hover, .tab-btn:hover, .section-btn:hover, .buy-btn:hover, .modal-btn:hover, .back-btn:hover, .admin-link:hover, #promo-activate-btn:hover, #cart-pay-btn:hover, #support-send-btn:hover {
+  background: linear-gradient(90deg, #43e97b 60%, #00916e 100%);
+  color: #fff;
+  box-shadow: 0 4px 16px #43e97b33;
+  transform: scale(1.03);
+}
+button:disabled, .buy-btn:disabled, .modal-btn:disabled, .section-btn:disabled, .back-btn:disabled, .admin-link:disabled, #promo-activate-btn:disabled, #cart-pay-btn:disabled, #support-send-btn:disabled {
+  background: #bbb !important;
+  color: #fff !important;
+  opacity: 0.7;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+/* Ripple-эффект для всех кнопок */
+button.button-ripple, .button-ripple, .tab-btn, .section-btn, .buy-btn, .modal-btn, .back-btn, .admin-link, #promo-activate-btn, #cart-pay-btn, #support-send-btn {
+  position: relative;
+  overflow: hidden;
+}
+button.button-ripple:after, .button-ripple:after, .tab-btn:after, .section-btn:after, .buy-btn:after, .modal-btn:after, .back-btn:after, .admin-link:after, #promo-activate-btn:after, #cart-pay-btn:after, #support-send-btn:after {
+  content: '';
+  display: block;
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  width: 100px; height: 100px;
+  left: 50%; top: 50%;
+  background: rgba(67,233,123,0.18);
+  transform: translate(-50%, -50%) scale(0);
+  transition: transform 0.4s, opacity 0.4s;
+  opacity: 0;
+}
+button.button-ripple:active:after, .button-ripple:active:after, .tab-btn:active:after, .section-btn:active:after, .buy-btn:active:after, .modal-btn:active:after, .back-btn:active:after, .admin-link:active:after, #promo-activate-btn:active:after, #cart-pay-btn:active:after, #support-send-btn:active:after {
+  transform: translate(-50%, -50%) scale(1.5);
+  opacity: 1;
+  transition: 0s;
+}
+
+/* --- Современный стиль для input[type=search], select, фильтров */
+input[type="search"], .filters input, .filters select, select {
+  background: #f8fdfd;
+  border: 1.5px solid #e0f7fa;
+  border-radius: 9px;
+  padding: 10px 16px;
+  font-size: 1.08em;
+  color: #222;
+  transition: border 0.18s, box-shadow 0.18s;
+  outline: none;
+  box-shadow: 0 1px 4px #43e97b11;
+}
+input[type="search"]:focus, .filters input:focus, .filters select:focus, select:focus {
+  border-color: #43e97b;
+  box-shadow: 0 2px 12px #43e97b33;
+}
+input[type="search"]::-webkit-search-cancel-button {
+  -webkit-appearance: none;
+  height: 18px;
+  width: 18px;
+  background: url('data:image/svg+xml;utf8,<svg fill=\"%2343e97b\" height=\"18\" viewBox=\"0 0 24 24\" width=\"18\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z\"/></svg>') no-repeat center center;
+  cursor: pointer;
+}
+select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: url('data:image/svg+xml;utf8,<svg fill=\"%2343e97b\" height=\"18\" viewBox=\"0 0 24 24\" width=\"18\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M7 10l5 5 5-5z\"/></svg>');
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  padding-right: 36px;
+}
+
+/* --- Современные pill-кнопки для фильтров и поиска */
+.filters button, .filters .pill-btn {
+  background: linear-gradient(90deg, #43e97b 60%, #00916e 100%);
+  color: #fff;
+  border: none;
+  border-radius: 18px;
+  padding: 8px 20px;
+  font-weight: 700;
+  font-size: 1em;
+  box-shadow: 0 2px 8px #43e97b22;
+  cursor: pointer;
+  transition: background 0.18s, color 0.18s, box-shadow 0.18s, transform 0.13s;
+  outline: none;
+  margin: 0 2px;
+}
+.filters button:hover, .filters .pill-btn:hover {
+  background: linear-gradient(90deg, #00916e 60%, #43e97b 100%);
+  color: #fff;
+  box-shadow: 0 4px 16px #43e97b33;
+  transform: scale(1.04);
+}
+
+/* --- УНИВЕРСАЛЬНЫЙ CSS ДЛЯ SPA И МОДАЛОК === */
+
+/* --- Секции SPA --- */
+.spa-page {
+  opacity: 0;
+  pointer-events: none;
+  position: absolute;
+  left: 0; top: 0; width: 100%;
+  min-height: 100vh;
+  background: transparent;
+  transition: opacity 0.25s;
+  z-index: 0;
+  display: block;
+}
+.spa-page.active {
+  opacity: 1;
+  pointer-events: auto;
+  position: relative;
+  z-index: 1;
+}
+
+/* --- Модальные окна --- */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0; top: 0; width: 100vw; height: 100vh;
+  background: rgba(0,0,0,0.32);
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(6px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.22s;
+}
+.modal.active {
+  display: flex;
+  opacity: 1;
+  pointer-events: auto;
+}
+@keyframes modalFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+.modal-content {
+  background: #fff;
+  padding: 32px 24px 24px 24px;
+  border-radius: 20px;
+  box-shadow: 0 12px 40px #0002, 0 2px 8px #43e97b22;
+  max-width: 420px;
+  width: 95vw;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  animation: modalContentIn 0.28s cubic-bezier(.4,1.4,.6,1);
+  opacity: 0;
+  transform: translateY(40px) scale(0.98);
+  transition: opacity 0.22s, transform 0.22s;
+}
+.modal.active .modal-content {
+  opacity: 1;
+  transform: none;
+}
+@keyframes modalContentIn {
+  from { transform: translateY(40px) scale(0.98); opacity: 0.7; }
+  to { transform: none; opacity: 1; }
+}
+.modal-close {
+  position: absolute;
+  top: 12px; right: 16px;
+  background: none;
+  border: none;
+  font-size: 1.5em;
+  color: #bbb;
+  cursor: pointer;
+  width: auto;
+  padding: 0 8px;
+  line-height: 1;
+  transition: color 0.18s;
+}
+.modal-close:hover {
+  color: #00916e;
+}
+
+/* --- Универсальные кнопки --- */
+button, .tab-btn, .section-btn, .buy-btn, .modal-btn, .back-btn, .admin-link, #promo-activate-btn, #cart-pay-btn, #support-send-btn, .filters button, input[type="submit"] {
+  background: linear-gradient(90deg, #00b894 60%, #43e97b 100%);
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 1.08em;
+  padding: 12px 24px;
+  box-shadow: 0 2px 12px #43e97b22;
+  cursor: pointer;
+  transition: background 0.18s, color 0.18s, box-shadow 0.18s, transform 0.13s;
+  outline: none;
+  position: relative;
+  overflow: hidden;
+  letter-spacing: 0.5px;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+button:active, .tab-btn:active, .section-btn:active, .buy-btn:active, .modal-btn:active, .back-btn:active, .admin-link:active, #promo-activate-btn:active, #cart-pay-btn:active, #support-send-btn:active {
+  background: linear-gradient(90deg, #43e97b 60%, #00916e 100%);
+  transform: scale(0.97);
+  box-shadow: 0 2px 8px #00916e33;
+}
+button:hover, .tab-btn:hover, .section-btn:hover, .buy-btn:hover, .modal-btn:hover, .back-btn:hover, .admin-link:hover, #promo-activate-btn:hover, #cart-pay-btn:hover, #support-send-btn:hover {
+  background: linear-gradient(90deg, #43e97b 60%, #00916e 100%);
+  color: #fff;
+  box-shadow: 0 4px 16px #43e97b33;
+  transform: scale(1.03);
+}
+button:disabled, .buy-btn:disabled, .modal-btn:disabled, .section-btn:disabled, .back-btn:disabled, .admin-link:disabled, #promo-activate-btn:disabled, #cart-pay-btn:disabled, #support-send-btn:disabled {
+  background: #bbb !important;
+  color: #fff !important;
+  opacity: 0.7;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+/* Ripple-эффект для всех кнопок */
+button.button-ripple, .button-ripple, .tab-btn, .section-btn, .buy-btn, .modal-btn, .back-btn, .admin-link, #promo-activate-btn, #cart-pay-btn, #support-send-btn {
+  position: relative;
+  overflow: hidden;
+}
+button.button-ripple:after, .button-ripple:after, .tab-btn:after, .section-btn:after, .buy-btn:after, .modal-btn:after, .back-btn:after, .admin-link:after, #promo-activate-btn:after, #cart-pay-btn:after, #support-send-btn:after {
+  content: '';
+  display: block;
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  width: 100px; height: 100px;
+  left: 50%; top: 50%;
+  background: rgba(67,233,123,0.18);
+  transform: translate(-50%, -50%) scale(0);
+  transition: transform 0.4s, opacity 0.4s;
+  opacity: 0;
+}
+button.button-ripple:active:after, .button-ripple:active:after, .tab-btn:active:after, .section-btn:active:after, .buy-btn:active:after, .modal-btn:active:after, .back-btn:active:after, .admin-link:active:after, #promo-activate-btn:active:after, #cart-pay-btn:active:after, #support-send-btn:active:after {
+  transform: translate(-50%, -50%) scale(1.5);
+  opacity: 1;
+  transition: 0s;
+}
+
+/* --- Современный стиль для input/select/filters --- */
+input[type="search"], .filters input, .filters select, select {
+  background: #f8fdfd;
+  border: 1.5px solid #e0f7fa;
+  border-radius: 9px;
+  padding: 10px 16px;
+  font-size: 1.08em;
+  color: #222;
+  transition: border 0.18s, box-shadow 0.18s;
+  outline: none;
+  box-shadow: 0 1px 4px #43e97b11;
+}
+input[type="search"]:focus, .filters input:focus, .filters select:focus, select:focus {
+  border-color: #43e97b;
+  box-shadow: 0 2px 12px #43e97b33;
+}
+select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: url('data:image/svg+xml;utf8,<svg fill="%2343e97b" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/></svg>');
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  padding-right: 36px;
+}
+
+/* --- Адаптивность и плавная смена темы --- */
+body, body.dark-theme, body.light-theme {
+  transition: background 0.4s, color 0.4s;
+}
