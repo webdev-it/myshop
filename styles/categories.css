@@ -1,107 +1,140 @@
-/* Стили для админ-панели категорий и списка категорий */
 
 /* --- Админ-панель: форма добавления категории --- */
 #admin-add-category-form {
   display: flex;
-  gap: 10px;
-  margin-top: 12px;
+  gap: 12px;
+  margin-top: 16px;
+  align-items: stretch;
 }
 #admin-add-category-input {
   flex: 1;
   min-width: 0;
-  padding: 8px 12px;
-  border-radius: 8px;
-  border: 1px solid var(--color-border, #d0e6dd);
+  padding: 12px 16px;
+  border-radius: 10px;
+  border: 1.5px solid var(--color-border, #d0e6dd);
   background: var(--color-card-bg, #f8f8f8);
-  font-size: 1em;
-  transition: border 0.2s;
+  font-size: 1.08em;
+  transition: border 0.18s, box-shadow 0.18s;
+  box-shadow: 0 1.5px 6px 0 rgba(67, 233, 123, 0.04);
 }
 #admin-add-category-input:focus {
   border: 1.5px solid var(--color-primary, #43e97b);
   outline: none;
+  box-shadow: 0 0 0 2px #43e97b22;
 }
 #admin-add-category-form button[type="submit"] {
-  padding: 8px 18px;
-  border-radius: 8px;
-  background: var(--color-primary, #43e97b);
+  padding: 0 22px;
+  border-radius: 10px;
+  background: linear-gradient(90deg, var(--color-primary, #43e97b), var(--color-primary-dark, #00916e));
   color: #fff;
   border: none;
-  font-size: 1em;
+  font-size: 1.08em;
+  font-weight: 500;
   cursor: pointer;
-  transition: background 0.2s;
+  box-shadow: 0 2px 8px 0 rgba(67, 233, 123, 0.10);
+  transition: background 0.18s, box-shadow 0.18s, transform 0.12s;
+  display: flex;
+  align-items: center;
+  height: 44px;
 }
-#admin-add-category-form button[type="submit"]:hover {
-  background: var(--color-primary-dark, #00916e);
+#admin-add-category-form button[type="submit"]:hover, #admin-add-category-form button[type="submit"]:focus {
+  background: linear-gradient(90deg, #00916e, #43e97b);
+  box-shadow: 0 4px 16px 0 rgba(67, 233, 123, 0.18);
+  transform: translateY(-1px) scale(1.03);
 }
 
 /* --- Список категорий в админке --- */
+#admin-categories-list {
+  margin-top: 10px;
+}
 #admin-categories-list li {
   display: flex;
   align-items: center;
-  gap: 10px;
-  margin-bottom: 7px;
-  padding: 8px 12px;
+  gap: 12px;
+  margin-bottom: 8px;
+  padding: 10px 16px;
   background: var(--color-card-bg, #f8f8f8);
-  border-radius: 8px;
+  border-radius: 10px;
   box-shadow: 0 1.5px 6px 0 rgba(67, 233, 123, 0.07);
-  font-size: 1.05em;
+  font-size: 1.08em;
+  transition: box-shadow 0.18s, background 0.18s;
+  position: relative;
+}
+#admin-categories-list li:hover {
+  background: var(--color-primary, #43e97b11);
+  box-shadow: 0 4px 18px 0 rgba(67, 233, 123, 0.13);
 }
 .admin-delete-category-btn {
   background: var(--color-error, #e94e43);
   color: #fff;
   border: none;
-  border-radius: 6px;
-  padding: 4px 12px;
-  font-size: 1.1em;
+  border-radius: 8px;
+  padding: 6px 16px;
+  font-size: 1.08em;
+  font-weight: 500;
   cursor: pointer;
-  transition: background 0.2s;
+  transition: background 0.18s, transform 0.12s;
+  box-shadow: 0 1.5px 6px 0 rgba(233, 78, 67, 0.10);
 }
-.admin-delete-category-btn:hover {
+.admin-delete-category-btn:hover, .admin-delete-category-btn:focus {
   background: #b71c1c;
+  transform: scale(1.06);
 }
 
 /* --- Главная: карточки категорий --- */
 .categories-list {
   display: flex;
   flex-wrap: wrap;
-  gap: 12px;
-  margin-top: 10px;
+  gap: 14px;
+  margin-top: 14px;
+  justify-content: flex-start;
 }
 .category-card {
   background: var(--color-card-bg, #fff);
-  border-radius: 12px;
+  border-radius: 14px;
   box-shadow: 0 2px 10px 0 rgba(67, 233, 123, 0.10);
-  padding: 14px 18px;
-  font-size: 1.08em;
+  padding: 16px 22px;
+  font-size: 1.12em;
   cursor: pointer;
-  transition: box-shadow 0.18s, background 0.18s;
+  transition: box-shadow 0.18s, background 0.18s, transform 0.12s;
   min-width: 120px;
   text-align: center;
   user-select: none;
+  font-weight: 500;
+  color: var(--color-text, #222);
+  outline: none;
+  border: 1.5px solid transparent;
 }
-.category-card:hover {
+.category-card:hover, .category-card:focus {
   background: var(--color-primary, #43e97b11);
   box-shadow: 0 4px 18px 0 rgba(67, 233, 123, 0.18);
+  border: 1.5px solid var(--color-primary, #43e97b);
+  transform: translateY(-2px) scale(1.04);
 }
 
 /* --- Селекты категорий --- */
 #main-search-category, #add-product-category {
-  border-radius: 8px;
-  padding: 8px 12px;
-  font-size: 1em;
+  border-radius: 10px;
+  padding: 12px 16px;
+  font-size: 1.08em;
   background: var(--color-card-bg, #f8f8f8);
-  border: 1px solid var(--color-border, #d0e6dd);
-  margin-bottom: 10px;
+  border: 1.5px solid var(--color-border, #d0e6dd);
+  margin-bottom: 12px;
   min-width: 120px;
+  transition: border 0.18s, box-shadow 0.18s;
+  box-shadow: 0 1.5px 6px 0 rgba(67, 233, 123, 0.04);
 }
 #main-search-category:focus, #add-product-category:focus {
   border: 1.5px solid var(--color-primary, #43e97b);
   outline: none;
+  box-shadow: 0 0 0 2px #43e97b22;
 }
 
+/* --- Адаптив --- */
 @media (max-width: 600px) {
   .categories-list {
     gap: 8px;
+    margin-top: 8px;
   }
   .category-card {
     padding: 10px 8px;
@@ -109,6 +142,16 @@
     min-width: 90px;
   }
   #admin-add-category-form button[type="submit"] {
+    padding: 0 10px;
+    font-size: 0.98em;
+    height: 38px;
+  }
+  #admin-add-category-input {
     padding: 8px 10px;
+    font-size: 0.98em;
+  }
+  #main-search-category, #add-product-category {
+    padding: 8px 10px;
+    font-size: 0.98em;
   }
 }
