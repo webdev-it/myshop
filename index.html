@@ -20,11 +20,11 @@
     </section>
     <!-- Поиск товаров -->
     <section id="main-search" class="main-search">
-      <div class="main-search-col">
+      <div class="main-search-row">
         <input id="main-search-input" type="text" placeholder="Поиск товаров..." autocomplete="off">
         <button id="main-search-btn">Поиск</button>
       </div>
-      <div class="main-search-col">
+      <div class="main-search-row">
         <select id="main-search-category">
           <!-- категории -->
         </select>
@@ -35,8 +35,6 @@
           <option value="name-asc">Название A-Я</option>
           <option value="name-desc">Название Я-А</option>
         </select>
-      </div>
-      <div class="main-search-col">
         <label class="main-switch">
           <input type="checkbox" id="main-search-free">
           <span class="switch-slider"></span>
@@ -55,6 +53,29 @@
       <div id="main-categories-list" class="categories-list"></div>
     </section>
     <div class="page-spacer"></div>
+  </div>
+  <!-- Страница подробного просмотра товара -->
+  <div id="product-page" class="spa-page" style="display:none;">
+    <button id="product-back-btn" class="modal-btn" style="margin: 1em 0 0 1em;">← Назад</button>
+    <section class="product-detail">
+      <div class="product-detail-main">
+        <img id="product-detail-image" src="" alt="Изображение товара" class="product-detail-image" style="display:none;" />
+        <h2 id="product-detail-title">Название товара</h2>
+        <div id="product-detail-price" class="product-detail-price">Цена: —</div>
+        <div id="product-detail-description" class="product-detail-description">Описание товара...</div>
+      </div>
+      <div class="product-detail-seller">
+        <span>Продавец: </span>
+        <a id="product-detail-seller-link" href="#" target="_blank">
+          <span id="product-detail-seller-name">Имя продавца</span>
+        </a>
+      </div>
+      <div class="product-detail-actions">
+        <button id="product-detail-buy-btn" class="modal-btn modal-btn-main" style="display:none;">Купить</button>
+        <button id="product-detail-download-btn" class="modal-btn modal-btn-main" style="display:none;">Скачать бесплатно</button>
+      </div>
+    </section>
+    <!-- В будущем: отзывы, чат -->
   </div>
   <!-- Страница профиля -->
   <div id="profile-page" class="spa-page">
@@ -309,6 +330,76 @@
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <!-- Основная логика SPA и загрузки данных -->
   <script src="js/app.js"></script>
+  <script>
+  // SPA: Показ страницы товара и возврат
+  function showProductPage(product) {
+    // Скрыть все spa-page
+    document.querySelectorAll('.spa-page').forEach(p => p.classList.remove('active'));
+    document.getElementById('product-page').classList.add('active');
+    // Заполнить данные
+    document.getElementById('product-detail-title').textContent = product.title || 'Название товара';
+    document.getElementById('product-detail-description').textContent = product.description || 'Описание товара...';
+    document.getElementById('product-detail-price').textContent = product.price > 0 ? `Цена: ${product.price} ₽` : 'Бесплатно';
+    // Картинка
+    const img = document.getElementById('product-detail-image');
+    if (product.image) {
+      img.src = product.image;
+      img.style.display = '';
+    } else {
+      img.style.display = 'none';
+    }
+    // Продавец
+    document.getElementById('product-detail-seller-name').textContent = product.sellerName || '—';
+    document.getElementById('product-detail-seller-link').href = product.sellerProfileUrl || '#';
+    // Кнопки
+    const buyBtn = document.getElementById('product-detail-buy-btn');
+    const dlBtn = document.getElementById('product-detail-download-btn');
+    if (product.price > 0) {
+      buyBtn.style.display = '';
+      dlBtn.style.display = 'none';
+    } else {
+      buyBtn.style.display = 'none';
+      dlBtn.style.display = '';
+    }
+    // Заглушки на кнопки
+    buyBtn.onclick = function() { alert('Покупка пока не реализована'); };
+    dlBtn.onclick = function() { alert('Скачивание пока не реализовано'); };
+  }
+
+  // Назад к списку товаров
+  document.addEventListener('DOMContentLoaded', function() {
+    const backBtn = document.getElementById('product-back-btn');
+    if (backBtn) {
+      backBtn.addEventListener('click', function() {
+        document.getElementById('product-page').classList.remove('active');
+        document.getElementById('main-page').classList.add('active');
+      });
+    }
+  });
+
+  // Пример: как вызывать showProductPage (заменить на реальный вызов при клике на товар)
+  // Реальный обработчик клика по карточке товара
+  document.addEventListener('DOMContentLoaded', function() {
+    const productsList = document.getElementById('main-products-list');
+    if (!productsList) return;
+    productsList.addEventListener('click', function(e) {
+      // Ищем ближайший элемент с data-id (карточка товара)
+      let card = e.target;
+      while (card && card !== productsList && !card.dataset.id) {
+        card = card.parentElement;
+      }
+      if (card && card.dataset.id) {
+        // productsData должен быть глобальным массивом с товарами
+        if (window.productsData && Array.isArray(window.productsData)) {
+          const product = window.productsData.find(p => String(p.id) === String(card.dataset.id));
+          if (product) {
+            showProductPage(product);
+          }
+        }
+      }
+    });
+  });
+  </script>
   <script>
   // Открытие/закрытие модалки добавления товара (через класс 'active')
   document.addEventListener('DOMContentLoaded', function() {
