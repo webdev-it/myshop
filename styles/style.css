@@ -1,3 +1,77 @@
+/* --- ОПТИМИЗАЦИЯ АДАПТИВА И ПЕРЕКРЫТИЙ --- */
+.main-search-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 10px;
+}
+@media (max-width: 600px) {
+  .main-search-row {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+}
+
+.main-switch {
+  margin-left: 8px;
+  margin-top: 0;
+  margin-bottom: 0;
+  align-self: flex-end;
+  position: relative;
+  z-index: 2;
+}
+@media (max-width: 600px) {
+  .main-switch {
+    align-self: flex-start;
+    margin-left: 0;
+    margin-top: 2px;
+    margin-bottom: 2px;
+    width: max-content;
+    min-width: 0;
+    z-index: 2;
+  }
+}
+
+.products-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 18px 10px;
+  margin: 0 auto 12px auto;
+  width: 100%;
+  max-width: 500px;
+  position: relative;
+  z-index: 1;
+}
+@media (max-width: 600px) {
+  .products-list {
+    grid-template-columns: 1fr 1fr;
+    gap: 8px 4px;
+    max-width: 100vw;
+    padding: 0 2vw;
+  }
+}
+
+.product-card {
+  min-width: 0;
+  max-width: 100%;
+  position: relative;
+  z-index: 1;
+}
+
+/* Исправление перекрытия для .modal и .main-search */
+.modal, .modal-content, .modal-add-product-content {
+  z-index: 2000 !important;
+}
+
+/* Исправление для .main-search, чтобы не перекрывалась навигацией */
+.main-search {
+  position: relative;
+  z-index: 10;
+}
 /* --- АДМИН-ПАНЕЛЬ: отдельные стили --- */
 .admin-tabs {
   background: linear-gradient(90deg, #00916e 60%, #43e97b 100%);
