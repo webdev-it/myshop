@@ -1,3 +1,25 @@
+// --- Генерация карточки товара с поддержкой скелетона ---
+function renderProductCard(prod, opts = {}) {
+  const imageUrl = prod.image ? `https://store-backend-zpkh.onrender.com/images/${encodeURIComponent(prod.image)}` : 'images/placeholder.png';
+  // skeletonId нужен для уникальности скелетона
+  const skeletonId = `skeleton-${prod.id || Math.random().toString(36).slice(2)}`;
+  return `<div class="product-card${opts.my ? ' my-product-card' : ''}${opts.moderation ? ' moderation-card' : ''}" data-product-id="${prod.id}">
+    <div class="product-card-img-wrap" style="position:relative;">
+      <div class="img-skeleton" id="${skeletonId}"></div>
+      <img src="${imageUrl}" alt="img" class="product-card-img" style="opacity:0;transition:opacity .2s;" onload="(function(){var s=document.getElementById('${skeletonId}');if(s)s.style.display='none';this.style.opacity=1;}).call(this)">
+    </div>
+    <div class="product-card-body">
+      <div class="product-card-title">${prod.name}</div>
+      <div class="product-card-price">${prod.price ? prod.price + ' ₽' : 'Бесплатно'}</div>
+      ${opts.status ? `<div class="product-card-status">Статус: <b>${prod.status === 'pending' ? 'На модерации' : prod.status === 'approved' ? 'Одобрено' : 'Отклонено'}</b></div>` : ''}
+      ${opts.desc ? `<div class="product-card-desc">${prod.description || ''}</div>` : ''}
+      ${opts.owner ? `<div class="product-card-owner">ID пользователя: <b>${prod.ownerId}</b></div>` : ''}
+      ${opts.file ? `<div class="product-card-file">Файл: <a href="${prod.fileUrl || '#'}" target="_blank">Скачать</a></div>` : ''}
+    </div>
+    ${opts.deleteBtn ? `<button class="product-card-btn product-delete-btn" data-id="${prod.id}">Удалить</button>` : `<button class="product-card-btn">Подробнее</button>`}
+    ${opts.actions || ''}
+  </div>`;
+}
 // === SPA: Основная логика интернет-магазина ===
 
 // --- Telegram WebApp API ---
@@ -88,19 +110,7 @@ async function loadProducts(filters = {}) {
       list.innerHTML = '<div class="empty">Нет товаров.</div>';
       return;
     }
-    list.innerHTML = products.map(prod => {
-      const imageUrl = prod.image ? `https://store-backend-zpkh.onrender.com/images/${encodeURIComponent(prod.image)}` : 'images/placeholder.png';
-      return `<div class="product-card" data-product-id="${prod.id}">
-        <div class="product-card-img-wrap">
-          <img src="${imageUrl}" alt="img" class="product-card-img">
-        </div>
-        <div class="product-card-body">
-          <div class="product-card-title">${prod.name}</div>
-          <div class="product-card-price">${prod.price ? prod.price + ' ₽' : 'Бесплатно'}</div>
-        </div>
-        <button class="product-card-btn">Подробнее</button>
-      </div>`;
-    }).join('');
+    list.innerHTML = products.map(prod => renderProductCard(prod)).join('');
   } catch {
     list.innerHTML = '<div class="error">Ошибка загрузки товаров.</div>';
   }
@@ -228,19 +238,7 @@ async function openCategoryPage(categoryId) {
       list.innerHTML = '<div class="empty">Нет товаров в категории.</div>';
       return;
     }
-    list.innerHTML = products.map(prod => {
-      const imageUrl = prod.image ? `https://store-backend-zpkh.onrender.com/images/${encodeURIComponent(prod.image)}` : 'images/placeholder.png';
-      return `<div class="product-card" data-product-id="${prod.id}">
-        <div class="product-card-img-wrap">
-          <img src="${imageUrl}" alt="img" class="product-card-img">
-        </div>
-        <div class="product-card-body">
-          <div class="product-card-title">${prod.name}</div>
-          <div class="product-card-price">${prod.price ? prod.price + ' ₽' : 'Бесплатно'}</div>
-        </div>
-        <button class="product-card-btn">Подробнее</button>
-      </div>`;
-    }).join('');
+  list.innerHTML = products.map(prod => renderProductCard(prod)).join('');
   } catch {
     list.innerHTML = '<div class="error">Ошибка загрузки товаров.</div>';
   }
@@ -558,19 +556,7 @@ document.addEventListener('DOMContentLoaded', function() {
       list.innerHTML = '<div class="empty">Нет товаров.</div>';
       return;
     }
-    list.innerHTML = products.map(prod => `
-      <div class="product-card my-product-card" data-product-id="${prod.id}">
-        <div class="product-card-img-wrap">
-          <img src="${prod.image ? `https://store-backend-zpkh.onrender.com/images/${encodeURIComponent(prod.image)}` : 'images/placeholder.png'}" alt="img" class="product-card-img">
-        </div>
-        <div class="product-card-body">
-          <div class="product-card-title">${prod.name}</div>
-          <div class="product-card-price">${prod.price ? prod.price + ' ₽' : 'Бесплатно'}</div>
-          <div class="product-card-status">Статус: <b>${prod.status === 'pending' ? 'На модерации' : prod.status === 'approved' ? 'Одобрено' : 'Отклонено'}</b></div>
-        </div>
-        <button class="product-card-btn product-delete-btn" data-id="${prod.id}">Удалить</button>
-      </div>
-    `).join('');
+  list.innerHTML = products.map(prod => renderProductCard(prod, {my:true,status:true,deleteBtn:true})).join('');
   }
 
   // Обработчик фильтрации "Мои товары"
@@ -629,8 +615,26 @@ document.addEventListener('DOMContentLoaded', function() {
         showToast('Выберите файл товара', '#e94e43');
         return;
       }
-      // 2. Загрузка изображения (опционально, если нужно)
-      // ...можно реализовать аналогично через /upload
+
+      // 2. Загрузка изображения (если выбрано)
+      const imageInput = document.getElementById('add-product-image');
+      let imageFileName = '';
+      if (imageInput && imageInput.files && imageInput.files[0]) {
+        const imgData = new FormData();
+        imgData.append('image', imageInput.files[0]);
+        const imgRes = await fetch('https://store-backend-zpkh.onrender.com/upload/image', {
+          method: 'POST',
+          body: imgData
+        });
+        if (imgRes.ok) {
+          const imgJson = await imgRes.json();
+          imageFileName = imgJson.url;
+        } else {
+          showToast('Ошибка загрузки изображения', '#e94e43');
+          return;
+        }
+      }
+
       // 3. Отправка товара
       const data = {
         name: formData.get('title'),
@@ -638,7 +642,8 @@ document.addEventListener('DOMContentLoaded', function() {
         category: formData.get('category'),
         price: Number(formData.get('price')),
         ownerId: user.id,
-        fileUrl
+        fileUrl,
+        image: imageFileName
       };
       const res = await fetch('https://store-backend-zpkh.onrender.com/products', {
         method: 'POST',
@@ -678,13 +683,13 @@ document.addEventListener('DOMContentLoaded', function() {
       if (adminsID.includes(Number(userId))) {
         // Админ-панель
         supportBody.innerHTML = `
-          <h2>Админ-панель</h2>
+          <h2 style="margin-bottom:0.5em;color:#00916e;">Админ-панель</h2>
           <div class="admin-tabs">
-            <button id="admin-tab-moderation" class="modal-btn modal-btn-main">Товары на проверке</button>
-            <button id="admin-categories-btn" class="modal-btn">Управление категориями</button>
-            <button id="admin-products-btn" class="modal-btn">Управление товарами</button>
+            <button id="admin-tab-moderation" class="modal-btn modal-btn-main"><span class="icon">🛡️</span>Товары на проверке</button>
+            <button id="admin-categories-btn" class="modal-btn"><span class="icon">📂</span>Категории</button>
+            <button id="admin-products-btn" class="modal-btn"><span class="icon">📦</span>Товары</button>
           </div>
-          <div id="admin-panel-content" style="margin-top:16px;"></div>
+          <div id="admin-panel-content" class="admin-panel-content"></div>
         `;
         const adminPanelContent = document.getElementById('admin-panel-content');
         // Вкладка "Товары на проверке"
@@ -696,24 +701,10 @@ document.addEventListener('DOMContentLoaded', function() {
             adminPanelContent.innerHTML = '<div class="empty">Нет товаров на проверке.</div>';
             return;
           }
-          adminPanelContent.innerHTML = products.map(prod => `
-            <div class="product-card moderation-card" data-product-id="${prod.id}">
-              <div class="product-card-img-wrap">
-                <img src="${prod.image ? `https://store-backend-zpkh.onrender.com/images/${encodeURIComponent(prod.image)}` : 'images/placeholder.png'}" alt="img" class="product-card-img">
-              </div>
-              <div class="product-card-body">
-                <div class="product-card-title">${prod.name}</div>
-                <div class="product-card-price">${prod.price ? prod.price + ' ₽' : 'Бесплатно'}</div>
-                <div class="product-card-desc">${prod.description || ''}</div>
-                <div class="product-card-owner">ID пользователя: <b>${prod.ownerId}</b></div>
-                <div class="product-card-file">Файл: <a href="${prod.fileUrl || '#'}" target="_blank">Скачать</a></div>
-                <div class="product-card-actions">
-                  <button class="modal-btn approve-btn" data-id="${prod.id}">Одобрить</button>
-                  <button class="modal-btn reject-btn" data-id="${prod.id}">Отклонить</button>
-                </div>
-              </div>
-            </div>
-          `).join('');
+          adminPanelContent.innerHTML = products.map(prod => renderProductCard(prod, {
+            moderation:true, desc:true, owner:true, file:true,
+            actions:`<div class=\"product-card-actions\"><button class=\"modal-btn approve-btn\" data-id=\"${prod.id}\">Одобрить</button><button class=\"modal-btn reject-btn\" data-id=\"${prod.id}\">Отклонить</button></div>`
+          })).join('');
         };
         // Вкладка "Управление категориями"
         document.getElementById('admin-categories-btn').onclick = async function() {
@@ -722,19 +713,16 @@ document.addEventListener('DOMContentLoaded', function() {
             const res = await fetch('https://store-backend-zpkh.onrender.com/categories');
             let cats = await res.json();
             adminPanelContent.innerHTML = `
-              <h3>Категории</h3>
-              <ul id="admin-categories-list" style="padding-left:0;list-style:none;"></ul>
+              <h3 style="color:#00916e;margin-bottom:0.5em;">Категории</h3>
+              <ul id="admin-categories-list" class="admin-category-list" style="padding-left:0;list-style:none;"></ul>
               <form id="admin-add-category-form" style="margin-top:16px;display:flex;gap:8px;">
                 <input id="admin-add-category-input" type="text" placeholder="Новая категория" required style="flex:1;min-width:0;">
-                <button type="submit" class="modal-btn">Добавить</button>
+                <button type="submit" class="modal-btn"><span class="icon">➕</span>Добавить</button>
               </form>
             `;
             const list = document.getElementById('admin-categories-list');
             list.innerHTML = cats.map(cat => `
-              <li style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
-                <span>${cat.name}</span>
-                <button class="modal-btn admin-delete-category-btn" data-id="${cat.id}" style="background:#e94e43;min-width:32px;padding:4px 10px;">✕</button>
-              </li>
+              <li><span>${cat.name}</span><button class="modal-btn admin-delete-category-btn" data-id="${cat.id}"><span class="icon">🗑️</span>Удалить</button></li>
             `).join('');
             // Добавление категории
             document.getElementById('admin-add-category-form').onsubmit = async function(e) {

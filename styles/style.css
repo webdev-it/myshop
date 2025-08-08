@@ -1,3 +1,125 @@
+/* --- АДМИН-ПАНЕЛЬ: отдельные стили --- */
+.admin-tabs {
+  background: linear-gradient(90deg, #00916e 60%, #43e97b 100%);
+  border-radius: 14px;
+  padding: 10px 8px;
+  margin-bottom: 18px;
+  box-shadow: 0 2px 12px #00916e22;
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+.admin-tabs button, .admin-tabs .modal-btn {
+  background: #fff;
+  color: #00916e;
+  border: none;
+  border-radius: 10px;
+  font-weight: 700;
+  font-size: 1.08em;
+  padding: 10px 18px;
+  box-shadow: 0 2px 8px #43e97b22;
+  transition: background 0.18s, color 0.18s;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+.admin-tabs button.active, .admin-tabs button:focus, .admin-tabs button:hover {
+  background: #43e97b;
+  color: #fff;
+}
+.admin-tabs .modal-btn {
+  min-width: 120px;
+}
+.admin-panel-content, #admin-panel-content {
+  background: #f8fdfd;
+  border-radius: 14px;
+  box-shadow: 0 2px 12px #43e97b11;
+  padding: 18px 10px 10px 10px;
+  margin-bottom: 18px;
+}
+.admin-delete-category-btn {
+  background: #e94e43 !important;
+  color: #fff !important;
+  border: none;
+  border-radius: 8px;
+  font-size: 1.1em;
+  padding: 4px 12px;
+  margin-left: 8px;
+  transition: background 0.18s;
+}
+.admin-delete-category-btn:hover {
+  background: #b71c1c !important;
+}
+.admin-category-list li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+  font-size: 1.08em;
+}
+.admin-category-list li span {
+  flex: 1 1 auto;
+}
+.admin-category-list li .admin-delete-category-btn {
+  flex: 0 0 auto;
+}
+.moderation-card {
+  border: 2.5px solid #43e97b;
+  background: #e0f7fa;
+  box-shadow: 0 4px 18px #43e97b22;
+}
+.moderation-card .product-card-title {
+  color: #00916e;
+}
+.moderation-card .product-card-status {
+  color: #e94e43;
+  font-weight: 700;
+}
+.product-card-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+  justify-content: center;
+}
+@media (max-width: 600px) {
+  .admin-tabs {
+    flex-direction: column;
+    gap: 6px;
+    padding: 7px 4px;
+  }
+  .admin-panel-content, #admin-panel-content {
+    padding: 8px 2px 6px 2px;
+    border-radius: 8px;
+  }
+  .admin-tabs button, .admin-tabs .modal-btn {
+    font-size: 1em;
+    padding: 8px 8px;
+    min-width: 80px;
+  }
+}
+/* --- Иконки для админ-панели (можно использовать emoji или SVG) --- */
+.admin-tabs .icon {
+  font-size: 1.2em;
+  margin-right: 4px;
+  vertical-align: middle;
+}
+/* --- Скелетон для загрузки изображений товара --- */
+.img-skeleton {
+  width: 100%;
+  height: 100%;
+  min-height: 80px;
+  background: linear-gradient(90deg, #e0f7fa 25%, #c8e6c9 50%, #e0f7fa 75%);
+  background-size: 200% 100%;
+  border-radius: 12px;
+  animation: skeleton-loading 1.2s infinite linear;
+  position: absolute;
+  left: 0; top: 0;
+  z-index: 1;
+}
+@keyframes skeleton-loading {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
 /* --- Новый стиль для main-search: поле и кнопка в ряд, селекты и switch ниже --- */
 .main-search-row {
   display: flex;
