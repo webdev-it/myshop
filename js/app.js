@@ -182,8 +182,8 @@ document.getElementById('main-categories-list').addEventListener('click', functi
 document.getElementById('main-products-list').addEventListener('click', function(e) {
   const card = e.target.closest('.product-card');
   if (card) {
-    // TODO: реализовать открытие модалки товара
-    showToast('Модалка товара: в разработке', '#43e97b');
+    const productId = card.getAttribute('data-product-id');
+    openProductDetail(productId);
   }
 });
 
@@ -246,8 +246,152 @@ async function openCategoryPage(categoryId) {
   }
   // Назад
   document.getElementById('category-back-btn').onclick = function() {
-    showPage('main-page');
+    if (window.history.length > 1) {
+      window.history.back();
+    } else {
+      showPage('main-page');
+    }
   };
+  // Открытие товара из категории
+  list.onclick = function(e) {
+    const card = e.target.closest('.product-card');
+    if (card) {
+      const productId = card.getAttribute('data-product-id');
+      openProductDetail(productId);
+    }
+  };
+// --- Подробная карточка товара ---
+async function openProductDetail(productId) {
+  try {
+    const res = await fetch('https://store-backend-zpkh.onrender.com/products');
+    const products = await res.json();
+    const product = products.find(p => p.id == productId);
+    if (!product) return showToast('Товар не найден', '#e94e43');
+    // Получить владельца
+    let owner = null;
+    if (product.ownerId) {
+      const userRes = await fetch('https://store-backend-zpkh.onrender.com/accounts/' + product.ownerId);
+      if (userRes.ok) owner = await userRes.json();
+    }
+    // Получить отзывы и рейтинг
+    let reviews = [];
+    let rating = '-';
+    try {
+      const revRes = await fetch('https://store-backend-zpkh.onrender.com/reviews/' + product.ownerId);
+      if (revRes.ok) {
+        reviews = await revRes.json();
+        if (reviews.length) {
+          const avg = reviews.reduce((s, r) => s + (r.rating||0), 0) / reviews.length;
+          rating = avg.toFixed(2) + ' / 5';
+        }
+      }
+    } catch {}
+    // Получить вес файла
+    let fileSize = '';
+    if (product.fileUrl) {
+      try {
+        const head = await fetch(product.fileUrl, { method: 'HEAD' });
+        const size = head.headers.get('content-length');
+        if (size) fileSize = (Number(size)/1024/1024).toFixed(2) + ' МБ';
+      } catch {}
+    }
+    // Сформировать HTML
+    let html = `<div class="product-detail-modal">
+      <img src="${product.image ? `https://store-backend-zpkh.onrender.com/images/${encodeURIComponent(product.image)}` : 'images/placeholder.png'}" class="product-detail-image-modal" alt="img">
+      <h2>${product.name}</h2>
+      <div class="product-detail-price">${product.price ? product.price + ' ₽' : 'Бесплатно'}</div>
+      <div class="product-detail-description">${product.description||''}</div>
+      <div class="product-detail-meta">
+        <div>Владелец: <b>${owner ? (owner.name||owner.telegram_id||'—') : '—'}</b></div>
+        <div>Рейтинг: <b>${rating}</b></div>
+        <div>Вес файла: <b>${fileSize||'—'}</b></div>
+        <div><a href="https://t.me/${owner && owner.username ? owner.username : ''}" target="_blank" class="chat-link">Чат с продавцом</a></div>
+      </div>
+      <div class="product-detail-actions-modal">
+        ${product.price > 0 ? `<button class="modal-btn modal-btn-main" id="modal-buy-btn">Купить</button>` : `<button class="modal-btn modal-btn-main" id="modal-download-btn">Скачать бесплатно</button>`}
+      </div>
+      <div class="product-reviews">
+        <h3>Отзывы (${reviews.length})</h3>
+        <div>${reviews.length ? reviews.map(r => `<div class="review"><b>${r.buyerName||'Покупатель'}</b>: <span>${'★'.repeat(r.rating||0)}${'☆'.repeat(5-(r.rating||0))}</span> <span>${r.text||''}</span></div>`).join('') : 'Нет отзывов.'}</div>
+      </div>
+      <div id="review-block"></div>
+    </div>`;
+    // Показать в модалке
+    const modal = document.getElementById('modal-product');
+    document.getElementById('modal-product-body').innerHTML = html;
+    showModal('modal-product');
+    // Кнопка купить/скачать
+    if (product.price > 0) {
+      document.getElementById('modal-buy-btn').onclick = function() {
+        showToast('Покупка: в разработке', '#43e97b');
+      };
+    } else {
+      document.getElementById('modal-download-btn').onclick = function() {
+        window.open(product.fileUrl, '_blank');
+      };
+    }
+    // Если пользователь купил — показать форму отзыва
+    const user = getTelegramUser && getTelegramUser();
+    if (user && await userHasBoughtProduct(user.id, product.id)) {
+      renderReviewForm(product.ownerId, product.id, user);
+    }
+  } catch (e) {
+    showToast('Ошибка загрузки товара', '#e94e43');
+  }
+}
+
+// Проверка: покупал ли пользователь товар
+async function userHasBoughtProduct(userId, productId) {
+  try {
+    const res = await fetch('https://store-backend-zpkh.onrender.com/account/' + userId + '/history');
+    if (!res.ok) return false;
+    const history = await res.json();
+    return history.some(h => h.productId == productId);
+  } catch { return false; }
+}
+
+// Рендер формы отзыва
+function renderReviewForm(ownerId, productId, user) {
+  const block = document.getElementById('review-block');
+  if (!block) return;
+  block.innerHTML = `<div class="review-form">
+    <h4>Оставить отзыв о продавце</h4>
+    <form id="review-form">
+      <label>Оценка:
+        <select name="rating" required>
+          <option value="">—</option>
+          <option value="5">5 ★</option>
+          <option value="4">4 ★</option>
+          <option value="3">3 ★</option>
+          <option value="2">2 ★</option>
+          <option value="1">1 ★</option>
+        </select>
+      </label>
+      <label>Комментарий:
+        <textarea name="text" maxlength="500" required placeholder="Ваш отзыв"></textarea>
+      </label>
+      <button type="submit" class="modal-btn modal-btn-main">Отправить</button>
+    </form>
+  </div>`;
+  document.getElementById('review-form').onsubmit = async function(e) {
+    e.preventDefault();
+    const form = e.target;
+    const rating = Number(form.rating.value);
+    const text = form.text.value.trim();
+    if (!rating || !text) return showToast('Заполните все поля', '#e94e43');
+    const res = await fetch('https://store-backend-zpkh.onrender.com/reviews/' + ownerId, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ productId, buyerId: user.id, buyerName: user.first_name, rating, text })
+    });
+    if (res.ok) {
+      showToast('Спасибо за отзыв!', '#43e97b');
+      block.innerHTML = '<div class="success">Отзыв отправлен.</div>';
+    } else {
+      showToast('Ошибка отправки отзыва', '#e94e43');
+    }
+  };
+}
 }
 
 // --- Профиль: автозаполнение из Telegram ---
